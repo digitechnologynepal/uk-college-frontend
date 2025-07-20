@@ -1,0 +1,156 @@
+import moment from "moment";
+import { useEffect, useState } from "react";
+import ContentView from "react-froala-wysiwyg/FroalaEditorView";
+import { Link, useParams } from "react-router-dom";
+import { getSingleNewsApi } from "../../../../apis/api";
+import { CalendarDays } from "lucide-react";
+
+const SkeletonNewsDescription = () => (
+  <div className="pb-28 pt-32 px-4 sm:px-6 bg-[#f9fafb] max-w-7xl mx-auto grid md:grid-cols-3 gap-10 animate-pulse">
+    {/* Left: Main Article Skeleton */}
+    <div className="md:col-span-2 space-y-6">
+      {/* Title Skeleton */}
+      <div className="space-y-2">
+        <div className="h-10 bg-gray-200 rounded w-3/4" />
+        <div className="h-6 bg-gray-200 rounded w-1/4" />
+      </div>
+
+      {/* Hero Image Skeleton */}
+      <div className="overflow-hidden rounded-lg shadow-md bg-gray-200 w-full h-[400px]" />
+
+      {/* Description Skeleton */}
+      <div className="space-y-4 mt-4">
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-full" />
+        <div className="h-4 bg-gray-200 rounded w-5/6" />
+        <div className="h-4 bg-gray-200 rounded w-3/4" />
+        <div className="h-4 bg-gray-200 rounded w-2/3" />
+      </div>
+    </div>
+
+    {/* Right: More News Skeleton */}
+    <aside className="space-y-6">
+      <div className="h-6 bg-gray-200 rounded w-1/2 mb-4" />
+      {[...Array(3)].map((_, i) => (
+        <div key={i} className="flex gap-4 rounded-md border bg-white p-2">
+          <div className="w-24 h-16 bg-gray-200 rounded-md flex-shrink-0" />
+          <div className="flex-1 flex flex-col justify-between gap-2 py-1">
+            <div className="h-4 bg-gray-200 rounded w-3/4" />
+            <div className="h-3 bg-gray-200 rounded w-1/4" />
+            <div className="h-3 bg-gray-200 rounded w-full" />
+            <div className="h-3 bg-gray-200 rounded w-5/6" />
+            <div className="h-4 bg-gray-200 rounded w-1/4 mt-1" />
+          </div>
+        </div>
+      ))}
+    </aside>
+  </div>
+);
+
+export const NewsDescription = () => {
+  const { id } = useParams();
+  const [singleNews, setSingleNews] = useState({});
+  const [otherNews, setOtherNews] = useState([]);
+  const [initialLoading, setInitialLoading] = useState(true);
+
+  async function fetchSingleNews() {
+    try {
+      const response = await getSingleNewsApi(id);
+      if (response?.data?.success) {
+        setSingleNews(response?.data?.result?.foundNews);
+        setOtherNews(response?.data?.result?.remainingNews);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setInitialLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    fetchSingleNews();
+  }, [id]);
+
+  if (initialLoading) {
+    return <SkeletonNewsDescription />;
+  }
+
+  return (
+    <div className="text-[#262a2b] pb-28 pt-32 px-4 sm:px-6 bg-[#f9fafb]">
+      {/* Main Container */}
+      <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
+        {/* Left: Main Article */}
+        <div className="md:col-span-2 space-y-6">
+          {/* Title and Date */}
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold text-[#262a2b]">
+              {singleNews.title}
+            </h1>
+            <p className="bg-[#e7efff] text-[#204081] px-3 py-1 rounded-full w-max font-semibold shadow-sm text-base flex items-center gap-2">
+              <CalendarDays size={20} className="text-[#204081]" />
+              {moment(singleNews.createdAt).format("MMMM D, YYYY")}
+            </p>
+          </div>
+
+          {/* Hero Image */}
+          <div className="overflow-hidden rounded-lg shadow-md">
+            <img
+              src={`${process.env.REACT_APP_API_URL}/uploads/${singleNews.image}`}
+              alt={singleNews.title}
+              className="w-full h-[400px] object-cover object-center"
+            />
+          </div>
+
+          {/* Description */}
+          <div className="prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-md prose-img:shadow">
+            <ContentView model={singleNews.description} />
+          </div>
+        </div>
+
+        {/* Right: More News */}
+        <aside className="space-y-6">
+          <h2 className="text-lg font-semibold text-[#262a2b] border-b pb-2">
+            More News
+          </h2>
+          <div className="grid gap-3">
+            {otherNews.map((item) => (
+              <Link
+                to={`/news-description/${item._id}`}
+                key={item._id}
+                className="flex gap-4 rounded-md drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
+              >
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${item.image}`}
+                  alt={item.title}
+                  className="w-24 h-full object-cover"
+                />
+                <div className="py-3 pr-4 flex flex-col justify-between gap-1">
+                  <h3 className="text-sm font-bold text-[#204081] line-clamp-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-gray-500 font-medium flex items-center gap-1">
+                    <CalendarDays size={15} />{" "}
+                    {moment(item.createdAt).format("MMM D, YYYY")}
+                  </p>
+                  <div
+                    className="text-xs text-gray-600 line-clamp-2 mt-1"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        item.description.length > 100
+                          ? item.description.slice(0, 100) + "..."
+                          : item.description,
+                    }}
+                  ></div>
+                  <span className="text-xs font-medium text-[#204081] hover:underline mt-1">
+                    Read More →
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+};

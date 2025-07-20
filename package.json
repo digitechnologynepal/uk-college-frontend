@@ -1,0 +1,68 @@
+{
+  "name": "mountviewenglishboardingschool.com",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@headlessui/react": "^2.2.0",
+    "@tanstack/react-table": "^8.20.5",
+    "@testing-library/jest-dom": "^5.17.0",
+    "@testing-library/react": "^13.4.0",
+    "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.7.7",
+    "cross-env": "^7.0.3",
+    "flowbite-react": "^0.10.1",
+    "formik": "^2.4.6",
+    "framer-motion": "^12.23.0",
+    "html-to-image": "^1.11.11",
+    "lottie-react": "^2.4.1",
+    "lucide-react": "^0.439.0",
+    "moment": "^2.30.1",
+    "owl.carousel": "^2.3.4",
+    "react": "^18.3.1",
+    "react-country-region-selector": "^4.0.2",
+    "react-dom": "^18.3.1",
+    "react-draggable": "^4.4.6",
+    "react-froala-wysiwyg": "^4.0.19",
+    "react-hot-toast": "^2.4.1",
+    "react-icons": "^5.5.0",
+    "react-intersection-observer": "^9.16.0",
+    "react-owl-carousel": "^2.3.3",
+    "react-paginate": "^8.2.0",
+    "react-router-dom": "^6.26.1",
+    "react-scripts": "5.0.1",
+    "react-spinners": "^0.14.1",
+    "react-tooltip": "^5.29.1",
+    "sweetalert2": "^11.14.0",
+    "sweetalert2-react-content": "^5.0.7",
+    "swiper": "^11.2.10",
+    "web-vitals": "^2.1.4",
+    "yup": "^1.4.0"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build  && scp -r ./build/* root@103.90.84.195:/var/www/html/highpoint",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "tailwindcss": "^3.4.10"
+  }
+}
