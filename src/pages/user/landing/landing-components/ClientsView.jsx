@@ -27,7 +27,6 @@ const ClientCard = ({ client, index }) => {
       key={client._id}
       initial={{ opacity: 0, y: 30 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      whileHover={{ y: -16 }}
       transition={{
         type: "spring",
         damping: 20,
@@ -80,7 +79,7 @@ const ClientCard = ({ client, index }) => {
           {client.location && (
             <span
               title={client.location}
-              className="p-2 rounded-full hover:bg-gray-200 hover:text-gray-800 transition-all duration-300 flex items-center justify-center text-lg opacity-80 hover:opacity-100 hover:scale-110 cursor-default"
+              className="p-2 rounded-full hover:bg-gray-200 hover:text-gray-800 transition-all duration-300 flex items-center justify-center text-lg opacity-80 hover:opacity-100 hover:scale-110"
             >
               <FaMapMarkerAlt />
             </span>
@@ -155,7 +154,7 @@ export const ClientsView = () => {
               placeholder="Search ..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-3 rounded-full border border-gray-200 focus:ring-1 focus:ring-[#204081] focus:outline-none shadow-sm transition-all duration-300"
+              className="w-full pl-12 pr-4 py-3 font-semibold rounded-full border border-gray-200 focus:ring-1 focus:ring-[#204081] focus:outline-none shadow-sm transition-all duration-300"
             />
           </>
         )}

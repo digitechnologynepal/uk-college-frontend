@@ -3,7 +3,6 @@ import { getMottoApi } from "../../../../apis/api";
 import { Group } from "./SoftEd";
 import { TeamMembers } from "../TeamMembers";
 import { TbTargetArrow } from "react-icons/tb";
-import { Procedure } from "./Procedure";
 
 const SkeletonAboutSection = () => (
   <section className="py-24 max-w-6xl mx-auto w-full animate-pulse">
@@ -144,7 +143,7 @@ export const About = () => {
             {/* Image + Text Grid */}
             <div className="flex flex-col lg:flex-row items-start">
               {/* Left - Description with background */}
-              <div className="p-8 mr-10 rounded-xl lg:w-2/3 flex items-center">
+              <div className="p-8 mr-0 lg:mr-10 rounded-xl lg:w-2/3 flex items-center">
                 <div
                   className="text-base sm:text-lg lg:text-xl text-[#262a2b] leading-relaxed text-justify"
                   dangerouslySetInnerHTML={{ __html: data?.description || "" }}
@@ -181,11 +180,11 @@ export const About = () => {
                     <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#204081]/10">
                       <TbTargetArrow size={40} className="text-[#204081]" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#204081] mb-3">
+                    <h3 className="text-2xl font-bold text-[#204081] mb-3">
                       Our Mission
                     </h3>
                     {mottoData?.mission?.text && (
-                      <p className="text-gray-700 leading-relaxed text-justify text-base">
+                      <p className="px-4 text-gray-700 leading-relaxed text-justify text-lg">
                         {mottoData.mission.text}
                       </p>
                     )}
@@ -196,11 +195,11 @@ export const About = () => {
                     <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#d91b1a]/10">
                       <TbTargetArrow size={40} className="text-[#d91b1a]" />
                     </div>
-                    <h3 className="text-xl font-bold text-[#d91b1a] mb-3">
+                    <h3 className="text-2xl font-bold text-[#d91b1a] mb-3">
                       Our Vision
                     </h3>
                     {mottoData?.vision?.text && (
-                      <p className="text-gray-700 leading-relaxed text-justify text-base">
+                      <p className="px-4 text-gray-700 leading-relaxed text-justify text-lg">
                         {mottoData.vision.text}
                       </p>
                     )}
@@ -210,7 +209,6 @@ export const About = () => {
             </section>
           )}
 
-          <Procedure />
           <Group />
           <TeamMembers teamMembers={team} />
         </div>

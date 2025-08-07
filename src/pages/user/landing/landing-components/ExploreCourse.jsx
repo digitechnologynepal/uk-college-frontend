@@ -48,7 +48,7 @@ const ExploreCourse = () => {
   }, []);
 
   return (
-    <section className="w-full pt-32 pb-20 px-4 md:px-[6vw] xl:px-[8vw] bg-gradient-to-b from-[#f5f9ff] to-[#ffffff]">
+    <section className="w-full pt-32 pb-20 px-4 md:px-[6vw] xl:px-[8vw]">
       {loading ? (
         <>
           <SkeletonHeading />
@@ -63,7 +63,7 @@ const ExploreCourse = () => {
       ) : (
         <>
           <div className="mb-10 max-w-6xl">
-            <p className="text-left text-4xl font-bold mb-3 text-[#262a2b]">
+            <p className="text-left text-2xl lg:text-4xl md:text-3xl font-bold mb-3 text-[#262a2b]">
               Explore Our Courses
             </p>
             <p className="text-gray-600 text-base max-w-xl">

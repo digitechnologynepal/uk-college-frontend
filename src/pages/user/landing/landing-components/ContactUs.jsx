@@ -81,6 +81,8 @@ const ContactUs = () => {
   const [isBeingSubmitted, setIsBeingSubmitted] = useState(false);
   const [error, setError] = useState(null);
   const [successMessage, setSuccessMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -182,17 +184,28 @@ const ContactUs = () => {
             </div>
           </div>
 
-          <div className="mt-10 rounded-md shadow-sm h-50 sm:h-56 md:h-50">
+          <div className="mt-10 rounded-md shadow-sm h-50 sm:h-56 md:h-50 relative">
             {data?.locationForMap ? (
-              <iframe
-                src={data.locationForMap}
-                loading="lazy"
-                title="Map"
-                aria-label="Institution Map"
-                className="w-full h-full border-0"
-              />
+              <>
+                {isLoading && (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="w-10 h-10 border-4 border-[#204081] border-t-transparent rounded-full animate-spin" />
+                    <span className="text-gray-500 text-sm ml-3">
+                      Loading map...
+                    </span>
+                  </div>
+                )}
+                <iframe
+                  src={data.locationForMap}
+                  loading="lazy"
+                  title="Map"
+                  aria-label="Institution Map"
+                  className="w-full h-full border-0"
+                  onLoad={() => setIsLoading(false)}
+                />
+              </>
             ) : (
-              <div className="flex items-center justify-center h-full text-gray-400 italic">
+              <div className="flex items-center justify-center h-full text-gray-500 italic">
                 Map not available
               </div>
             )}

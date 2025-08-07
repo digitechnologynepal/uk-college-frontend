@@ -13,6 +13,7 @@ export const Courses = () => {
   const [updated, setUpdated] = useState(false);
 
   useEffect(() => {
+    setIsLoading(true);
     fetchCourses();
   }, [updated]);
 
@@ -50,7 +51,7 @@ export const Courses = () => {
             timer: 1500,
           });
           setUpdated((prev) => !prev);
-          fetchCourses();
+          // fetchCourses();
         }
       } catch (err) {
         ErrorHandler(err);
@@ -69,10 +70,10 @@ export const Courses = () => {
         </div>
 
         <div>
-          {courseData ? (
-            <CourseTable data={courseData} onDelete={handleDeleteCourse} />
-          ) : (
+          {isLoading ? (
             <p>Loading...</p>
+          ) : (
+            <CourseTable data={courseData} onDelete={handleDeleteCourse} />
           )}
         </div>
       </main>

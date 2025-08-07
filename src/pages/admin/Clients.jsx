@@ -18,7 +18,7 @@ export const Clients = () => {
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
 
   useEffect(() => {
     fetchClients();
@@ -84,7 +84,10 @@ export const Clients = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentClients = filteredClients.slice(indexOfFirstItem, indexOfLastItem);
+  const currentClients = filteredClients.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
 
   return (
@@ -92,22 +95,26 @@ export const Clients = () => {
       <main className="p-4">
         <div className="flex flex-col sm:flex-row justify-between mb-6 items-center gap-4">
           <Title title="Clients" />
-          <div className="flex items-center gap-3 flex-wrap">
+          <div className="flex items-center gap-3 flex-wrap w-auto">
             <input
               type="text"
               placeholder="Search clients..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="border border-gray-300 rounded-lg px-3 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-[#204081]"
             />
-            <button onClick={() => setShowAddModal(true)} className="btn-primary">
+            <button
+              onClick={() => setShowAddModal(true)}
+              className="btn-primary"
+            >
               Add Client
             </button>
           </div>
         </div>
 
-        <p className="mb-4 text-gray-600">
-          Showing {filteredClients.length} {filteredClients.length === 1 ? "client" : "clients"}
+        <p className="mb-4 font-medium text-lg">
+          Showing <b>{filteredClients.length}</b>{" "}
+          {filteredClients.length === 1 ? "client" : "clients"}
         </p>
 
         {isLoading ? (
@@ -123,14 +130,16 @@ export const Clients = () => {
                     <th className="text-left px-4 py-2 border-b">Name</th>
                     <th className="text-left px-4 py-2 border-b">Website</th>
                     <th className="text-left px-4 py-2 border-b">Number</th>
-                    <th className="text-left px-4 py-2 border-b">Location</th>
+                    <th className="text-left px-4 py-2 border-b">Address</th>
                     <th className="text-center px-4 py-2 border-b">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentClients.map((client, index) => (
                     <tr key={client._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border-b">{indexOfFirstItem + index + 1}</td>
+                      <td className="px-4 py-2 border-b">
+                        {indexOfFirstItem + index + 1}
+                      </td>
                       <td className="px-4 py-2 border-b">
                         <img
                           src={`${process.env.REACT_APP_API_URL}/uploads/${client.image}`}
@@ -153,8 +162,12 @@ export const Clients = () => {
                           "-"
                         )}
                       </td>
-                      <td className="px-4 py-2 border-b">{client.number || "-"}</td>
-                      <td className="px-4 py-2 border-b">{client.location || "-"}</td>
+                      <td className="px-4 py-2 border-b">
+                        {client.number || "-"}
+                      </td>
+                      <td className="px-4 py-2 border-b">
+                        {client.location || "-"}
+                      </td>
                       <td className="px-4 py-2 border-b text-center">
                         <button
                           onClick={() => handleEditClick(client)}
@@ -179,19 +192,21 @@ export const Clients = () => {
 
             {/* Pagination */}
             <div className="flex justify-center mt-6 space-x-2">
-              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((page) => (
-                <button
-                  key={page}
-                  onClick={() => setCurrentPage(page)}
-                  className={`px-3 py-1 rounded-md border ${
-                    currentPage === page
-                      ? "bg-blue-600 text-white"
-                      : "bg-white text-gray-700 hover:bg-gray-100"
-                  }`}
-                >
-                  {page}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`px-3 py-1 rounded-md border ${
+                      currentPage === page
+                        ? "bg-blue-600 text-white"
+                        : "bg-white text-gray-700 hover:bg-gray-100"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
             </div>
           </>
         ) : (

@@ -20,7 +20,7 @@ function AdminSidebar() {
     {
       label: "banner section",
       icon: <CircleHelp className="size-4" />,
-      link: "/admin/aboutus",
+      link: "/admin/banner",
     },
     {
       label: "about us section",
@@ -51,11 +51,6 @@ function AdminSidebar() {
       label: "manage courses",
       icon: <BookOpenCheck className="size-4" />,
       link: "/admin/manage-courses",
-    },
-    {
-      label: "operating procedures",
-      icon: <SquareChartGantt className="size-4" />,
-      link: "/admin/procedures",
     },
     {
       label: "news section",

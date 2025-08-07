@@ -103,7 +103,7 @@ export const ChooseUs = () => {
         </motion.div>
 
         {/* Items List */}
-        <div className="space-y-12 lg:space-y-16">
+        <div className="space-y-12 lg:space-y-14">
           {data?.items.map(({ _id, title, description, imageUrl }, i) => (
             <React.Fragment key={_id}>
               <motion.div
@@ -136,7 +136,7 @@ export const ChooseUs = () => {
                     {title}
                     <span className="block h-1 w-16 bg-[#d91b1a] rounded mt-2"></span>
                   </h3>
-                  <p className="text-lg text-gray-700 leading-relaxed text-justify">
+                  <p className="text-xl text-gray-700 leading-relaxed text-justify">
                     {description}
                   </p>
                 </div>

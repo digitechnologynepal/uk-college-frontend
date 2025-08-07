@@ -52,51 +52,45 @@ export const Group = () => {
     fetchGroups();
   }, []);
 
+  if (loading) return <SkeletonGroup />;
+  if (!group || group.items.length === 0) return null;
+
   return (
-    <>
-      {loading ? (
-        <SkeletonGroup />
-      ) : !group ? (
-        <p className="text-gray-500 text-xl font-semibold text-center mt-10">
-          No groups found.
+    <section className="pb-24 relative">
+      {/* Static parent image and intro */}
+      <div className="flex flex-col">
+        <div className="flex justify-center">
+          <img
+            src={`${process.env.REACT_APP_API_URL}${group.mainImage}`}
+            alt={group.mainTitle}
+            className="w-[80%] lg:w-[30%] md:w-[60%] object-cover mb-6"
+          />
+        </div>
+        <p className="text-[16px] max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
+          {group.mainDescription}
         </p>
-      ) : (
-        <section className="pb-24 relative">
-          {/* Static parent image and intro */}
-          <div className="flex flex-col">
-            <div className="flex justify-center">
+        <p className="text-center text-3xl font-bold text-[#262a2b]">
+          {group.mainTitle}
+        </p>
+      </div>
+
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {group.items.map((item, i) => (
+            <div
+              key={i}
+              className="bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg hover:shadow-red-500/60 transition"
+            >
               <img
-                src={`${process.env.REACT_APP_API_URL}${group.mainImage}`}
-                alt={group.mainTitle}
-                className="w-[30%] object-cover mb-4"
+                src={`${process.env.REACT_APP_API_URL}${item.image}`}
+                alt={item.name}
+                className="w-full h-28 object-contain mb-2"
               />
             </div>
-            <p className="text-[16px] max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
-              {group.mainDescription}
-            </p>
-            <p className="text-center text-3xl font-bold text-[#262a2b]">
-              {group.mainTitle}
-            </p>
-          </div>
-
-          <div className="max-w-6xl mx-auto px-4 py-8">
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-              {group.items.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg hover:shadow-red-500/60 transition"
-                >
-                  <img
-                    src={`${process.env.REACT_APP_API_URL}${item.image}`}
-                    alt={item.name}
-                    className="w-full h-28 object-contain mb-2"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
-    </>
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
+

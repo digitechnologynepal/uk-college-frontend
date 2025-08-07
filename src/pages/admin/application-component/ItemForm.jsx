@@ -52,7 +52,7 @@ const ItemForm = ({ item, onClose, setMainData }) => {
     formData.append("title", title);
     formData.append("description", description);
     if (imageFile) {
-      formData.append("imageUrl", imageFile); // ✅ matches backend's key
+      formData.append("imageUrl", imageFile);
     }
 
     try {
