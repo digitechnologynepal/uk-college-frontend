@@ -22,7 +22,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const fileInputRef = useRef(null); // ⬅️ reference for resetting the input
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     return () => {

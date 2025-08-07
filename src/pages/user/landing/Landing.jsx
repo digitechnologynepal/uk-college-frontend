@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { AboutUsSection } from "./landing-components/AboutUsSection";
-import OurMotto from "./landing-components/OurMotto";
 import { getBannerApi } from "../../../apis/api";
 import { RecentNewsSection } from "./landing-components/RecentNewsSection";
 import { ChooseUs } from "./landing-components/ChooseUs";
@@ -61,7 +60,7 @@ export const Landing = ({ institutionProfile }) => {
               // transition={{ duration: 1.2, ease: "easeOut", repeat: Infinity, repeatType: "mirror" }}
               src={heroImage}
               // className="w-full h-auto object-cover"
-              className="w-full h-[80vh] md:h-[100vh] object-cover"
+              className="w-[100vw] h-[100vh] object-cover"
               alt="Hero"
             />
           )
