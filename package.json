@@ -40,7 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build  && scp -r ./build/* root@103.90.84.195:/var/www/html/highpoint",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
