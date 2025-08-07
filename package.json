@@ -40,7 +40,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build",
+    "build": "cross-env GENERATE_SOURCEMAP=false react-scripts build  && scp -r ./build/* ubuntu@103.90.86.38:/var/www/html/ukcollege",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
