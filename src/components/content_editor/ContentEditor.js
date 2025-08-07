@@ -36,8 +36,8 @@ import 'froala-editor/js/plugins/paragraph_format.min.js'
 import 'froala-editor/js/plugins/quick_insert.min.js'
 import 'froala-editor/css/plugins/quick_insert.min.css'
 import 'froala-editor/js/plugins/quote.min.js'
-import 'froala-editor/js/third_party/spell_checker.min.js'
-import 'froala-editor/css/third_party/spell_checker.min.css'
+// import 'froala-editor/js/third_party/spell_checker.min.js'
+// import 'froala-editor/css/third_party/spell_checker.min.css'
 import 'froala-editor/js/plugins/table.min.js'
 import 'froala-editor/css/plugins/table.min.css'
 import 'froala-editor/js/plugins/url.min.js'
@@ -47,7 +47,7 @@ import 'froala-editor/css/plugins/video.min.css'
 import FroalaEditor from 'react-froala-wysiwyg'
 import { editorConfig } from './Config'
 
-function ContentEditor({ model, handleModelChange, allowPaste, height=200 }) {
+function ContentEditor({ model, handleModelChange, allowPaste, height = 200 }) {
 	return <FroalaEditor tag='textarea' config={editorConfig(allowPaste, height)} model={model} onModelChange={handleModelChange} />
 }
 

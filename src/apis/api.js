@@ -40,7 +40,7 @@ export const addAboutUsApi = (data) => ApiWithFormData.post('/api/admin/aboutus/
 export const getAboutUsApi = () => Api.get('/api/admin/aboutus/get');
 
 // add or update instution profile Api
-export const addInstitutionProfileApi = (data) => Api.post('/api/admin/institutionprofile/add', data, config);
+export const addInstitutionProfileApi = (data) => ApiWithFormData.post('/api/admin/institutionprofile/add', data, config);
 
 // get instution profile
 export const getInstitutionProfileApi = () => Api.get('/api/admin/institutionprofile/get');

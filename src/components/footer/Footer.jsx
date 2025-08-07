@@ -9,7 +9,6 @@ import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getInstitutionProfileApi } from "../../apis/api";
 import Logo from "../../assets/images/uk-colleges-logo-white.png";
-import Accreditation1 from "../../assets/images/qualifi.png";
 import Accreditation2 from "../../assets/images/ncc.png";
 
 export const Footer = () => {
@@ -22,6 +21,7 @@ export const Footer = () => {
     "/login",
     "/admin/dashboard",
     "/admin/aboutus",
+    "/admin/banner",
     "/admin/achievements",
     "/admin/stats",
     "/admin/applied-students",
@@ -35,7 +35,6 @@ export const Footer = () => {
     "/admin/news",
     "/admin/manage-group",
     "/admin/manage-team-members",
-    "/admin/procedures",
     "/admin/manage-clients",
   ];
 
@@ -65,11 +64,20 @@ export const Footer = () => {
 
   return (
     <footer className="bg-gradient-to-t from-[#02153b] to-[#204081] text-white pt-12 relative overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-6 grid gap-12 md:grid-cols-4 sm:grid-cols-2">
+      <div
+        className="
+          relative z-10 max-w-7xl mx-auto px-6
+          grid gap-10
+          grid-cols-1
+          sm:grid-cols-2
+          md:grid-cols-3
+          lg:grid-cols-4
+        "
+      >
         {/* Logo & Tagline */}
         <div>
-          <img src={Logo} alt="logo" className="h-24 mb-4" />
-          <p className="text-sm text-white mb-4">
+          <img src={Logo} alt="logo" className="h-20 mb-4" />
+          <p className="text-sm text-white mb-4 leading-relaxed">
             Delivering recognized global education. Transforming futures.
           </p>
 
@@ -113,7 +121,7 @@ export const Footer = () => {
                 href={data.linkedin}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Facebook"
+                aria-label="LinkedIn"
                 className="p-2 bg-white/10 hover:bg-[#f56a79] hover:text-white rounded-full transition backdrop-blur-md"
               >
                 <FaLinkedinIn size={18} />
@@ -125,17 +133,9 @@ export const Footer = () => {
         {/* Pages */}
         <div>
           <h4 className="text-lg font-semibold mb-4 uppercase text-white">
-            Quick Links
+            Helpful Links
           </h4>
           <ul className="space-y-3 text-base">
-            <li>
-              <Link
-                to="/"
-                className="hover:font-medium hover:underline underline-offset-4 transition"
-              >
-                Home
-              </Link>
-            </li>
             <li>
               <Link
                 to="/aboutus"
@@ -146,10 +146,18 @@ export const Footer = () => {
             </li>
             <li>
               <Link
+                to="/course"
+                className="hover:font-medium hover:underline underline-offset-4 transition"
+              >
+                Our Courses
+              </Link>
+            </li>
+            <li>
+              <Link
                 to="/contact"
                 className="hover:font-medium hover:underline underline-offset-4 transition"
               >
-                Contact
+                Contact Us
               </Link>
             </li>
           </ul>
@@ -167,10 +175,19 @@ export const Footer = () => {
               </li>
             )}
             {data?.email && (
-              <li className="font-medium flex items-center gap-2">
-                <Mail size={17} /> {data.email}
+              <li className="font-medium flex items-center gap-2 break-all">
+                <Mail size={17} />
+                <a
+                  href={`mailto:${data.email}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:underline underline-offset-4"
+                >
+                  {data.email}
+                </a>
               </li>
             )}
+
             {data?.number && (
               <li className="font-medium flex items-center gap-2">
                 <Phone size={17} /> {data.number}
@@ -185,11 +202,6 @@ export const Footer = () => {
             Accreditation
           </h4>
           <div className="space-y-4">
-            <img
-              src={Accreditation1}
-              className="bg-white rounded-md p-2 h-14 object-contain"
-              alt="accreditation"
-            />
             <img
               src={Accreditation2}
               className="bg-white rounded-md p-2 h-14 object-contain"

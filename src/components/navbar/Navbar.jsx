@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
-import Logo from "../../assets/images/uk-colleges-logo.png";
-import Logo2 from "../../assets/images/uk-colleges-logo-white.png";
-import { Menu, X } from "lucide-react";
+import Logo from "../../assets/images/ukcolleges.png";
+import { Menu, X, Download, Phone } from "lucide-react";
 
 export const Navbar = ({ institutionProfile }) => {
   const location = useLocation();
@@ -10,6 +9,7 @@ export const Navbar = ({ institutionProfile }) => {
     "/login",
     "/admin/dashboard",
     "/admin/aboutus",
+    "/admin/banner",
     "/admin/achievements",
     "/admin/stats",
     "/admin/manage-gallery",
@@ -21,7 +21,6 @@ export const Navbar = ({ institutionProfile }) => {
     "/admin/news",
     "/admin/manage-group",
     "/admin/manage-team-members",
-    "/admin/procedures",
     "/admin/manage-clients",
   ];
 
@@ -29,6 +28,9 @@ export const Navbar = ({ institutionProfile }) => {
 
   const [sticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+
+  const brochureFileName = institutionProfile?.brochure?.split("/")?.pop();
+  const isMobile = window.innerWidth < 1024;
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";
@@ -44,26 +46,53 @@ export const Navbar = ({ institutionProfile }) => {
 
   if (isDesiredPath) return null;
 
+  const handleDownload = async () => {
+    try {
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/uploads/${institutionProfile.brochure}`
+      );
+      if (!response.ok) throw new Error("Network response was not ok");
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const fileNameRaw =
+        institutionProfile?.brochure?.split("/")?.pop() || "brochure.pdf";
+      const fileName = fileNameRaw.replace(/^\d+_/, ""); // Remove leading digits + underscore
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed:", error);
+    }
+  };
+
   return (
     <>
       {/* Navbar Header */}
       <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-lg">
-        <div className="max-w-screen-xl mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 py-2">
-          {/* Logo */}
-          <Link to="/" className="flex items-center">
-            <img src={Logo} alt="Logo" className="h-20 object-contain" />
-          </Link>
+        <div className="max-w-screen-2xl mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
+          <div className="flex-shrink-0">
+            <Link to="/">
+              <img src={Logo} alt="Logo" className="h-16 object-contain" />
+            </Link>
+          </div>
 
-          {/* Desktop Nav */}
           <nav className="hidden lg:flex flex-1 justify-center">
-            <ul className="flex gap-4">
+            <ul className="flex gap-2">
               {[
                 { path: "/", label: "Home" },
                 { path: "/aboutus", label: "About Us" },
                 { path: "/course", label: "Courses" },
                 { path: "/clients", label: "Our Clients" },
                 { path: "/galleryview", label: "Gallery" },
-                { path: "/news", label: "News" },
+                { path: "/news", label: "News & Events" },
               ].map(({ path, label }) => (
                 <li key={path}>
                   <Link
@@ -77,18 +106,29 @@ export const Navbar = ({ institutionProfile }) => {
             </ul>
           </nav>
 
-          {/* Contact Button (desktop only) */}
-          <Link
-            to="/contact"
-            className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full shadow-md transition-all duration-300 ease-in-out bg-[#d91b1a] text-white hover:bg-[#b71715]"
-          >
-            Contact Us
-          </Link>
+          <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
+            {institutionProfile?.brochure && (
+              <button
+                onClick={handleDownload}
+                className="px-4 py-2 flex items-center font-semibold transition-all duration-300 text-[#204081] hover:bg-[#e7efff] hover:rounded-full"
+              >
+                <Download size={20} className="mr-2" />
+                Brochure
+              </button>
+            )}
+            <Link
+              to="/contact"
+              className="px-4 py-2 flex items-center font-semibold rounded-full shadow-md transition-all duration-300 bg-[#d91b1a] text-white hover:bg-[#b71715]"
+            >
+              <Phone size={20} className="mr-2" />
+              Contact Us
+            </Link>
+          </div>
 
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMenuOpen(true)}
-            className="lg:hidden text-[#204081]"
+            className="lg:hidden text-[#204081] ml-auto"
           >
             <Menu size={28} />
           </button>
@@ -122,14 +162,14 @@ export const Navbar = ({ institutionProfile }) => {
 
         {/* Navigation Content */}
         <div className="flex-1 overflow-y-auto px-5 py-6">
-          <div className="space-y-4 text-lg font-medium">
+          <div className="space-y-2 text-md font-medium">
             {[
               { to: "/", label: "Home" },
               { to: "/aboutus", label: "About Us" },
               { to: "/course", label: "Courses" },
               { to: "/clients", label: "Our Clients" },
               { to: "/galleryview", label: "Gallery" },
-              { to: "/news", label: "News" },
+              { to: "/news", label: "News & Events" },
               { to: "/contact", label: "Contact" },
             ].map(({ to, label }) => (
               <Link
@@ -146,6 +186,17 @@ export const Navbar = ({ institutionProfile }) => {
               </Link>
             ))}
           </div>
+
+          {institutionProfile?.brochure && (
+            <div className="mt-2 px-4 py-2 rounded-md bg-gray-100 text-[#204081]">
+              <button
+                onClick={handleDownload}
+                className="mb-1 text-md font-medium"
+              >
+                Download Brochure
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </>

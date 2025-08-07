@@ -27,10 +27,9 @@ import { Gallery } from "./pages/admin/Gallery";
 import { GalleryView } from "./pages/user/landing/GalleryView";
 import { Group } from "./pages/admin/Group";
 import { Team } from "./pages/admin/Team";
-import { Procedure } from "./pages/user/landing/landing-components/Procedure";
-import { OpProcedures } from "./pages/admin/OpProcedures";
 import { Clients } from "./pages/admin/Clients";
 import { ClientsView } from "./pages/user/landing/landing-components/ClientsView";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [institutionprofile, setInstitutionProfile] = useState({});
@@ -52,13 +51,13 @@ function App() {
       <div className="flex flex-col w-full min-h-screen">
         <Navbar institutionProfile={institutionprofile} />
         <div className="flex-1">
+          <ScrollToTop />
           <Routes>
             {/* <Route path="/" element={<UnderConstruction />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/course" element={<ExploreCourse />} />
             <Route path="/course/courseDetail/:id" element={<CourseDetail />} />
             <Route path="/aboutus" element={<About />} />
-            <Route path="/procedures" element={<Procedure />} />
             <Route path="/galleryview" element={<GalleryView />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/news" element={<News />} />
@@ -71,7 +70,7 @@ function App() {
                 element={<AdminLayout children={<InstitutionProfile />} />}
               />
               <Route
-                path="/admin/aboutus"
+                path="/admin/banner"
                 element={<AdminLayout children={<BannerPage />} />}
               />
               <Route
@@ -86,8 +85,6 @@ function App() {
                 path="/admin/whychooseus"
                 element={<AdminLayout children={<WhyChooseUsForm />} />}
               />
-              <Route path="/admin/procedures"
-                element={<AdminLayout children={<OpProcedures />} />} />
               <Route
                 path="/admin/manage-gallery"
                 element={<AdminLayout children={<Gallery />} />}
