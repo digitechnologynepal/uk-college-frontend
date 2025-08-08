@@ -21,6 +21,8 @@ export const InstitutionProfile = () => {
   const [locationForMap, setLocationForMap] = useState("");
   const [brochure, setBrochure] = useState(null);
   const [brochureName, setBrochureName] = useState("");
+  const [certificate, setCertificate] = useState(null);
+  const [certificateName, setCertificateName] = useState("");
   const [updated, setUpdated] = useState(false);
 
   const institutionProfileSchema = Yup.object().shape({
@@ -46,11 +48,12 @@ export const InstitutionProfile = () => {
         setLinkedin(res?.data?.result?.linkedin);
         setLocationForMap(res?.data?.result?.locationForMap);
         setBrochureName(res?.data?.result?.brochure || "");
+        setCertificateName(res?.data?.result?.certificate || "");
       }
     });
   }, [updated]);
 
-  function updateInstitutionProfile(values, brochure) {
+  function updateInstitutionProfile(values, brochure, certificate) {
     const formData = new FormData();
     for (const key in values) {
       formData.append(key, values[key]);
@@ -58,6 +61,9 @@ export const InstitutionProfile = () => {
 
     if (brochure) {
       formData.append("brochure", brochure);
+    }
+    if (certificate) {
+      formData.append("certificate", certificate);
     }
     addInstitutionProfileApi(formData)
       .then((res) => {
@@ -92,7 +98,7 @@ export const InstitutionProfile = () => {
           }}
           validationSchema={institutionProfileSchema}
           onSubmit={(values) => {
-            updateInstitutionProfile(values, brochure);
+            updateInstitutionProfile(values, brochure, certificate);
           }}
         >
           {(props) => (
@@ -268,6 +274,29 @@ export const InstitutionProfile = () => {
                         rel="noopener noreferrer"
                       >
                         View current brochure PDF
+                      </a>
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="certificate" className="block font-medium">
+                    Upload Certificate (PDF only)
+                  </label>
+                  <input
+                    type="file"
+                    id="certificate"
+                    accept="application/pdf"
+                    onChange={(e) => setCertificate(e.currentTarget.files[0])}
+                    className="appearance-none border rounded w-full p-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline"
+                  />
+                  {certificateName && !certificate && (
+                    <p className="mt-1 text-md text-blue-600 underline cursor-pointer">
+                      <a
+                        href={`${process.env.REACT_APP_API_URL}/uploads/${certificateName}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View current certificate PDF
                       </a>
                     </p>
                   )}

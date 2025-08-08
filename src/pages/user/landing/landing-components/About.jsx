@@ -3,6 +3,7 @@ import { getMottoApi } from "../../../../apis/api";
 import { Group } from "./SoftEd";
 import { TeamMembers } from "../TeamMembers";
 import { TbTargetArrow } from "react-icons/tb";
+import { FileText } from "lucide-react";
 
 const SkeletonAboutSection = () => (
   <section className="py-24 max-w-6xl mx-auto w-full animate-pulse">
@@ -80,6 +81,9 @@ export const About = () => {
   const [error, setError] = useState(null);
   const [team, setTeam] = useState([]);
   const [mottoData, setMottoData] = useState(null);
+  const certificate = data?.certificate
+    ? `${process.env.REACT_APP_API_URL}/uploads/${data.certificate}`
+    : null;
 
   useEffect(() => {
     const fetchMottoData = async () => {
@@ -169,7 +173,7 @@ export const About = () => {
             <SkeletonMottoSection />
           ) : (
             <section className="w-full pb-24">
-              <div className="max-w-5xl mx-auto px-4 text-center">
+              <div className="max-w-6xl text-center">
                 <p className="mb-10 text-center text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
                   {mottoData.motoTitle}
                 </p>
@@ -184,7 +188,7 @@ export const About = () => {
                       Our Mission
                     </h3>
                     {mottoData?.mission?.text && (
-                      <p className="px-4 text-gray-700 leading-relaxed text-justify text-lg">
+                      <p className="px-5 text-gray-700 leading-relaxed text-justify text-lg">
                         {mottoData.mission.text}
                       </p>
                     )}
@@ -199,7 +203,7 @@ export const About = () => {
                       Our Vision
                     </h3>
                     {mottoData?.vision?.text && (
-                      <p className="px-4 text-gray-700 leading-relaxed text-justify text-lg">
+                      <p className="px-5 text-gray-700 leading-relaxed text-justify text-lg">
                         {mottoData.vision.text}
                       </p>
                     )}
@@ -213,6 +217,12 @@ export const About = () => {
           <TeamMembers teamMembers={team} />
         </div>
       </div>
+      <button
+        aria-label="Cerficate of Authorization"
+        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-20 h-20 rounded-full bg-[#2d5ab4] hover:bg-[#3d69c3] text-white drop-shadow-xl transition-colors"
+      >
+        <FileText size={35} />
+      </button>
     </section>
   );
 };
