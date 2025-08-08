@@ -51,28 +51,28 @@ export const Queries = () => {
           </p>
         </div>
 
-        <div className="relative overflow-auto mt-10">
-          <table className="w-full text-sm text-left text-neutral-700 bg-white">
-            <thead className="bg-neutral-100 text-sm text-neutral-700 uppercase sticky top-0">
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse border mt-2">
+            <thead>
               <tr>
-                <th className="px-6 py-3">S.N</th>
-                <th className="px-6 py-3">First Name</th>
-                <th className="px-6 py-3">Last Name</th>
-                <th className="px-6 py-3">Email</th>
-                <th className="px-6 py-3">Mobile</th>
-                <th className="px-6 py-3">Action</th>
+                <th style={styles.th}>S.N</th>
+                <th style={styles.th}>First Name</th>
+                <th style={styles.th}>Last Name</th>
+                <th style={styles.th}>Email</th>
+                <th style={styles.th}>Mobile</th>
+                <th style={styles.th}>Action</th>
               </tr>
             </thead>
             <tbody>
               {contacts.length > 0 ? (
                 contacts.map((contact, index) => (
                   <tr key={contact._id} className="border-b hover:bg-white">
-                    <td className="px-6 py-4">{index + 1}</td>
-                    <td className="px-6 py-4">{contact.firstName}</td>
-                    <td className="px-6 py-4">{contact.lastName}</td>
-                    <td className="px-6 py-4">{contact.email}</td>
-                    <td className="px-6 py-4">{contact.mobileNumber}</td>
-                    <td className="px-6 py-4">
+                    <td className="px-6 py-4"style={styles.td}>{index + 1}</td>
+                    <td style={styles.td}>{contact.firstName}</td>
+                    <td style={styles.td}>{contact.lastName}</td>
+                    <td style={styles.td}>{contact.email}</td>
+                    <td style={styles.td}>{contact.mobileNumber}</td>
+                    <td style={styles.td}>
                       <button
                         onClick={() => handleViewDetails(contact)}
                         className="btn-primary"
@@ -171,4 +171,19 @@ export const Queries = () => {
       )}
     </>
   );
+};
+
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+  },
+  td: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    verticalAlign: "top",
+  },
 };

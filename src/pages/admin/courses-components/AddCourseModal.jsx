@@ -2,16 +2,13 @@ import { Field, Form, Formik } from "formik";
 import { useEffect, useRef, useState } from "react";
 import * as Yup from "yup";
 import Swal from "sweetalert2";
-import toast from "react-hot-toast";
 import { Modal } from "../../../components/Modal";
 import ContentEditor from "../../../components/content_editor/ContentEditor";
 import { addCourseApi } from "../../../apis/api";
 import { CircleX } from "lucide-react";
 
 export const AddCourseModal = ({ open, onClose, setUpdated }) => {
-  const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [previewImage, setPreviewImage] = useState(null);
+  const [formKey, setFormKey] = useState(0);
   const courseImageInputRef = useRef(null);
 
   const levelOptions = ["Class 11", "Class 12"];
@@ -21,26 +18,16 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
       "Class 11": "Module 1",
       "Class 12": "Module 2",
     };
-
     const orderedModules = ["Module 1", "Module 2"];
-
-    // Map levels to modules
     const modulesFromLevels = levels.map((lvl) => map[lvl]).filter(Boolean);
-
-    // Sort modules by predefined order
     modulesFromLevels.sort(
       (a, b) => orderedModules.indexOf(a) - orderedModules.indexOf(b)
     );
-
     return modulesFromLevels;
   };
 
-  const [formKey, setFormKey] = useState(0);
   useEffect(() => {
     if (!open) {
-      setDescription("");
-      setImage(null);
-      setPreviewImage(null);
       setFormKey((prev) => prev + 1);
       if (courseImageInputRef.current) {
         courseImageInputRef.current.value = null;
@@ -64,7 +51,6 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
         }, {})
       )
     ),
-
     durationHours: Yup.lazy((obj) =>
       Yup.object(
         Object.keys(obj || {}).reduce((acc, key) => {
@@ -90,51 +76,17 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
         }, {})
       )
     ),
+    description: Yup.string()
+      .trim()
+      .required("Description is required"),
+    image: Yup.mixed()
+      .required("Course image is required")
+      .test(
+        "fileType",
+        "Unsupported file format",
+        (value) => !value || (value && value.type.startsWith("image/"))
+      ),
   });
-
-  const handleSubmit = async (values, { resetForm }) => {
-    if (!description.trim()) {
-      return toast.error("Description is required");
-    }
-    if (!image) {
-      return toast.error("Course image is required");
-    }
-
-    const modules = getModulesFromLevels(values.level);
-
-    // Build full module objects including description
-    const moduleData = modules.map((mod) => ({
-      name: mod,
-      durationWeeks: Number(values.durationWeeks[mod]),
-      durationHours: values.durationHours[mod].trim(),
-      description: values.moduleDescriptions?.[mod]?.trim() || "",
-    }));
-
-    const formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", description);
-    values.level.forEach((lvl) => formData.append("level", lvl));
-    formData.append("modules", JSON.stringify(moduleData));
-    formData.append("image", image);
-
-    try {
-      const res = await addCourseApi(formData);
-      if (res?.data?.success) {
-        toast.success("Course added successfully!");
-        setUpdated((prev) => !prev);
-        resetForm();
-        setDescription("");
-        setImage(null);
-        setPreviewImage(null);
-        if (courseImageInputRef.current) {
-          courseImageInputRef.current.value = null;
-        }
-        onClose();
-      }
-    } catch (err) {
-      Swal.fire("Error", `Failed to create course: ${err.message}`, "error");
-    }
-  };
 
   return (
     <Modal open={open} onClose={onClose} modalTitle="Add Course">
@@ -147,35 +99,70 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
             durationHours: {},
             moduleDescriptions: {},
             level: [],
+            description: "",
+            image: null,
           }}
           validationSchema={courseSchema}
-          onSubmit={handleSubmit}
+          onSubmit={async (values, { resetForm }) => {
+            const modules = getModulesFromLevels(values.level);
+            const moduleData = modules.map((mod) => ({
+              name: mod,
+              durationWeeks: Number(values.durationWeeks[mod]),
+              durationHours: values.durationHours[mod].trim(),
+              description: values.moduleDescriptions?.[mod]?.trim() || "",
+            }));
+
+            const formData = new FormData();
+            formData.append("title", values.title);
+            formData.append("description", values.description);
+            values.level.forEach((lvl) => formData.append("level", lvl));
+            formData.append("modules", JSON.stringify(moduleData));
+            formData.append("image", values.image);
+
+            try {
+              const res = await addCourseApi(formData);
+              if (res?.data?.success) {
+                Swal.fire("Success!", "Course added successfully.", "success");
+                setUpdated((prev) => !prev);
+                resetForm();
+                if (courseImageInputRef.current) {
+                  courseImageInputRef.current.value = null;
+                }
+                onClose();
+              }
+            } catch (err) {
+              Swal.fire("Error", `Failed to create course: ${err.message}`, "error");
+            }
+          }}
         >
-          {({ isSubmitting, values, errors, touched, setFieldValue }) => {
+          {({
+            isSubmitting,
+            values,
+            errors,
+            touched,
+            setFieldValue,
+            handleBlur,
+          }) => {
             const modules = getModulesFromLevels(values.level);
 
             return (
               <Form className="flex flex-col gap-4">
                 {/* Title */}
                 <div>
-                  <label className="font-medium text-lg">Course Title</label>
+                  <label className="font-medium text-lg">Course Title *</label>
                   <Field
                     type="text"
                     name="title"
                     className="border rounded w-full p-3"
                   />
                   {errors.title && touched.title && (
-                    <div className="text-red-600 text-sm mt-1">
-                      {errors.title}
-                    </div>
+                    <div className="text-red-600 text-sm mt-1">{errors.title}</div>
                   )}
                 </div>
 
                 {/* Level Multi-Select */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg mb-2 block">
-                    Level
-                  </label>
+                  <label className="font-medium text-lg mb-2 block">Level *</label>
                   <div className="flex flex-col space-y-2">
                     {levelOptions.map((lvl) => (
                       <label key={lvl} className="inline-flex items-center">
@@ -193,8 +180,7 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                               newLevels = [...values.level, lvl];
                             }
                             newLevels.sort(
-                              (a, b) =>
-                                levelOrder.indexOf(a) - levelOrder.indexOf(b)
+                              (a, b) => levelOrder.indexOf(a) - levelOrder.indexOf(b)
                             );
                             setFieldValue("level", newLevels);
                           }}
@@ -205,17 +191,13 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                     ))}
                   </div>
                   {errors.level && touched.level && (
-                    <div className="text-red-600 text-sm mt-1">
-                      {errors.level}
-                    </div>
+                    <div className="text-red-600 text-sm mt-1">{errors.level}</div>
                   )}
                 </div>
 
                 {/* Modules Preview */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg">
-                    Modules (Auto-filled)
-                  </label>
+                  <label className="font-medium text-lg">Modules (Auto-filled)</label>
                   {modules.length > 0 ? (
                     <ul className="list-disc pl-6 mt-1">
                       {modules.map((mod, i) => (
@@ -235,48 +217,44 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                     key={mod}
                     className="col-span-2 border rounded p-4 bg-gray-50"
                   >
-                    <h4 className="font-semibold text-md mb-2">
-                      {mod} Details
-                    </h4>
+                    <h4 className="font-semibold text-md mb-2">{mod} Details</h4>
 
                     {/* Duration Weeks */}
                     <div className="mb-2">
-                      <label className="block font-medium text-sm">Weeks</label>
+                      <label className="block font-medium text-sm">Weeks *</label>
                       <Field
                         type="number"
                         name={`durationWeeks.${mod}`}
                         className="border rounded w-full p-2"
                         placeholder="e.g., 6"
                       />
-                      {errors.durationWeeks?.[mod] &&
-                        touched.durationWeeks?.[mod] && (
-                          <div className="text-red-600 text-sm mt-1">
-                            {errors.durationWeeks[mod]}
-                          </div>
-                        )}
+                      {errors.durationWeeks?.[mod] && touched.durationWeeks?.[mod] && (
+                        <div className="text-red-600 text-sm mt-1">
+                          {errors.durationWeeks[mod]}
+                        </div>
+                      )}
                     </div>
 
                     {/* Duration Hours */}
                     <div className="mb-2">
-                      <label className="block font-medium text-sm">Hours</label>
+                      <label className="block font-medium text-sm">Hours *</label>
                       <Field
                         type="text"
                         name={`durationHours.${mod}`}
                         className="border rounded w-full p-2"
                         placeholder="e.g., 3, 3-4, 3 - 4"
                       />
-                      {errors.durationHours?.[mod] &&
-                        touched.durationHours?.[mod] && (
-                          <div className="text-red-600 text-sm mt-1">
-                            {errors.durationHours[mod]}
-                          </div>
-                        )}
+                      {errors.durationHours?.[mod] && touched.durationHours?.[mod] && (
+                        <div className="text-red-600 text-sm mt-1">
+                          {errors.durationHours[mod]}
+                        </div>
+                      )}
                     </div>
 
                     {/* Module Description */}
                     <div>
                       <label className="block font-medium text-sm">
-                        Description
+                        Description *
                       </label>
                       <Field
                         as="textarea"
@@ -291,20 +269,24 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
 
                 {/* Description */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg">Description</label>
+                  <label className="font-medium text-lg">Description *</label>
                   <ContentEditor
-                    model={description}
-                    handleModelChange={setDescription}
+                    model={values.description}
+                    handleModelChange={(val) => setFieldValue("description", val)}
+                    onBlur={handleBlur}
                   />
+                  {errors.description && touched.description && (
+                    <div className="text-red-600 text-sm mt-1">{errors.description}</div>
+                  )}
                 </div>
 
                 {/* Image Upload */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg">Course Image</label>
-                  {previewImage && (
+                  <label className="font-medium text-lg">Course Image *</label>
+                  {values.image && (
                     <div className="flex items-center gap-4 mb-2">
                       <img
-                        src={previewImage}
+                        src={URL.createObjectURL(values.image)}
                         alt="Preview"
                         className="w-24 h-24 object-cover rounded shadow"
                       />
@@ -312,8 +294,7 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                         className="text-red-600 cursor-pointer"
                         size={28}
                         onClick={() => {
-                          setImage(null);
-                          setPreviewImage(null);
+                          setFieldValue("image", null);
                           if (courseImageInputRef.current) {
                             courseImageInputRef.current.value = null;
                           }
@@ -327,20 +308,21 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                     ref={courseImageInputRef}
                     onChange={(e) => {
                       const file = e.target.files[0];
-                      setImage(file);
-                      if (file) {
-                        setPreviewImage(URL.createObjectURL(file));
-                      }
+                      setFieldValue("image", file);
                     }}
+                    onBlur={handleBlur}
                     className="border rounded w-full p-3"
                   />
+                  {errors.image && touched.image && (
+                    <div className="text-red-600 text-sm mt-1">{errors.image}</div>
+                  )}
                 </div>
 
                 {/* Submit */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md w-full col-span-2"
+                  className="btn-primary w-max"
                 >
                   {isSubmitting ? "Submitting..." : "Add Course"}
                 </button>

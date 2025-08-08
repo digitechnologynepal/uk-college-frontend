@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import { Button } from "../../components/Button";
-import { addBannerApi, updateBannerApi, deleteBannerApi, getBannerApi } from "../../apis/api";
+import {
+  addBannerApi,
+  updateBannerApi,
+  deleteBannerApi,
+  getBannerApi,
+} from "../../apis/api";
 import toast from "react-hot-toast";
 import { ErrorHandler } from "../../components/error/errorHandler";
-import { FaImage, FaRegFileAlt, FaRegEdit, FaTrashAlt } from "react-icons/fa";
+import { FaImage, FaRegFileAlt, FaRegEdit } from "react-icons/fa";
+import { Trash } from "lucide-react";
 
 export const BannerPage = () => {
   const [banners, setBanners] = useState([]);
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(null);
-  const [newDesktopImagePreview, setNewDesktopImagePreview] = useState(null); 
-  const [newMobileImagePreview, setNewMobileImagePreview] = useState(null); 
+  const [newDesktopImagePreview, setNewDesktopImagePreview] = useState(null);
+  const [newMobileImagePreview, setNewMobileImagePreview] = useState(null);
 
   // Fetch all banners
   const fetchBanners = async () => {
@@ -66,7 +72,7 @@ export const BannerPage = () => {
       setIsBuilderOpen(false);
       setCurrentBanner(null);
       setNewDesktopImagePreview(null);
-      setNewMobileImagePreview(null); 
+      setNewMobileImagePreview(null);
       fetchBanners();
     } catch (err) {
       ErrorHandler(err);
@@ -92,7 +98,7 @@ export const BannerPage = () => {
       };
       reader.readAsDataURL(file);
     } else {
-      setNewDesktopImagePreview(null); 
+      setNewDesktopImagePreview(null);
     }
   };
 
@@ -119,17 +125,18 @@ export const BannerPage = () => {
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Manage Banners</h2>
-        <button 
-        // onClick={() => setIsBuilderOpen(true)} 
-        onClick={() => {
-          if(banners.length >= 1) {
-            toast.error("You can only add up to 1 banners");
-            return;
-          }else{
-            setIsBuilderOpen(true);
-          }
-        }}
-        className="btn-primary w-max">
+        <button
+          // onClick={() => setIsBuilderOpen(true)}
+          onClick={() => {
+            if (banners.length >= 1) {
+              toast.error("You can only add up to 1 banners");
+              return;
+            } else {
+              setIsBuilderOpen(true);
+            }
+          }}
+          className="btn-primary w-max"
+        >
           Add Banner
         </button>
       </div>
@@ -138,21 +145,25 @@ export const BannerPage = () => {
       <table className="w-full mt-4 border-collapse">
         <thead>
           <tr className="bg-gray-100">
-            <th className="p-3">Image</th>
-            <th className="p-3">Title</th>
-            <th className="p-3">Description</th>
-            <th className="p-3">Actions</th>
+            <th style={styles.th}>Image</th>
+            <th style={styles.th}>Title</th>
+            <th style={styles.th}>Description</th>
+            <th style={styles.th}>Actions</th>
           </tr>
         </thead>
         <tbody>
           {banners.map((banner) => (
             <tr key={banner._id} className="border-b">
-              <td className="p-3">
-                <img src={`${process.env.REACT_APP_API_URL}/uploads/${banner.desktopImage}`} alt="Banner" className="w-20 h-20 object-cover" />
+              <td style={styles.td}>
+                <img
+                  src={`${process.env.REACT_APP_API_URL}/uploads/${banner.desktopImage}`}
+                  alt="Banner"
+                  className="h-20 object-cover"
+                />
               </td>
-              <td className="p-3">{banner.title}</td>
-              <td className="p-3">{banner.description}</td>
-              <td className="p-3">
+              <td style={styles.td}>{banner.title}</td>
+              <td style={styles.td}>{banner.description}</td>
+              <td style={styles.td}>
                 {/* <button
                   onClick={() => {
                     setCurrentBanner(banner);
@@ -164,9 +175,9 @@ export const BannerPage = () => {
                 </button> */}
                 <button
                   onClick={() => handleDeleteBanner(banner._id)}
-                  className="btn-danger"
+                  className="icon-primary bg-red-600 hover:bg-red-600"
                 >
-                  <FaTrashAlt />
+                  <Trash size={16} />
                 </button>
               </td>
             </tr>
@@ -189,11 +200,16 @@ export const BannerPage = () => {
             >
               &times;
             </button>
-            <h2 className="text-xl font-bold mb-4">{currentBanner ? "Edit Banner" : "Add Banner"}</h2>
+            <h2 className="text-xl font-bold mb-4">
+              {currentBanner ? "Edit Banner" : "Add Banner"}
+            </h2>
             {/* Simplified Form */}
             <div className="flex flex-col gap-4">
               <div>
-                <label htmlFor="title" className="flex items-center gap-2 text-lg font-medium">
+                <label
+                  htmlFor="title"
+                  className="flex items-center gap-2 text-lg font-medium"
+                >
                   <FaRegEdit /> Title
                 </label>
                 <input
@@ -205,7 +221,10 @@ export const BannerPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="description" className="flex items-center gap-2 text-lg font-medium">
+                <label
+                  htmlFor="description"
+                  className="flex items-center gap-2 text-lg font-medium"
+                >
                   <FaRegFileAlt /> Description
                 </label>
                 <textarea
@@ -216,13 +235,18 @@ export const BannerPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="desktopImage" className="flex items-center gap-2 text-lg font-medium">
+                <label
+                  htmlFor="desktopImage"
+                  className="flex items-center gap-2 text-lg font-medium"
+                >
                   <FaImage /> Desktop Banner Image
                 </label>
                 {/* Show current image if editing */}
                 {currentBanner && currentBanner.desktopImage && (
                   <div className="mb-2">
-                    <p className="text-sm font-medium">Current Desktop Image:</p>
+                    <p className="text-sm font-medium">
+                      Current Desktop Image:
+                    </p>
                     <img
                       src={`${process.env.REACT_APP_API_URL}/uploads/${currentBanner.desktopImage}`}
                       alt="Current Desktop Banner"
@@ -233,8 +257,14 @@ export const BannerPage = () => {
                 {/* Show new desktop image preview if selected */}
                 {newDesktopImagePreview && (
                   <div className="mb-2">
-                    <p className="text-sm font-medium">New Desktop Image Preview:</p>
-                    <img src={newDesktopImagePreview} alt="New Desktop Banner Preview" className="w-24 h-24 object-cover" />
+                    <p className="text-sm font-medium">
+                      New Desktop Image Preview:
+                    </p>
+                    <img
+                      src={newDesktopImagePreview}
+                      alt="New Desktop Banner Preview"
+                      className="w-24 h-24 object-cover"
+                    />
                   </div>
                 )}
                 <input
@@ -246,7 +276,10 @@ export const BannerPage = () => {
                 />
               </div>
               <div>
-                <label htmlFor="mobileImage" className="flex items-center gap-2 text-lg font-medium">
+                <label
+                  htmlFor="mobileImage"
+                  className="flex items-center gap-2 text-lg font-medium"
+                >
                   <FaImage /> Mobile Banner Image
                 </label>
                 {/* Show current mobile image if editing */}
@@ -263,8 +296,14 @@ export const BannerPage = () => {
                 {/* Show new mobile image preview if selected */}
                 {newMobileImagePreview && (
                   <div className="mb-2">
-                    <p className="text-sm font-medium">New Mobile Image Preview:</p>
-                    <img src={newMobileImagePreview} alt="New Mobile Banner Preview" className="w-24 h-24 object-cover" />
+                    <p className="text-sm font-medium">
+                      New Mobile Image Preview:
+                    </p>
+                    <img
+                      src={newMobileImagePreview}
+                      alt="New Mobile Banner Preview"
+                      className="w-24 h-24 object-cover"
+                    />
                   </div>
                 )}
                 <input
@@ -300,4 +339,19 @@ export const BannerPage = () => {
       )}
     </main>
   );
+};
+
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+  },
+  td: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    verticalAlign: "top",
+  },
 };

@@ -122,33 +122,31 @@ export const Clients = () => {
         ) : currentClients.length > 0 ? (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full border border-gray-300 rounded-lg overflow-hidden">
-                <thead className="bg-gray-100">
+              <table className="w-full border-collapse border mt-2">
+                <thead>
                   <tr>
-                    <th className="text-left px-4 py-2 border-b">SN</th>
-                    <th className="text-left px-4 py-2 border-b">Image</th>
-                    <th className="text-left px-4 py-2 border-b">Name</th>
-                    <th className="text-left px-4 py-2 border-b">Website</th>
-                    <th className="text-left px-4 py-2 border-b">Number</th>
-                    <th className="text-left px-4 py-2 border-b">Address</th>
+                    <th style={styles.th}>SN</th>
+                    <th style={styles.th}>Image</th>
+                    <th style={styles.th}>Name</th>
+                    <th style={styles.th}>Website</th>
+                    <th style={styles.th}>Number</th>
+                    <th style={styles.th}>Address</th>
                     <th className="text-center px-4 py-2 border-b">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentClients.map((client, index) => (
                     <tr key={client._id} className="hover:bg-gray-50">
-                      <td className="px-4 py-2 border-b">
-                        {indexOfFirstItem + index + 1}
-                      </td>
-                      <td className="px-4 py-2 border-b">
+                      <td style={styles.td}>{indexOfFirstItem + index + 1}</td>
+                      <td style={styles.td}>
                         <img
                           src={`${process.env.REACT_APP_API_URL}/uploads/${client.image}`}
                           alt={client.name}
                           className="w-16 h-16 object-cover rounded"
                         />
                       </td>
-                      <td className="px-4 py-2 border-b">{client.name}</td>
-                      <td className="px-4 py-2 border-b">
+                      <td style={styles.td}>{client.name}</td>
+                      <td style={styles.td}>
                         {client.website ? (
                           <a
                             href={client.website}
@@ -162,12 +160,8 @@ export const Clients = () => {
                           "-"
                         )}
                       </td>
-                      <td className="px-4 py-2 border-b">
-                        {client.number || "-"}
-                      </td>
-                      <td className="px-4 py-2 border-b">
-                        {client.location || "-"}
-                      </td>
+                      <td style={styles.td}>{client.number || "-"}</td>
+                      <td style={styles.td}>{client.location || "-"}</td>
                       <td className="px-4 py-2 border-b text-center">
                         <button
                           onClick={() => handleEditClick(client)}
@@ -229,4 +223,19 @@ export const Clients = () => {
       />
     </>
   );
+};
+
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+  },
+  td: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    verticalAlign: "top",
+  },
 };

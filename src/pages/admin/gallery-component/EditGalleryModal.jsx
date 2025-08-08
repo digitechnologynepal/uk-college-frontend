@@ -3,11 +3,12 @@ import Swal from "sweetalert2";
 import { updateGalleryContentApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
 import { Modal } from "../../../components/Modal";
+import toast from "react-hot-toast";
 
 const isVideoFile = (file) => file?.type?.startsWith("video/");
 
 const videoExtensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"];
-const imageExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp"];
+const imageExtensions = [".jpg", ".jpeg", ".png"];
 
 export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
   const [name, setName] = useState(item.name);
@@ -62,7 +63,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
       setIsSaving(true);
       const res = await updateGalleryContentApi(item._id, formData);
       if (res?.data?.success) {
-        Swal.fire("Success", "Content updated successfully", "success");
+        toast.success("Content updated successfully");
         onUpdated();
         onClose();
       }
@@ -137,9 +138,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className={`w-full border p-2 rounded ${
-              errors.name ? "border-red-500" : ""
-            }`}
+            className={"w-full border p-2 rounded"}
           />
           {errors.name && (
             <p className="text-red-500 text-sm mt-1">{errors.name}</p>
@@ -162,9 +161,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
             type="file"
             accept="image/*,video/*"
             onChange={handleFileChange}
-            className={`w-full border p-2 rounded ${
-              errors.file ? "border-red-500" : ""
-            }`}
+            className={"w-full border p-2 rounded"}
           />
           {errors.file && (
             <p className="text-red-500 text-sm mt-1">{errors.file}</p>
@@ -173,20 +170,20 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
 
         {(preview || item.file) && renderPreview()}
 
-        <div className="flex justify-end space-x-3 mt-4">
-          <button
-            type="button"
-            onClick={onClose}
-            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-          >
-            Cancel
-          </button>
+        <div className="flex justify-start space-x-3 mt-4">
           <button
             type="submit"
             disabled={isSaving}
-            className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            className="w-max btn-primary"
           >
             {isSaving ? "Saving..." : "Save Changes"}
+          </button>
+          <button
+            type="button"
+            onClick={onClose}
+            className="px-4 py-2 bg-gray-500 text-white rounded-sm hover:bg-gray-600"
+          >
+            Cancel
           </button>
         </div>
       </form>

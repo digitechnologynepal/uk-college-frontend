@@ -1,116 +1,156 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { manageWhyChooseUsApi, updateItemApi } from "../../../apis/api";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  title: Yup.string().required("Title is required"),
+  description: Yup.string().required("Description is required"),
+  imageUrl: Yup.mixed()
+    .test("required", "Image is required", function (value) {
+      // For new item, image must be provided
+      if (!this.parent.existingImage && !value) return false;
+      return true;
+    })
+    .test("fileType", "Unsupported file format", (value) => {
+      if (!value) return true; // skip if no file (will fail required above if needed)
+      return value && value.type && value.type.startsWith("image/");
+    }),
+});
 
 const ItemForm = ({ item, onClose, setMainData }) => {
-  const [title, setTitle] = useState(item?.title || "");
-  const [description, setDescription] = useState(item?.description || "");
-  const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState("");
 
   useEffect(() => {
     if (item) {
-      setTitle(item.title);
-      setDescription(item.description);
       setPreviewImage(
         item.imageUrl?.startsWith("http") || item.imageUrl?.startsWith("data:")
           ? item.imageUrl
           : `${process.env.REACT_APP_API_URL}${item.imageUrl}`
       );
     } else {
-      setTitle("");
-      setDescription("");
-      setImageFile(null);
       setPreviewImage("");
     }
   }, [item]);
 
-  const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please upload a valid image file");
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => setPreviewImage(reader.result);
-      reader.readAsDataURL(file);
-      setImageFile(file);
-    }
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    if (!title || !description) {
-      toast.error("Please fill in all required fields.");
-      return;
-    }
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-    if (imageFile) {
-      formData.append("imageUrl", imageFile);
-    }
-
-    try {
-      let res;
-      if (item?._id) {
-        // Edit
-        res = await updateItemApi(item._id, formData);
-      } else {
-        // Add new item to section
-        res = await manageWhyChooseUsApi(formData);
-      }
-
-      if (res.data.success) {
-        setMainData(res.data.result);
-        toast.success(
-          item ? "Item updated successfully" : "Item added successfully"
-        );
-        onClose();
-      }
-    } catch (err) {
-      toast.error("Something went wrong");
-    }
-  };
-
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4 p-4">
-      <input
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        required
-        placeholder="Title"
-        className="border p-2 rounded"
-      />
-      <textarea
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-        required
-        placeholder="Description"
-        className="border p-2 rounded"
-      />
-      <input
-        type="file"
-        accept="image/*"
-        onChange={handleImageUpload}
-        className="border p-2 rounded"
-      />
-      {previewImage && (
-        <img
-          src={previewImage}
-          alt="Preview"
-          className="h-32 w-32 object-cover mt-2 rounded shadow"
-        />
+    <Formik
+      enableReinitialize
+      initialValues={{
+        title: item?.title || "",
+        description: item?.description || "",
+        imageUrl: null,
+        existingImage: !!item?.imageUrl, // to track if existing image present for validation
+      }}
+      validationSchema={validationSchema}
+      onSubmit={async (values, { setSubmitting }) => {
+        const formData = new FormData();
+        formData.append("title", values.title);
+        formData.append("description", values.description);
+        if (values.imageUrl) {
+          formData.append("imageUrl", values.imageUrl);
+        }
+
+        try {
+          let res;
+          if (item?._id) {
+            res = await updateItemApi(item._id, formData);
+          } else {
+            res = await manageWhyChooseUsApi(formData);
+          }
+
+          if (res.data.success) {
+            setMainData(res.data.result);
+            toast.success(
+              item ? "Item updated successfully" : "Item added successfully"
+            );
+            onClose();
+          }
+        } catch (err) {
+          toast.error("Something went wrong");
+        } finally {
+          setSubmitting(false);
+        }
+      }}
+    >
+      {({ setFieldValue, isSubmitting, values, errors, touched }) => (
+        <Form className="flex flex-col gap-4 p-4">
+          <Field
+            name="title"
+            type="text"
+            placeholder="Title"
+            className="border p-2 rounded"
+          />
+          <ErrorMessage
+            name="title"
+            component="div"
+            className="text-red-600 text-sm"
+          />
+
+          <Field
+            name="description"
+            as="textarea"
+            placeholder="Description"
+            className="border p-2 rounded"
+          />
+          <ErrorMessage
+            name="description"
+            component="div"
+            className="text-red-600 text-sm"
+          />
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={(e) => {
+              const file = e.currentTarget.files[0];
+              if (file) {
+                if (!file.type.startsWith("image/")) {
+                  toast.error("Please upload a valid image file");
+                  setFieldValue("imageUrl", null);
+                  return;
+                }
+                setFieldValue("imageUrl", file);
+                const reader = new FileReader();
+                reader.onloadend = () => setPreviewImage(reader.result);
+                reader.readAsDataURL(file);
+              } else {
+                setFieldValue("imageUrl", null);
+                if (item) {
+                  setPreviewImage(
+                    item.imageUrl?.startsWith("http") ||
+                      item.imageUrl?.startsWith("data:")
+                      ? item.imageUrl
+                      : `${process.env.REACT_APP_API_URL}${item.imageUrl}`
+                  );
+                } else {
+                  setPreviewImage("");
+                }
+              }
+            }}
+            className="border p-2 rounded"
+          />
+          <ErrorMessage
+            name="imageUrl"
+            component="div"
+            className="text-red-600 text-sm"
+          />
+
+          {previewImage && (
+            <img
+              src={previewImage}
+              alt="Preview"
+              className="h-32 w-32 object-cover mt-2 rounded shadow"
+            />
+          )}
+
+          <button type="submit" className="btn-primary" disabled={isSubmitting}>
+            Save
+          </button>
+        </Form>
       )}
-      <button type="submit" className="btn-primary">
-        Save
-      </button>
-    </form>
+    </Formik>
   );
 };
 

@@ -4,25 +4,24 @@ import { Modal } from "../../../components/Modal";
 import { Button } from "../../../components/Button";
 import { createTeamMemberApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 
 export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
-  const [formData, setFormData] = useState({
-    name: "",
-    role: "",
-    email: "",
-    number: "",
-    facebook: "",
-    threadLink: "",
-    whatsapp: "",
-    insta: "",
-    linkedin: "",
-  });
-
-  const [imageFile, setImageFile] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-
   const fileInputRef = useRef(null);
+  const [formKey, setFormKey] = useState(0);
+
+useEffect(() => {
+  if (!open) {
+    setFormKey((k) => k + 1);
+    setPreviewImage(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }
+}, [open]);
+
 
   useEffect(() => {
     return () => {
@@ -32,209 +31,232 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
 
   useEffect(() => {
     if (open) {
-      resetForm();
+      setPreviewImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     }
   }, [open]);
 
-  const resetForm = () => {
-    setFormData({
-      name: "",
-      role: "",
-      email: "",
-      number: "",
-      facebook: "",
-      threadLink: "",
-      whatsapp: "",
-      insta: "",
-      linkedin: "",
-    });
-    setImageFile(null);
-
-    if (previewImage) {
-      URL.revokeObjectURL(previewImage);
-      setPreviewImage(null);
-    }
-
-    // Clear file input manually
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  };
-
-  const handleChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
-  };
-
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    if (previewImage) {
-      URL.revokeObjectURL(previewImage);
-    }
-    setImageFile(file);
-    if (file) setPreviewImage(URL.createObjectURL(file));
-  };
-
-  const validate = () => {
-    if (!formData.name.trim()) {
-      Swal.fire("Error", "Name is required", "error");
-      return false;
-    }
-    if (!formData.role.trim()) {
-      Swal.fire("Error", "Role is required", "error");
-      return false;
-    }
-    if (!imageFile) {
-      Swal.fire("Error", "Image is required", "error");
-      return false;
-    }
-
-    const phoneRegex = /^(\+)?[\d\s\-()]{7,20}$/;
-
-    if (formData.number && !phoneRegex.test(formData.number.trim())) {
-      Swal.fire("Error", "Invalid phone number format", "error");
-      return false;
-    }
-
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (formData.email && !emailRegex.test(formData.email.trim())) {
-      Swal.fire("Error", "Invalid email format", "error");
-      return false;
-    }
-
-    if (formData.whatsapp && !phoneRegex.test(formData.whatsapp.trim())) {
-      Swal.fire("Error", "Invalid WhatsApp number format", "error");
-      return false;
-    }
-
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validate()) return;
-
-    const payload = new FormData();
-    for (const key in formData) {
-      const value = formData[key];
-      if (typeof value === "string" && value.trim() !== "") {
-        payload.append(key, value.trim());
-      }
-    }
-
-    if (imageFile) payload.append("image", imageFile);
-
-    try {
-      setIsLoading(true);
-      const res = await createTeamMemberApi(payload);
-      if (res?.data?.success) {
-        Swal.fire("Success", "Team member added successfully", "success");
-        onAdded();
-        onClose();
-      }
-    } catch (err) {
-      ErrorHandler(err);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  // Validation schema with Yup
+  const TeamMemberSchema = Yup.object().shape({
+    name: Yup.string().trim().required("Name is required"),
+    role: Yup.string().trim().required("Role is required"),
+    email: Yup.string()
+      .trim()
+      .email("Invalid email format")
+      .nullable()
+      .notRequired(),
+    number: Yup.string()
+      .trim()
+      .matches(/^(\+)?[\d\s\-()]{7,20}$/, "Invalid phone number format")
+      .nullable()
+      .notRequired(),
+    facebook: Yup.string().url("Invalid URL").nullable().notRequired(),
+    threadLink: Yup.string().url("Invalid URL").nullable().notRequired(),
+    whatsapp: Yup.string()
+      .trim()
+      .matches(/^(\+)?[\d\s\-()]{7,20}$/, "Invalid WhatsApp number format")
+      .nullable()
+      .notRequired(),
+    insta: Yup.string().url("Invalid URL").nullable().notRequired(),
+    linkedin: Yup.string().url("Invalid URL").nullable().notRequired(),
+    image: Yup.mixed()
+      .required("Image is required")
+      .test(
+        "fileType",
+        "Unsupported file format",
+        (value) =>
+          !value ||
+          (value &&
+            ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes(
+              value.type
+            ))
+      ),
+  });
 
   return (
     <Modal open={open} onClose={onClose} modalTitle="Add Team Member">
       <section className="w-full max-w-3xl p-6 mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Name */}
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="name">
-              Name *
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              value={formData.name}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
-          </div>
+        <Formik
+          key={formKey}
+          initialValues={{
+            name: "",
+            role: "",
+            email: "",
+            number: "",
+            facebook: "",
+            threadLink: "",
+            whatsapp: "",
+            insta: "",
+            linkedin: "",
+            image: null,
+          }}
+          validationSchema={TeamMemberSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            const payload = new FormData();
+            Object.entries(values).forEach(([key, value]) => {
+              if (key === "image") {
+                if (value) payload.append(key, value);
+              } else if (value && value.trim() !== "") {
+                payload.append(key, value.trim());
+              }
+            });
 
-          {/* Role */}
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="role">
-              Role *
-            </label>
-            <input
-              id="role"
-              name="role"
-              type="text"
-              value={formData.role}
-              onChange={handleChange}
-              className="w-full border p-2 rounded"
-            />
-          </div>
-
-          {/* Contact & Socials */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              { label: "Email", name: "email", type: "email" },
-              { label: "Phone Number", name: "number", type: "text" },
-              { label: "Facebook", name: "facebook", type: "url" },
-              { label: "Threads Link", name: "threadLink", type: "url" },
-              { label: "WhatsApp", name: "whatsapp", type: "text" },
-              { label: "Instagram", name: "insta", type: "url" },
-              { label: "LinkedIn", name: "linkedin", type: "url" },
-            ].map(({ label, name, type }) => (
-              <div key={name}>
+            try {
+              setSubmitting(true);
+              const res = await createTeamMemberApi(payload);
+              if (res?.data?.success) {
+                Swal.fire(
+                  "Success",
+                  "Team member added successfully",
+                  "success"
+                );
+                onAdded();
+                resetForm();
+                setPreviewImage(null);
+                if (fileInputRef.current) {
+                  fileInputRef.current.value = "";
+                }
+                onClose();
+              }
+            } catch (err) {
+              ErrorHandler(err);
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ setFieldValue, isSubmitting, values }) => (
+            <Form className="space-y-4">
+              {/* Name */}
+              <div>
                 <label
                   className="block text-sm font-medium mb-1"
-                  htmlFor={name}
+                  htmlFor="name"
                 >
-                  {label}
+                  Name *
                 </label>
-                <input
-                  id={name}
-                  name={name}
-                  type={type}
-                  value={formData[name]}
-                  onChange={handleChange}
+                <Field
+                  id="name"
+                  name="name"
+                  type="text"
                   className="w-full border p-2 rounded"
                 />
+                <ErrorMessage
+                  name="name"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
               </div>
-            ))}
-          </div>
 
-          {/* Image Upload */}
-          <div>
-            <label className="block text-sm font-medium mb-1" htmlFor="image">
-              Image *
-            </label>
-            {previewImage && (
-              <img
-                src={previewImage}
-                alt="Preview"
-                className="w-32 h-32 object-cover rounded mb-2"
-              />
-            )}
-            <input
-              ref={fileInputRef}
-              id="image"
-              name="image"
-              type="file"
-              accept="image/*"
-              onChange={handleImageChange}
-              className="border p-2 rounded w-full"
-            />
-          </div>
+              {/* Role */}
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="role"
+                >
+                  Role/Position *
+                </label>
+                <Field
+                  id="role"
+                  name="role"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                />
+                <ErrorMessage
+                  name="role"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </div>
 
-          {/* Submit */}
-          <div>
-            <Button type="submit" disabled={isLoading} className="btn-primary">
-              {isLoading ? "Adding..." : "Add Team Member"}
-            </Button>
-          </div>
-        </form>
+              {/* Contact & Socials */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { label: "Email", name: "email", type: "email" },
+                  { label: "Phone Number", name: "number", type: "text" },
+                  { label: "Facebook", name: "facebook", type: "url" },
+                  { label: "Threads Link", name: "threadLink", type: "url" },
+                  { label: "WhatsApp", name: "whatsapp", type: "text" },
+                  { label: "Instagram", name: "insta", type: "url" },
+                  { label: "LinkedIn", name: "linkedin", type: "url" },
+                ].map(({ label, name, type }) => (
+                  <div key={name}>
+                    <label
+                      className="block text-sm font-medium mb-1"
+                      htmlFor={name}
+                    >
+                      {label}
+                    </label>
+                    <Field
+                      id={name}
+                      name={name}
+                      type={type}
+                      className="w-full border p-2 rounded"
+                    />
+                    <ErrorMessage
+                      name={name}
+                      component="div"
+                      className="text-red-600 text-sm mt-1"
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Image Upload */}
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="image"
+                >
+                  Image *
+                </label>
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    className="w-32 h-32 object-cover rounded mb-2"
+                  />
+                )}
+                <input
+                  ref={fileInputRef}
+                  id="image"
+                  name="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.currentTarget.files[0];
+                    setFieldValue("image", file);
+                    if (previewImage) URL.revokeObjectURL(previewImage);
+                    if (file) {
+                      setPreviewImage(URL.createObjectURL(file));
+                    } else {
+                      setPreviewImage(null);
+                    }
+                  }}
+                  className="border p-2 rounded w-full"
+                />
+                <ErrorMessage
+                  name="image"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </div>
+
+              {/* Submit */}
+              <div>
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary"
+                >
+                  {isSubmitting ? "Adding..." : "Add Team Member"}
+                </Button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </section>
     </Modal>
   );

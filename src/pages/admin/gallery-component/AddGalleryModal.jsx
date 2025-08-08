@@ -1,17 +1,25 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { Button } from "../../../components/Button";
 import { createGalleryContentApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
 import { Modal } from "../../../components/Modal";
+
 const isVideoFile = (file) => file?.type?.startsWith("video/");
 
 export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
-  const [items, setItems] = useState([
-    { name: "", date: "", file: null, preview: "" },
-  ]);
+  const initialState = [{ name: "", date: "", file: null, preview: "" }];
+  const [items, setItems] = useState(initialState);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
+
+  // Reset state whenever modal closes
+  useEffect(() => {
+    if (!open) {
+      setItems(initialState);
+      setErrors({});
+    }
+  }, [open]);
 
   const handleInputChange = (index, field, value) => {
     const updated = [...items];
@@ -46,8 +54,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
         newErrors[`file_${i}`] = "File is required";
         valid = false;
       } else if (isVideoFile(item.file) !== firstIsVideo) {
-        newErrors[`file_${i}`] =
-          "All files must be either all images or all videos";
+        newErrors[`file_${i}`] = "All files must be either images or videos";
         valid = false;
       }
     }
@@ -71,8 +78,8 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
       setIsLoading(true);
       const res = await createGalleryContentApi(formData);
       if (res?.data?.success) {
-        Swal.fire("Success", "Content uploaded successfully", "success");
-        setItems([{ name: "", date: "", file: null, preview: "" }]);
+        Swal.fire("Success!", "Content added successfully.", "success");
+        setItems(initialState);
         setErrors({});
         onUploaded();
         onClose();
@@ -97,9 +104,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                 onChange={(e) =>
                   handleInputChange(index, "name", e.target.value)
                 }
-                className={`w-full border p-2 rounded ${
-                  errors[`name_${index}`] ? "border-red-500" : ""
-                }`}
+                className={"w-full border p-2 rounded"}
               />
               {errors[`name_${index}`] && (
                 <p className="text-red-500 text-sm">
@@ -130,9 +135,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                 onChange={(e) =>
                   handleInputChange(index, "file", e.target.files[0] || null)
                 }
-                className={`w-full border p-2 rounded ${
-                  errors[`file_${index}`] ? "border-red-500" : ""
-                }`}
+                className={"w-full border p-2 rounded"}
               />
               {errors[`file_${index}`] && (
                 <p className="text-red-500 text-sm">
@@ -171,7 +174,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
           </div>
         ))}
 
-        <div className="flex justify-end">
+        <div className="flex justify-start">
           <Button
             type="submit"
             disabled={isLoading}

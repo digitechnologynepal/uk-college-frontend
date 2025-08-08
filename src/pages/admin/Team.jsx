@@ -34,23 +34,19 @@ export const Team = () => {
 
   const handleDelete = async (id) => {
     const result = await Swal.fire({
-      title: "Are you sure you want to delete this team member?",
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#003366",
+      confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete",
+      confirmButtonText: "Yes",
     });
     if (result.isConfirmed) {
       try {
         const res = await deleteTeamMemberApi(id);
         if (res?.data?.success) {
-          Swal.fire({
-            icon: "success",
-            title: "Team member deleted successfully",
-            showConfirmButton: false,
-            timer: 1500,
-          });
+          Swal.fire("Deleted!", "Team member has been deleted.", "success");
           fetchTeamMembers();
         }
       } catch (err) {

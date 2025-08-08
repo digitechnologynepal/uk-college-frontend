@@ -1,117 +1,136 @@
-import axios from "axios";
 import React, { useState } from "react";
 import Swal from "sweetalert2";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import ContentEditor from "../../../../components/content_editor/ContentEditor";
 import { createNewsApi } from "../../../../apis/api";
 
 export const AddNewsModal = ({ open, onClose, setUpdated }) => {
-  const [newsImage, setNewsImage] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [loading, setLoading] = useState(false);
 
   if (!open) return null;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!title || !description || !newsImage) {
-      Swal.fire("Error!", "Please fill in all the required fields.", "error");
-      return;
-    }
-    setLoading(true);
-
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("description", description);
-
-    if (newsImage) {
-      formData.append("newsImage", newsImage);
-    }
-
-    try {
-      const response = await createNewsApi(formData);
-
-      if (response.data.success) {
-        Swal.fire("Success!", "News added successfully.", "success");
-        setUpdated((prev) => !prev);
-        onClose();
-      }
-    } catch (error) {
-      Swal.fire("Error!", "Failed to add news.", "error");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  function handleUploadedImage(event) {
-    const file = event.target.files[0];
-    if (file) {
-      setNewsImage(file);
-      setPreviewImage(URL.createObjectURL(event.target.files[0]));
-    }
-  }
-
-  const handleModelChange = (data) => {
-    setDescription(data);
-  };
+  const NewsSchema = Yup.object().shape({
+    newsImage: Yup.mixed().required("News Image is required"),
+    title: Yup.string().required("News Title is required"),
+    description: Yup.string()
+      .required("News Description is required")
+      .test(
+        "not-empty-html",
+        "News Description is required",
+        (value) => value && value.replace(/<(.|\n)*?>/g, "").trim().length > 0
+      ),
+  });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg lg:w-[60%] md:w-[80%] w-[95%]">
         <h2 className="text-xl font-bold mb-4">Add News</h2>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium">News Image</label>
-            <input
-              type="file"
-              onChange={handleUploadedImage}
-              required
-              className="w-full border rounded p-2"
-            />
-            {previewImage && (
-              <>
-                <p className="mt-2">Preview:</p>
-                <img src={previewImage} alt="Preview" className="mt-2 w-20" />
-              </>
-            )}
-          </div>
-          <div>
-            <label className="block text-sm font-medium">News Title</label>
-            <input
-              type="text"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              required
-              className="w-full border rounded p-2"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium">
-              News Description
-            </label>
-            <ContentEditor
-              model={description}
-              handleModelChange={handleModelChange}
-            />
-          </div>
-          <div className="flex justify-end space-x-2">
-            <button
-              type="button"
-              onClick={onClose}
-              className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
-            >
-              {loading ? "Adding..." : "Add News"}
-            </button>
-          </div>
-        </form>
+        <Formik
+          initialValues={{
+            newsImage: null,
+            title: "",
+            description: "",
+          }}
+          validationSchema={NewsSchema}
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
+            const formData = new FormData();
+            formData.append("title", values.title);
+            formData.append("description", values.description);
+            formData.append("newsImage", values.newsImage);
+
+            try {
+              const response = await createNewsApi(formData);
+              if (response.data.success) {
+                Swal.fire("Success!", "News added successfully.", "success");
+                setUpdated((prev) => !prev);
+                resetForm();
+                setPreviewImage(null);
+                onClose();
+              }
+            } catch (error) {
+              Swal.fire("Error!", "Failed to add news.", "error");
+            } finally {
+              setSubmitting(false);
+            }
+          }}
+        >
+          {({ setFieldValue, isSubmitting, values }) => (
+            <Form className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium">News Image</label>
+                <input
+                  name="newsImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => {
+                    const file = event.currentTarget.files[0];
+                    setFieldValue("newsImage", file);
+                    if (file) setPreviewImage(URL.createObjectURL(file));
+                    else setPreviewImage(null);
+                  }}
+                  className="w-full border rounded p-2"
+                />
+                <ErrorMessage
+                  name="newsImage"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+                {previewImage && (
+                  <>
+                    <p className="mt-2">Preview:</p>
+                    <img src={previewImage} alt="Preview" className="mt-2 w-20" />
+                  </>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">News Title</label>
+                <Field
+                  name="title"
+                  type="text"
+                  className="w-full border rounded p-2"
+                />
+                <ErrorMessage
+                  name="title"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium">News Description</label>
+                <Field name="description">
+                  {({ field, form }) => (
+                    <ContentEditor
+                      model={field.value}
+                      handleModelChange={(val) => form.setFieldValue("description", val)}
+                    />
+                  )}
+                </Field>
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </div>
+              <div className="flex justify-start space-x-2">
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="btn-primary"
+                >
+                  {isSubmitting ? "Adding..." : "Add News"}
+                </button>
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+                >
+                  Cancel
+                </button>
+              </div>
+            </Form>
+          )}
+        </Formik>
       </div>
     </div>
   );

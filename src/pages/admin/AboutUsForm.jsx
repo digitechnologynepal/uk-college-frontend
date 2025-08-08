@@ -7,6 +7,7 @@ import Title from "../../components/admin-components/Title";
 import { Button } from "../../components/Button";
 import { ErrorHandler } from "../../components/error/errorHandler";
 import ContentEditor from "../../components/content_editor/ContentEditor";
+import { Trash } from "lucide-react";
 
 const AboutUsForm = () => {
   const [images, setImages] = useState([]); // Store selected file objects for new images
@@ -147,9 +148,9 @@ const AboutUsForm = () => {
                         />
                         <button
                           onClick={() => handleRemoveImage(index)}
-                          className="absolute top-1 right-1 bg-red-500 text-white px-2 py-1 rounded-full text-xs"
+                          className="absolute top-1 right-1 icon-primary bg-red-600 hover:bg-red-600"
                         >
-                          Remove
+                          <Trash size={16} />
                         </button>
                       </div>
                     ))}

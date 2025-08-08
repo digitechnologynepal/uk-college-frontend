@@ -34,7 +34,7 @@ export const AdminNews = () => {
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
+      confirmButtonText: "Yes",
     }).then((result) => {
       if (result.isConfirmed) {
         deleteNewsApi(id)
@@ -54,63 +54,66 @@ export const AdminNews = () => {
   return (
     <>
       <main className="p-4">
-        <div className="flex flex-col gap-2">
+        <div className="flex justify-between mb-10">
           <Title title="All News" />
-          <p>All News will appear here.</p>
-        </div>
-        <div className="w-full flex items-center justify-end">
           <button onClick={() => setShowAddModal(true)} className="btn-primary">
             Add News
           </button>
         </div>
-        <div className="relative overflow-auto mt-10">
-          <table className="w-full text-sm text-left text-neutral-700 bg-white">
-            <thead className="bg-neutral-100 text-sm text-neutral-700 uppercase sticky top-0">
-              <tr style={{ backgroundColor: "#f2f2f2" }}>
-                <th style={styles.th}>S.N</th>
-                <th style={styles.th}>News Image</th>
-                <th style={styles.th}>News Title</th>
-                <th style={styles.th}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {news?.map((news, index) => (
-                <tr
-                  key={news?._id || index}
-                  className="border-b hover:bg-white"
-                >
-                  <td style={styles.td}>{index + 1}</td>
-                  <td style={styles.td}>
-                    <img
-                      className="w-20"
-                      src={`${process.env.REACT_APP_API_URL}/uploads/${news?.image}`}
-                      alt="News Image"
-                    />
-                  </td>
-                  <td style={styles.td}>{news?.title}</td>
-                  <td style={styles.td}>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          setSelectedNews(news);
-                          setShowEditModal(true);
-                        }}
-                        className="icon-primary bg-blue-600 hover:bg-blue-600"
-                      >
-                        <Edit size={16} />
-                      </button>
-                      <button
-                        onClick={() => deleteNews(news?._id)}
-                        className="icon-primary bg-red-600 hover:bg-red-600"
-                      >
-                        <Trash size={16} />
-                      </button>
-                    </div>
-                  </td>
+        <div className="overflow-x-auto">
+          {news.length > 0 ? (
+            <table className="w-full border-collapse border mt-2">
+              <thead>
+                <tr style={{ backgroundColor: "#f2f2f2" }}>
+                  <th style={styles.th}>S.N</th>
+                  <th style={styles.th}>News Image</th>
+                  <th style={styles.th}>News Title</th>
+                  <th style={styles.th}>Action</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {news.map((newsItem, index) => (
+                  <tr
+                    key={newsItem._id || index}
+                    className="border-b hover:bg-white"
+                  >
+                    <td style={styles.td}>{index + 1}</td>
+                    <td style={styles.td}>
+                      <img
+                        className="w-20"
+                        src={`${process.env.REACT_APP_API_URL}/uploads/${newsItem.image}`}
+                        alt="News Image"
+                      />
+                    </td>
+                    <td style={styles.td}>{newsItem.title}</td>
+                    <td style={styles.td}>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => {
+                            setSelectedNews(newsItem);
+                            setShowEditModal(true);
+                          }}
+                          className="icon-primary bg-blue-600 hover:bg-blue-600"
+                        >
+                          <Edit size={16} />
+                        </button>
+                        <button
+                          onClick={() => deleteNews(newsItem._id)}
+                          className="icon-primary bg-red-600 hover:bg-red-600"
+                        >
+                          <Trash size={16} />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          ) : (
+            <p className="text-gray-500 text-center mt-10">
+              No news added yet.
+            </p>
+          )}
         </div>
       </main>
       <AddNewsModal

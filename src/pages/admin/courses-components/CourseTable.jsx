@@ -27,14 +27,8 @@ const CourseTable = ({ data, onDelete }) => {
   };
 
   return (
-    <div style={{ overflowX: "auto" }}>
-      <table
-        style={{
-          borderCollapse: "collapse",
-          width: "100%",
-          minWidth: "800px",
-        }}
-      >
+    <div className="overflow-x-auto">
+      <table className="w-full border-collapse border mt-2">
         <thead>
           <tr style={{ backgroundColor: "#f2f2f2" }}>
             <th style={styles.th}>S.N</th>

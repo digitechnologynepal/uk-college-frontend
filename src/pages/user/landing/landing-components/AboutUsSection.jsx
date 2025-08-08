@@ -60,7 +60,7 @@ export const AboutUsSection = () => {
   }
 
   return (
-    <section className="relative w-full overflow-hidden py-32">
+    <section className="relative w-full overflow-hidden py-20">
       <div className="max-w-6xl mx-auto px-4 relative z-10">
         {/* Section Header */}
         <motion.div

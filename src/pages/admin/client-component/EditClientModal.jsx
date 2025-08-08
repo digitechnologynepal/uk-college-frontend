@@ -10,21 +10,24 @@ import { ErrorHandler } from "../../../components/error/errorHandler";
 const phoneRegex = /^(\+)?[\d\s\-()]{7,20}$/;
 
 const clientSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
+  name: Yup.string().trim().required("Name is required"),
   website: Yup.string()
-    .url("Invalid URL")
-    .nullable()
-    .transform((value) => (value === "" ? null : value)),
+    .trim()
+    .url("Must be a valid URL starting with http:// or https://")
+    .matches(/^$|^https?:\/\//, "Website must start with http:// or https://"),
   number: Yup.string()
-    .nullable()
-    .transform((value) => (value === "" ? null : value))
-    .matches(phoneRegex, "Invalid phone number format"),
-  location: Yup.string().nullable(),
+    .trim()
+    .matches(/^$|^(\+)?[\d\s\-()]{7,20}$/, "Invalid phone number format"),
+  location: Yup.string().trim(),
+  image: Yup.mixed().when("existingImage", {
+    is: (val) => !val, // if no existing image then required
+    then: (schema) => schema.required("Image is required"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
 });
 
 export const EditClientModal = ({ open, onClose, client, onUpdated }) => {
   const [previewImage, setPreviewImage] = useState(null);
-  const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -34,26 +37,21 @@ export const EditClientModal = ({ open, onClose, client, onUpdated }) => {
           ? `${process.env.REACT_APP_API_URL}/uploads/${client.image}`
           : null
       );
-      setImageFile(null);
     }
   }, [client]);
 
-  const handleImageChange = (e) => {
-    const file = e.target.files[0];
-    setImageFile(file);
-    if (file) {
-      setPreviewImage(URL.createObjectURL(file));
-    }
-  };
-
   const handleSubmit = async (values, { resetForm }) => {
     const formData = new FormData();
-    for (const key in values) {
-      formData.append(key, values[key] ?? "");
-    }
 
-    if (imageFile) {
-      formData.append("image", imageFile);
+    // append normal fields
+    formData.append("name", values.name);
+    formData.append("website", values.website || "");
+    formData.append("number", values.number || "");
+    formData.append("location", values.location || "");
+
+    // append file only if selected
+    if (values.image) {
+      formData.append("image", values.image);
     }
 
     try {
@@ -82,11 +80,13 @@ export const EditClientModal = ({ open, onClose, client, onUpdated }) => {
             website: client?.website || "",
             number: client?.number || "",
             location: client?.location || "",
+            existingImage: !!client?.image,
+            image: null,
           }}
           validationSchema={clientSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, setFieldValue, isSubmitting }) => (
             <Form className="space-y-4">
               {/* Name */}
               <div>
@@ -178,7 +178,7 @@ export const EditClientModal = ({ open, onClose, client, onUpdated }) => {
                   className="block text-sm font-medium mb-1"
                   htmlFor="image"
                 >
-                  Image
+                  Image *
                 </label>
                 {previewImage && (
                   <img
@@ -192,9 +192,20 @@ export const EditClientModal = ({ open, onClose, client, onUpdated }) => {
                   name="image"
                   type="file"
                   accept="image/*"
-                  onChange={handleImageChange}
+                  onChange={(e) => {
+                    const file = e.target.files[0];
+                    setFieldValue("image", file);
+                    if (file) {
+                      setPreviewImage(URL.createObjectURL(file));
+                    }
+                  }}
                   className="border p-2 rounded w-full"
                 />
+                {errors.image && touched.image && (
+                  <div className="text-red-600 text-sm mt-1">
+                    {errors.image}
+                  </div>
+                )}
               </div>
 
               {/* Submit */}

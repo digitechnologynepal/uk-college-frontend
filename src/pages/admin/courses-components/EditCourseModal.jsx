@@ -183,7 +183,7 @@ export const EditCourseModal = ({
               <Form className="grid grid-cols-2 gap-6">
                 {/* Title */}
                 <div>
-                  <label className="font-medium text-lg">Course Title</label>
+                  <label className="font-medium text-lg">Course Title *</label>
                   <Field
                     type="text"
                     name="title"
@@ -199,7 +199,7 @@ export const EditCourseModal = ({
                 {/* Level Multi-Select */}
                 <div className="col-span-2">
                   <label className="font-medium text-lg mb-2 block">
-                    Level
+                    Level *
                   </label>
                   <div className="flex flex-col space-y-2">
                     {levelOptions.map((lvl) => (
@@ -248,7 +248,7 @@ export const EditCourseModal = ({
 
                     {/* Weeks */}
                     <div className="mb-2">
-                      <label className="block font-medium text-sm">Weeks</label>
+                      <label className="block font-medium text-sm">Weeks *</label>
                       <Field
                         type="number"
                         name={`durationWeeks.${mod}`}
@@ -265,7 +265,7 @@ export const EditCourseModal = ({
 
                     {/* Hours */}
                     <div className="mb-2">
-                      <label className="block font-medium text-sm">Hours</label>
+                      <label className="block font-medium text-sm">Hours *</label>
                       <Field
                         type="text"
                         name={`durationHours.${mod}`}
@@ -283,7 +283,7 @@ export const EditCourseModal = ({
                     {/* Module Description */}
                     <div>
                       <label className="block font-medium text-sm">
-                        Description
+                        Description *
                       </label>
                       <Field
                         as="textarea"
@@ -297,7 +297,7 @@ export const EditCourseModal = ({
 
                 {/* Description */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg">Description</label>
+                  <label className="font-medium text-lg">Description *</label>
                   <ContentEditor
                     model={description}
                     handleModelChange={setDescription}
@@ -306,7 +306,7 @@ export const EditCourseModal = ({
 
                 {/* Image Upload */}
                 <div className="col-span-2">
-                  <label className="font-medium text-lg">Course Image</label>
+                  <label className="font-medium text-lg">Course Image *</label>
                   {previewImage && (
                     <div className="flex items-center gap-4 mb-2">
                       <img
@@ -346,7 +346,7 @@ export const EditCourseModal = ({
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-md w-full col-span-2"
+                  className="btn-primary w-max"
                 >
                   {isSubmitting ? "Updating..." : "Update Course"}
                 </button>

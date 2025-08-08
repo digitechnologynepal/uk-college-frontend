@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Formik, Form, Field } from "formik";
 import toast from "react-hot-toast";
-import { FaTrash } from "react-icons/fa";
+import Swal from "sweetalert2";
 import {
   getAllGroupsApi,
   manageGroupApi,
@@ -11,6 +11,7 @@ import { ErrorHandler } from "../../components/error/errorHandler";
 import Title from "../../components/admin-components/Title";
 import Modal from "./application-component/Modal";
 import { GroupItemForm } from "../admin/group-component/GroupItemForm";
+import { Edit, Trash } from "lucide-react";
 
 export const Group = () => {
   const [mainData, setMainData] = useState({
@@ -73,19 +74,28 @@ export const Group = () => {
     }
   };
 
-  const handleDeleteItem = async (id) => {
-    try {
-      const res = await deleteGroupItemApi(id);
-      if (res.data.success) {
-        setMainData((prev) => ({
-          ...prev,
-          items: prev.items.filter((item) => item._id !== id),
-        }));
-        toast.success("Item deleted successfully");
+  const handleDeleteItem = async (groupId, itemId) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const res = await deleteGroupItemApi(groupId, itemId);
+          if (res.data.success) {
+            Swal.fire("Deleted!", "Group member has been deleted.", "success");
+            fetchGroups();
+          }
+        } catch (error) {
+          ErrorHandler(error);
+        }
       }
-    } catch (error) {
-      ErrorHandler(error);
-    }
+    });
   };
 
   return (
@@ -127,11 +137,11 @@ export const Group = () => {
                 <img
                   src={previewMainImage}
                   alt="Preview"
-                  className="h-32 w-56 object-cover mt-2"
+                  className="h-20 object-cover my-5"
                 />
               )}
             </div>
-            <button type="submit" className="btn-primary">
+            <button type="submit" className="btn-primary w-max">
               Save
             </button>
           </Form>
@@ -154,30 +164,39 @@ export const Group = () => {
           <table className="w-full border-collapse border mt-2">
             <thead>
               <tr>
-                <th className="border p-2">Name</th>
-                <th className="border p-2">Image</th>
-                <th className="border p-2">Actions</th>
+                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Image</th>
+                <th style={styles.th}>Actions</th>
               </tr>
             </thead>
             <tbody>
               {mainData.items.map((item) => (
                 <tr key={item._id}>
-                  <td className="border p-2">{item.name}</td>
-                  <td className="border p-2">
+                  <td style={styles.td}>{item.name}</td>
+                  <td style={styles.td}>
                     {item.image && (
                       <img
                         src={`${process.env.REACT_APP_API_URL}${item.image}`}
                         alt={item.name}
-                        className="h-16 w-32 object-cover"
+                        className="h-20 object-cover"
                       />
                     )}
                   </td>
-                  <td className="border p-2">
+                  <td style={styles.td}>
                     <button
-                      className="text-red-500 hover:text-red-700"
+                      className="icon-primary bg-blue-600 hover:bg-blue-700 mr-2"
+                      onClick={() => {
+                        setEditItem(item);
+                        setModalOpen(true);
+                      }}
+                    >
+                      <Edit size={16} />
+                    </button>
+                    <button
+                      className="icon-primary bg-red-600 hover:bg-red-700"
                       onClick={() => handleDeleteItem(item._id)}
                     >
-                      <FaTrash size={20} />
+                      <Trash size={16} />
                     </button>
                   </td>
                 </tr>
@@ -208,4 +227,19 @@ export const Group = () => {
       )}
     </main>
   );
+};
+
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+  },
+  td: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    verticalAlign: "top",
+  },
 };
