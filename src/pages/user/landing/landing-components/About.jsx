@@ -3,7 +3,7 @@ import { getMottoApi } from "../../../../apis/api";
 import { Group } from "./SoftEd";
 import { TeamMembers } from "../TeamMembers";
 import { TbTargetArrow } from "react-icons/tb";
-import { FileText } from "lucide-react";
+import { ArrowUp, FileText, X } from "lucide-react";
 
 const SkeletonAboutSection = () => (
   <section className="py-24 max-w-6xl mx-auto w-full animate-pulse">
@@ -81,9 +81,18 @@ export const About = () => {
   const [error, setError] = useState(null);
   const [team, setTeam] = useState([]);
   const [mottoData, setMottoData] = useState(null);
-  const certificate = data?.certificate
-    ? `${process.env.REACT_APP_API_URL}/uploads/${data.certificate}`
-    : null;
+  const [certificateUrl, setCertificateUrl] = useState(null);
+  const [tooltipVisible, setTooltipVisible] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 1024);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
 
   useEffect(() => {
     const fetchMottoData = async () => {
@@ -129,13 +138,26 @@ export const About = () => {
       .catch((err) => setError(err.message));
   }, []);
 
+  useEffect(() => {
+    fetch(`${process.env.REACT_APP_API_URL}/api/admin/institutionprofile/get`)
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.success && json.result?.certificate) {
+          setCertificateUrl(
+            `${process.env.REACT_APP_API_URL}/uploads/${json.result.certificate}`
+          );
+        }
+      })
+      .catch((err) => console.error("Error fetching certificate:", err));
+  }, []);
+
   if (loading) return <SkeletonAboutSection />;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (
     <section className="w-full flex flex-col items-center">
       {/* Main Content */}
-      <div className="pt-32 pb-20 px-4 md:px-[6vw] xl:px-[8vw]">
+      <div className="pt-32 pb-20 px-6 md:px-[6vw] xl:px-[8vw]">
         <div className="flex flex-col max-w-6xl mx-auto">
           <section className="pb-24">
             <div>
@@ -146,8 +168,8 @@ export const About = () => {
 
             {/* Image + Text Grid */}
             <div className="flex flex-col lg:flex-row items-start">
-              {/* Left - Description with background */}
-              <div className="p-8 mr-0 lg:mr-10 rounded-xl lg:w-2/3 flex items-center">
+              {/* Left - Description */}
+              <div className="py-8 lg:p-8 mr-0 lg:mr-10 rounded-xl lg:w-2/3 flex items-center">
                 <div
                   className="text-base sm:text-lg lg:text-xl text-[#262a2b] leading-relaxed text-justify"
                   dangerouslySetInnerHTML={{ __html: data?.description || "" }}
@@ -174,36 +196,42 @@ export const About = () => {
           ) : (
             <section className="w-full pb-24">
               <div className="max-w-6xl text-center">
-                <p className="mb-10 text-center text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
+                <p className="mb-10 text-left text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
                   {mottoData.motoTitle}
                 </p>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Mission */}
                   <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-                    <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#204081]/10">
-                      <TbTargetArrow size={40} className="text-[#204081]" />
+                    <div className="flex items-center justify-center mb-5 space-x-3 lg:block lg:mx-auto">
+                      <div className="w-10 h-10 lg:w-16 lg:h-16 flex items-center justify-center rounded-full bg-[#204081]/10 lg:mx-auto">
+                        <TbTargetArrow className="text-[#204081] w-2/3 h-2/3" />
+                      </div>
+
+                      <h3 className="text-xl lg:text-2xl font-bold text-[#204081] mb-0 lg:mt-4 lg:mb-3">
+                        Our Mission
+                      </h3>
                     </div>
-                    <h3 className="text-2xl font-bold text-[#204081] mb-3">
-                      Our Mission
-                    </h3>
                     {mottoData?.mission?.text && (
-                      <p className="px-5 text-gray-700 leading-relaxed text-justify text-lg">
+                      <p className="px-0 lg:px-5 text-gray-700 leading-relaxed text-justify text-md lg:text-lg">
                         {mottoData.mission.text}
                       </p>
                     )}
                   </div>
 
                   {/* Vision */}
-                  <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
-                    <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#d91b1a]/10">
-                      <TbTargetArrow size={40} className="text-[#d91b1a]" />
+                   <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+                    <div className="flex items-center justify-center mb-5 space-x-3 lg:block lg:mx-auto">
+                      <div className="w-10 h-10 lg:w-16 lg:h-16 flex items-center justify-center rounded-full bg-[#d91b1a]/10 lg:mx-auto">
+                        <TbTargetArrow className="text-[#d91b1a] w-2/3 h-2/3" />
+                      </div>
+
+                      <h3 className="text-xl lg:text-2xl font-bold text-[#d91b1a] mb-0 lg:mt-4 lg:mb-3">
+                        Our Vision
+                      </h3>
                     </div>
-                    <h3 className="text-2xl font-bold text-[#d91b1a] mb-3">
-                      Our Vision
-                    </h3>
                     {mottoData?.vision?.text && (
-                      <p className="px-5 text-gray-700 leading-relaxed text-justify text-lg">
+                      <p className="px-0 lg:px-5 text-gray-700 leading-relaxed text-justify text-md lg:text-lg">
                         {mottoData.vision.text}
                       </p>
                     )}
@@ -217,12 +245,74 @@ export const About = () => {
           <TeamMembers teamMembers={team} />
         </div>
       </div>
-      <button
-        aria-label="Cerficate of Authorization"
-        className="fixed bottom-6 right-6 z-50 flex items-center justify-center w-20 h-20 rounded-full bg-[#2d5ab4] hover:bg-[#3d69c3] text-white drop-shadow-xl transition-colors"
-      >
-        <FileText size={35} />
-      </button>
+
+      {certificateUrl && (
+        <div
+          className="fixed bottom-6 right-4 z-50 flex flex-col items-end group"
+          aria-label="Certificate of Authorization Tooltip and Button"
+        >
+          {/* Tooltip + Close button for mobile/tablet */}
+          {(tooltipVisible || !isMobile) && (
+            <div
+              className={`
+          relative mb-3 w-max max-w-xs text-right
+          ${
+            isMobile
+              ? "opacity-90 translate-y-0 transition-all duration-300"
+              : "lg:opacity-0 lg:translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300"
+          }
+        `}
+              style={{ pointerEvents: "none" }}
+            >
+              <span className="bg-[#02153b] text-white text-sm px-3 py-1 rounded-md shadow-lg whitespace-nowrap inline-block">
+                View Sample Certificate <br />
+                of Authorization
+              </span>
+              {/* Tooltip Arrow */}
+              <span
+                className="absolute right-8 -bottom-1 w-0 h-0
+          border-l-[6px] border-r-[6px] border-t-[6px]
+          border-l-transparent border-r-transparent border-t-[#02153b]"
+              ></span>
+
+              {/* Close button - only on mobile/tablet */}
+              {isMobile && (
+                <button
+                  aria-label="Close tooltip"
+                  onClick={() => setTooltipVisible(false)}
+                  className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 bg-[#204081] text-white rounded-full w-5 h-5 flex items-center justify-center text-xs font-bold border border-white"
+                  style={{ pointerEvents: "auto" }}
+                  type="button"
+                >
+                  <X size={18} />
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Show arrow-up button when tooltip hidden on mobile/tablet */}
+          {!tooltipVisible && isMobile && (
+            <button
+              aria-label="Show tooltip"
+              onClick={() => setTooltipVisible(true)}
+              className="bg-[#204081] text-white rounded-full w-6 h-6 flex items-center justify-center text-lg border border-white"
+              type="button"
+              style={{ pointerEvents: "auto" }}
+            >
+              <ArrowUp size={18} />
+            </button>
+          )}
+
+          {/* Certificate Button */}
+          <button
+            aria-label="Certificate of Authorization"
+            className="flex items-center justify-center w-16 h-16 lg:w-20 lg:h-20 rounded-full bg-[#2d5ab4] hover:bg-[#3d69c3] text-white drop-shadow-xl transition-colors"
+            onClick={() => window.open(certificateUrl, "_blank")}
+          >
+            <FileText size={32} />
+          </button>
+        </div>
+      )}
     </section>
   );
 };

@@ -57,7 +57,7 @@ export const TeamMembers = () => {
   if (teamMembers.length === 0) return null;
 
   return (
-    <section className="pb-24 px-4">
+    <section className="py-24 px-4">
       <div className="max-w-7xl mx-auto text-center mb-14">
         <p className="text-center text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
           Meet Our Team

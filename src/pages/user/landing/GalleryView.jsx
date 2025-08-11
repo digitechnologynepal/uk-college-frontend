@@ -123,7 +123,7 @@ export const GalleryView = () => {
           </div>
         ) : (
           <div className="flex flex-col">
-            <p className="text-left text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
+            <p className="text-left text-2xl lg:text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
               Gallery
               <span className="inline-flex px-3 py-1 items-center justify-center text-lg font-bold bg-[#e7efff] text-[#204081] shadow-sm rounded-full">
                 {galleryList.length}

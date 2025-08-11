@@ -63,7 +63,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
       setIsSaving(true);
       const res = await updateGalleryContentApi(item._id, formData);
       if (res?.data?.success) {
-        toast.success("Content updated successfully");
+        Swal.fire("Success!", "Content updated successfully.", "success");
         onUpdated();
         onClose();
       }

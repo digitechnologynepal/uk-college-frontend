@@ -19,26 +19,26 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
   }, [item]);
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().required("Name is required"),
-    image: Yup.mixed()
-      .test("required", "Image is required", (value) => {
-        // On create, image is required
-        if (!item?._id) {
-          return value instanceof File;
-        }
-        // On update, image is optional
-        return true;
-      })
-      .test("fileType", "Unsupported file format", (value) => {
-        if (!value) return true;
-        return ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
+    image: Yup.mixed().when("existingImage", {
+        is: (val) => !val, // if no existing image then required
+        then: (schema) => schema.required("Image is required"),
+        otherwise: (schema) => schema.notRequired(),
       }),
+
+    website: Yup.string()
+      .trim()
+      .url("Must be a valid URL starting with http:// or https://")
+      .matches(
+        /^$|^https?:\/\//,
+        "Website must start with http:// or https://"
+      ),
   });
 
   return (
     <Formik
       initialValues={{
-        name: item?.name || "",
+        website: item?.website || "",
+        existingImage: !!item?.image,
         image: null,
       }}
       enableReinitialize
@@ -51,8 +51,8 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
         }
         try {
           const formData = new FormData();
-          formData.append("name", values.name);
-          if (values.image) {
+          formData.append("website", values.website?.trim() || "");
+          if (values.image instanceof File) {
             formData.append("image", values.image);
           }
 
@@ -80,13 +80,13 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
       {({ setFieldValue, isSubmitting, values }) => (
         <Form className="flex flex-col gap-4 p-4">
           <Field
-            name="name"
+            name="website"
             type="text"
-            placeholder="Item name"
+            placeholder="Website url"
             className="border p-2 rounded"
           />
           <ErrorMessage
-            name="name"
+            name="website"
             component="div"
             className="text-red-600 text-sm"
           />
@@ -101,7 +101,13 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
                 setPreviewImage(URL.createObjectURL(file));
               } else {
                 setFieldValue("image", null);
-                setPreviewImage(item?.image || "");
+                setPreviewImage(
+                  item?.image
+                    ? item.image.startsWith("http")
+                      ? item.image
+                      : `${process.env.REACT_APP_API_URL}${item.image}`
+                    : null
+                );
               }
             }}
             className="border p-2 rounded"

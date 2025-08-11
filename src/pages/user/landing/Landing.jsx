@@ -43,7 +43,7 @@ export const Landing = ({ institutionProfile }) => {
     <>
       <div>
         {loading ? (
-          <div className="w-full h-64 animate-pulse rounded-lg"></div>
+          <div className="w-full h-[90vh] animate-pulse rounded-lg bg-gray-200"></div>
         ) : (
           heroImage && (
             <img

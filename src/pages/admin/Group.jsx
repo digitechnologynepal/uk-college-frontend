@@ -17,6 +17,7 @@ export const Group = () => {
   const [mainData, setMainData] = useState({
     mainTitle: "",
     mainDescription: "",
+    mainWebsite: "",
     mainImage: "",
     items: [],
   });
@@ -60,6 +61,7 @@ export const Group = () => {
       const formData = new FormData();
       formData.append("mainTitle", values.mainTitle);
       formData.append("mainDescription", values.mainDescription);
+      formData.append("mainWebsite", values.mainWebsite);
       if (values.mainImage instanceof File) {
         formData.append("mainImage", values.mainImage);
       }
@@ -118,7 +120,7 @@ export const Group = () => {
               />
             </div>
             <div>
-              <label>Main Description</label>
+              <label>Main Description (SoftEd)</label>
               <Field
                 as="textarea"
                 name="mainDescription"
@@ -127,7 +129,16 @@ export const Group = () => {
               />
             </div>
             <div>
-              <label>Main Image</label>
+              <label>Main Website Url (SoftEd)</label>
+              <Field
+                type="text"
+                name="mainWebsite"
+                className="border p-2 rounded w-full"
+                required
+              />
+            </div>
+            <div>
+              <label>Main Image (SoftEd)</label>
               <input
                 type="file"
                 onChange={(e) => handleMainImageUpload(e, setFieldValue)}
@@ -164,7 +175,7 @@ export const Group = () => {
           <table className="w-full border-collapse border mt-2">
             <thead>
               <tr>
-                <th style={styles.th}>Name</th>
+                <th style={styles.th}>Website Url</th>
                 <th style={styles.th}>Image</th>
                 <th style={styles.th}>Actions</th>
               </tr>
@@ -172,7 +183,15 @@ export const Group = () => {
             <tbody>
               {mainData.items.map((item) => (
                 <tr key={item._id}>
-                  <td style={styles.td}>{item.name}</td>
+                  <td style={styles.td}>
+                    <a
+                      href={item.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {item.website}
+                    </a>
+                  </td>
                   <td style={styles.td}>
                     {item.image && (
                       <img

@@ -37,18 +37,18 @@ const ClientCard = ({ client, index }) => {
       title={client.website ? `${client.name} - Visit Website` : client.name}
     >
       {/* Image Section */}
-      <div className="relative overflow-hidden">
+      <div className="m-5 relative overflow-hidden flex items-center justify-center">
         <img
           src={`${process.env.REACT_APP_API_URL}/uploads/${client.image}`}
           alt={client.name}
           loading="lazy"
-          className="w-full h-60 object-contain sm:h-64 md:h-56 lg:h-52 xl:h-48 bg-white"
+          className="h-20 object-contain lg:h-52 bg-white"
         />
-        <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+        <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
       </div>
 
       {/* Info Section */}
-      <div className="flex flex-col justify-between flex-grow px-5 py-4 text-center">
+      <div className="flex flex-col justify-between flex-grow px-5 pb-4 text-center">
         <h3 className="text-base font-semibold text-[#262a2b] my-2">
           {client.name}
         </h3>
@@ -124,7 +124,7 @@ export const ClientsView = () => {
 
   return (
     <section className="py-28 px-4">
-      <div className="max-w-7xl mx-auto text-center mb-10">
+      <div className="max-w-7xl mx-auto text-center">
         {isLoading ? (
           <div className="animate-pulse">
             <div className="h-8 mt-[1.78rem] sm:h-10 md:h-12 w-64 sm:w-80 md:w-96 mx-auto bg-gray-200 rounded mb-4" />
@@ -132,10 +132,10 @@ export const ClientsView = () => {
           </div>
         ) : (
           <>
-            <h2 className="text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
+            <p className="text-2xl lg:text-4xl mt-2 font-bold text-[#262a2b]">
               Our Clients
-            </h2>
-            <p className="text-gray-500 text-xl mt-2">
+            </p>
+            <p className="text-gray-500 text-base mt-2">
               Trusted partners we proudly work with
             </p>
           </>
@@ -143,7 +143,7 @@ export const ClientsView = () => {
       </div>
 
       {/* Search Bar */}
-      <div className="max-w-xl mx-auto mb-10 relative">
+      <div className="max-w-xl mx-4 lg:mx-auto md:mx-auto my-7 relative">
         {isLoading ? (
           <div className="animate-pulse h-12 w-full rounded-full bg-gray-200" />
         ) : (
@@ -160,7 +160,7 @@ export const ClientsView = () => {
         )}
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {isLoading ? (
           Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
         ) : filteredClients.length > 0 ? (

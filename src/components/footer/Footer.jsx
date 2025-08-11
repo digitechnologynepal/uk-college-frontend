@@ -189,9 +189,13 @@ export const Footer = () => {
             )}
 
             {data?.number && (
-              <li className="font-medium flex items-center gap-2">
+              <a
+                className="font-medium flex items-center gap-2 hover:underline underline-offset-4"
+                href={`tel:${data.number}`}
+              
+              >
                 <Phone size={17} /> {data.number}
-              </li>
+              </a>
             )}
           </ul>
         </div>

@@ -63,7 +63,7 @@ const ExploreCourse = () => {
       ) : (
         <>
           <div className="mb-10 max-w-6xl">
-            <p className="text-left text-2xl lg:text-4xl md:text-3xl font-bold mb-3 text-[#262a2b]">
+            <p className="text-left text-2xl lg:text-4xl font-bold mb-3 text-[#262a2b]">
               Explore Our Courses
             </p>
             <p className="text-gray-600 text-base max-w-xl">

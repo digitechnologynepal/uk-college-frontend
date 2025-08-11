@@ -66,7 +66,7 @@ export const News = () => {
         ) : news.length > 0 ? (
           <>
             <p className="text-left text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
-              News
+              News and Events
               <span className="inline-flex px-3 py-1 items-center justify-center text-lg font-bold bg-[#e7efff] text-[#204081] shadow-sm rounded-full">
                 {news.length}
               </span>
@@ -126,7 +126,7 @@ export const News = () => {
             />
 
             <p className="mt-4 text-xl text-gray-500 font-medium">
-              No news available at the moment.
+              No news or events available at the moment.
               <br />
               New content is on the way — don't miss it!
             </p>

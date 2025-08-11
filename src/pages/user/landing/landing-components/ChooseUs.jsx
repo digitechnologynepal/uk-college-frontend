@@ -85,7 +85,7 @@ export const ChooseUs = () => {
 
   return (
     <section className="pb-20">
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-6xl mx-auto px-4">
         {/* Section Header */}
         <motion.div
           initial="hidden"
