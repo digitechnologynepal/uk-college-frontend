@@ -20,10 +20,10 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
 
   const validationSchema = Yup.object().shape({
     image: Yup.mixed().when("existingImage", {
-        is: (val) => !val, // if no existing image then required
-        then: (schema) => schema.required("Image is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
+      is: (val) => !val, // if no existing image then required
+      then: (schema) => schema.required("Image is required"),
+      otherwise: (schema) => schema.notRequired(),
+    }),
 
     website: Yup.string()
       .trim()
@@ -121,7 +121,7 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
           {previewImage && (
             <img
               src={previewImage}
-              className="h-32 w-32 object-cover mt-2"
+              className="h-32 w-full object-contain mt-2"
               alt="Preview"
             />
           )}

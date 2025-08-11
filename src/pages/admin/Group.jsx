@@ -184,13 +184,18 @@ export const Group = () => {
               {mainData.items.map((item) => (
                 <tr key={item._id}>
                   <td style={styles.td}>
-                    <a
-                      href={item.website}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {item.website}
-                    </a>
+                    {item.website ? (
+                      <a
+                        href={item.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 hover:underline break-all"
+                      >
+                        {item.website}
+                      </a>
+                    ) : (
+                      <p className="font-semibold">Not added</p>
+                    )}
                   </td>
                   <td style={styles.td}>
                     {item.image && (
