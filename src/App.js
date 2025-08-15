@@ -30,6 +30,7 @@ import { Team } from "./pages/admin/Team";
 import { Clients } from "./pages/admin/Clients";
 import { ClientsView } from "./pages/user/landing/landing-components/ClientsView";
 import ScrollToTop from "./components/ScrollToTop";
+import Category from "./pages/admin/Category";
 
 function App() {
   const [institutionprofile, setInstitutionProfile] = useState({});
@@ -100,6 +101,10 @@ function App() {
               <Route
                 path="/admin/manage-clients"
                 element={<AdminLayout children={<Clients />} />}
+              />
+              <Route
+                path="/admin/categories"
+                element={<AdminLayout children={<Category />} />}
               />
               <Route
                 path="/admin/manage-courses"

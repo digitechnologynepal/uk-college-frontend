@@ -154,3 +154,9 @@ export const getAllClientsApi = () => Api.get("/api/admin/clients");
 export const getClientByIdApi = (id) => Api.get(`/api/admin/clients/${id}`);
 export const updateClientApi = (id, formData) => ApiWithFormData.put(`/api/admin/clients/${id}`, formData);
 export const deleteClientApi = (id) => Api.delete(`/api/admin/clients/${id}`);
+
+//Category
+export const getCategoriesApi = (tab, includeDeleted = false) => Api.get(`/api/admin/category/${tab}/get`, { params: { includeDeleted } });
+export const addCategoryApi = (tab, data) => Api.post(`/api/admin/category/${tab}/add`, data);
+export const updateCategoryApi = (tab, data) => Api.put(`/api/admin/category/${tab}/update`, data);
+export const softDeleteCategoryApi = (tab, data) => Api.delete(`/api/admin/category/${tab}/soft-delete`, { data });

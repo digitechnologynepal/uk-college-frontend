@@ -36,6 +36,7 @@ export const Footer = () => {
     "/admin/manage-group",
     "/admin/manage-team-members",
     "/admin/manage-clients",
+    "/admin/categories",
   ];
 
   useEffect(() => {
@@ -192,7 +193,6 @@ export const Footer = () => {
               <a
                 className="font-medium flex items-center gap-2 hover:underline underline-offset-4"
                 href={`tel:${data.number}`}
-              
               >
                 <Phone size={17} /> {data.number}
               </a>

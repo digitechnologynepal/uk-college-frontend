@@ -3,8 +3,14 @@ import { AboutUsSection } from "./landing-components/AboutUsSection";
 import { getBannerApi } from "../../../apis/api";
 import { RecentNewsSection } from "./landing-components/RecentNewsSection";
 import { ChooseUs } from "./landing-components/ChooseUs";
+import webbanner from "../../../assets/images/wbanner.png";
+import mobbanner from "../../../assets/images/mbanner.png";
+// import model from "../../../assets/images/girl-reading-book.png";
+import model from "../../../assets/images/banner-girl.png";
 
 export const Landing = ({ institutionProfile }) => {
+  const [bannerTitle, setBannerTitle] = useState("");
+  const [bannerDescription, setBannerDescription] = useState("");
   const [heroImage, setHeroImage] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -15,13 +21,17 @@ export const Landing = ({ institutionProfile }) => {
         if (res.data.success && res.data.result.length > 0) {
           const banner = res.data.result[0];
 
+          setBannerTitle(banner.title || "");
+          setBannerDescription(banner.description || "");
+
           const updateImage = () => {
             const isMobile = window.innerWidth <= 820; // Change image when below 820px
-            setHeroImage(
-              `${process.env.REACT_APP_API_URL}/uploads/${
-                isMobile ? banner.mobileImage : banner.desktopImage
-              }`
-            );
+            // setHeroImage(
+            //   `${process.env.REACT_APP_API_URL}/uploads/${
+            //     isMobile ? banner.mobileImage : banner.desktopImage
+            //   }`
+            // );
+            setHeroImage(isMobile ? mobbanner : webbanner);
           };
 
           updateImage();
@@ -46,23 +56,23 @@ export const Landing = ({ institutionProfile }) => {
           <div className="w-full h-[90vh] animate-pulse rounded-lg bg-gray-200"></div>
         ) : (
           heroImage && (
-            <img
-              // initial={{ y: -10 }}
-              // animate={{ y: 10 }}
-              // transition={{
-              //   type: "smooth",
-              //   repeatType: "mirror",
-              //   duration: 2,
-              //   repeat: Infinity,
-              // }}
-              // initial={{ opacity: 0, scale: 1.05 }}
-              // animate={{ opacity: 1, scale: 1 }}
-              // transition={{ duration: 1.2, ease: "easeOut", repeat: Infinity, repeatType: "mirror" }}
-              src={heroImage}
-              // className="w-full h-auto object-cover"
-              className="w-[100vw] h-[100vh] object-cover"
-              alt="Hero"
-            />
+            <section className="hero-section">
+              <div className="hero-container">
+                <img src={heroImage} alt="Hero" className="hero-bg" />
+
+                {/* Overlay */}
+                <div className="hero-overlay"></div>
+
+                {/* Model */}
+                <img src={model} alt="Model" className="hero-model" />
+
+                {/* Text */}
+                <div className="hero-text">
+                  <h1>{bannerTitle}</h1>
+                  <p>{bannerDescription}</p>
+                </div>
+              </div>
+            </section>
           )
         )}
       </div>

@@ -27,7 +27,7 @@ export const AdminNavbar = () => {
   useEffect(() => {
     if (location.pathname === "/admin/dashboard") {
       setTitle("Institution Profile");
-    } else if (location.pathname === "/admin/aboutus") {
+    } else if (location.pathname === "/admin/banner") {
       setTitle("Banner Section");
     } else if (location.pathname === "/admin/aboutus") {
       setTitle("About Us");
@@ -43,6 +43,8 @@ export const AdminNavbar = () => {
       setTitle("Manage Team Members");
     } else if (location.pathname === "/admin/manage-clients") {
       setTitle("Manage Clients");
+    } else if (location.pathname === "/admin/categories") {
+      setTitle("Manage Categories");
     } else if (location.pathname === "/admin/manage-courses") {
       setTitle("Manage Courses");
     } else if (location.pathname === "/admin/course-application") {

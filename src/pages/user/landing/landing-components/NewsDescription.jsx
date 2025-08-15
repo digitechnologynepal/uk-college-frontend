@@ -1,9 +1,17 @@
 import moment from "moment";
 import { useEffect, useState } from "react";
 import ContentView from "react-froala-wysiwyg/FroalaEditorView";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { getSingleNewsApi } from "../../../../apis/api";
-import { CalendarDays } from "lucide-react";
+import Swal from "sweetalert2";
+import { CalendarDays, Link } from "lucide-react";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  WhatsappShareButton,
+} from "react-share";
+import { FaFacebookF, FaLinkedinIn, FaWhatsapp } from "react-icons/fa";
 
 const SkeletonNewsDescription = () => (
   <div className="pb-28 pt-32 px-4 sm:px-6 bg-[#f9fafb] max-w-7xl mx-auto grid md:grid-cols-3 gap-10 animate-pulse">
@@ -52,6 +60,7 @@ export const NewsDescription = () => {
   const [singleNews, setSingleNews] = useState({});
   const [otherNews, setOtherNews] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [copySuccess, setCopySuccess] = useState(false);
 
   async function fetchSingleNews() {
     try {
@@ -66,6 +75,29 @@ export const NewsDescription = () => {
       setInitialLoading(false);
     }
   }
+
+  const handleCopyLink = () => {
+    navigator.clipboard
+      .writeText(window.location.href)
+      .then(() => {
+        Swal.fire({
+          icon: "success",
+          title: "Link copied to clipboard!",
+          showConfirmButton: false,
+          timer: 1000,
+          toast: true,
+        });
+      })
+      .catch(() => {
+        Swal.fire({
+          icon: "error",
+          title: "Failed to copy link. Please try manually.",
+          showConfirmButton: true,
+          toast: true,
+          timer: 1000,
+        });
+      });
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -87,13 +119,58 @@ export const NewsDescription = () => {
             <h1 className="text-3xl font-bold text-[#262a2b]">
               {singleNews.title}
             </h1>
-            <p className="bg-[#e7efff] text-[#204081] px-3 py-1 rounded-full w-max font-semibold shadow-sm text-base flex items-center gap-2">
-              <CalendarDays size={20} className="text-[#204081]" />
-              {moment(singleNews.createdAt).format("MMMM D, YYYY")}
-            </p>
+
+            <div className="flex items-center justify-between w-full">
+              {/* Date Blob */}
+              <div className="bg-[#e7efff] text-[#204081] px-4 py-1 rounded-full font-semibold shadow-sm text-base flex items-center gap-2 whitespace-nowrap">
+                <CalendarDays size={20} />
+                <span>
+                  {moment(singleNews.createdAt).format("MMMM D, YYYY")}
+                </span>
+              </div>
+
+              {/* Share Buttons */}
+              <div className="flex gap-2 items-center">
+                <LinkedinShareButton
+                  url={window.location.href}
+                  title={singleNews.title}
+                >
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#0077b5] text-white hover:bg-[#088fd7] cursor-pointer">
+                    <FaLinkedinIn size={16} />
+                  </div>
+                </LinkedinShareButton>
+                
+                <FacebookShareButton
+                  url={window.location.href}
+                  quote={singleNews.title}
+                >
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#1877F2] text-white hover:bg-[#378dff] cursor-pointer">
+                    <FaFacebookF size={16} />
+                  </div>
+                </FacebookShareButton>
+
+                <WhatsappShareButton
+                  url={window.location.href}
+                  title={singleNews.title}
+                >
+                  <div className="w-8 h-8 flex items-center justify-center rounded-full bg-[#25d366] text-white hover:bg-[#2be870] cursor-pointer">
+                    <FaWhatsapp size={16} />
+                  </div>
+                </WhatsappShareButton>
+
+                <button
+                  onClick={handleCopyLink}
+                  aria-label="Copy link"
+                  title="Copy link"
+                  className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-[#262a2b] hover:bg-gray-200 cursor-pointer"
+                >
+                  <Link size={18} />
+                </button>
+              </div>
+            </div>
           </div>
 
-          {/* Hero Image */}
+          {/* Image */}
           <div className="overflow-hidden rounded-lg shadow-md">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${singleNews.image}`}
@@ -103,53 +180,55 @@ export const NewsDescription = () => {
           </div>
 
           {/* Description */}
-          <div className="prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-md prose-img:shadow">
+          <div className="text-justify prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-md prose-img:shadow">
             <ContentView model={singleNews.description} />
           </div>
         </div>
 
         {/* Right: More News */}
-        <aside className="space-y-6">
-          <h2 className="text-lg font-semibold text-[#262a2b] border-b pb-2">
-            More News
-          </h2>
-          <div className="grid gap-3">
-            {otherNews.map((item) => (
-              <Link
-                to={`/news-description/${item._id}`}
-                key={item._id}
-                className="flex gap-4 rounded-md drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
-              >
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${item.image}`}
-                  alt={item.title}
-                  className="w-24 h-full object-cover"
-                />
-                <div className="py-3 pr-4 flex flex-col justify-between gap-1">
-                  <h3 className="text-sm font-bold text-[#204081] line-clamp-2">
-                    {item.title}
-                  </h3>
-                  <p className="text-xs text-gray-500 font-medium flex items-center gap-1">
-                    <CalendarDays size={15} />{" "}
-                    {moment(item.createdAt).format("MMM D, YYYY")}
-                  </p>
-                  <div
-                    className="text-xs text-gray-600 line-clamp-2 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html:
-                        item.description.length > 100
-                          ? item.description.slice(0, 100) + "..."
-                          : item.description,
-                    }}
-                  ></div>
-                  <span className="text-xs font-medium text-[#204081] hover:underline mt-1">
-                    Read More →
-                  </span>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </aside>
+        {otherNews.length > 4 && (
+          <aside className="space-y-6">
+            <h2 className="text-lg font-semibold text-[#262a2b] border-b pb-2">
+              More News
+            </h2>
+            <div className="grid gap-3">
+              {otherNews.map((item) => (
+                <Link
+                  to={`/news-description/${item._id}`}
+                  key={item._id}
+                  className="flex gap-4 rounded-md drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
+                >
+                  <img
+                    src={`${process.env.REACT_APP_API_URL}/uploads/${item.image}`}
+                    alt={item.title}
+                    className="w-24 h-full object-cover"
+                  />
+                  <div className="py-3 pr-4 flex flex-col justify-between gap-1">
+                    <h3 className="text-sm font-bold text-[#204081] line-clamp-2">
+                      {item.title}
+                    </h3>
+                    <p className="text-xs text-gray-500 font-medium flex items-center gap-1">
+                      <CalendarDays size={15} />{" "}
+                      {moment(item.createdAt).format("MMM D, YYYY")}
+                    </p>
+                    <div
+                      className="text-xs text-gray-600 line-clamp-2 mt-1"
+                      dangerouslySetInnerHTML={{
+                        __html:
+                          item.description.length > 100
+                            ? item.description.slice(0, 100) + "..."
+                            : item.description,
+                      }}
+                    ></div>
+                    <span className="text-xs font-medium text-[#204081] hover:underline mt-1">
+                      Read More →
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </aside>
+        )}
       </div>
     </div>
   );

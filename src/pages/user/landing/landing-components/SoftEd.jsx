@@ -55,15 +55,24 @@ export const Group = () => {
   if (loading) return <SkeletonGroup />;
   if (!group || group.items.length === 0) return null;
 
+   const handleRedirect = (url) => {
+    if (url) {
+      window.open(url, "_blank");
+    }
+  };
+
   return (
-    <section className="pb-24 relative">
+   <section className="pb-24 relative">
       {/* Static parent image and intro */}
       <div className="flex flex-col">
         <div className="flex justify-center">
           <img
             src={`${process.env.REACT_APP_API_URL}${group.mainImage}`}
             alt={group.mainTitle}
-            className="w-[80%] lg:w-[30%] md:w-[60%] object-cover mb-6"
+            className={`w-[80%] lg:w-[30%] md:w-[60%] object-cover mb-6 ${
+              group.mainWebsite ? "cursor-pointer" : ""
+            }`}
+            onClick={() => handleRedirect(group.mainWebsite)}
           />
         </div>
         <p className="text-[16px] max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
@@ -79,10 +88,14 @@ export const Group = () => {
           {group.items.map((item, i) => (
             <div
               key={i}
-              className="bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg hover:shadow-red-500/60 transition"
+              className={`bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg transition ${
+                item.website ? "cursor-pointer hover:shadow-red-500/60" : ""
+              }`}
+              onClick={() => handleRedirect(item.website)}
             >
               <img
                 src={`${process.env.REACT_APP_API_URL}${item.image}`}
+                title={item.website}
                 alt={item.name}
                 className="w-full h-28 object-contain mb-2"
               />

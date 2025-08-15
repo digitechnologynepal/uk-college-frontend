@@ -22,6 +22,7 @@ export const Navbar = ({ institutionProfile }) => {
     "/admin/manage-group",
     "/admin/manage-team-members",
     "/admin/manage-clients",
+    "/admin/categories",
   ];
 
   const isDesiredPath = desiredPaths.includes(location.pathname);
@@ -84,8 +85,8 @@ export const Navbar = ({ institutionProfile }) => {
             </Link>
           </div>
 
-          <nav className="hidden lg:flex flex-1 justify-center">
-            <ul className="flex gap-2">
+          <nav className="hidden lg:flex flex-1 justify-center items-center">
+            <ul className="flex">
               {[
                 { path: "/", label: "Home" },
                 { path: "/aboutus", label: "About Us" },

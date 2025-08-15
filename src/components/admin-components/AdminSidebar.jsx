@@ -63,6 +63,11 @@ function AdminSidebar() {
       link: "/admin/manage-clients",
     },
     {
+      label: "manage categories",
+      icon: <List className="size-4" />,
+      link: "/admin/categories",
+    },
+    {
       label: "why choose us section",
       icon: <File className="size-4" />,
       link: "/admin/whychooseus",
