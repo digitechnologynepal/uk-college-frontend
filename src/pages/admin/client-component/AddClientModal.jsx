@@ -7,6 +7,7 @@ import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
 import toast from "react-hot-toast";
 import { CircleX } from "lucide-react";
+import Swal from "sweetalert2";
 
 export const AddClientModal = ({ open, onClose, onAdded }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -53,7 +54,7 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
     try {
       const res = await createClientApi(formData);
       if (res?.data?.success) {
-        toast.success("Client added successfully");
+        Swal.fire("Success!", "Client added successfully.", "success");
         onAdded();
         resetForm();
         setPreviewImage(null);

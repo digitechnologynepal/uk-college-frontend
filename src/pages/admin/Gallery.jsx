@@ -37,6 +37,8 @@ export const Gallery = () => {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Yes, delete it!",
+      confirmButtonColor: "#003366",
+      cancelButtonColor: "#d33",
     });
 
     if (confirmed.isConfirmed) {

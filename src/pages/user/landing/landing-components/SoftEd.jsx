@@ -55,14 +55,14 @@ export const Group = () => {
   if (loading) return <SkeletonGroup />;
   if (!group || group.items.length === 0) return null;
 
-   const handleRedirect = (url) => {
+  const handleRedirect = (url) => {
     if (url) {
       window.open(url, "_blank");
     }
   };
 
   return (
-   <section className="pb-24 relative">
+    <section className="pb-24 relative">
       {/* Static parent image and intro */}
       <div className="flex flex-col">
         <div className="flex justify-center">
@@ -78,9 +78,9 @@ export const Group = () => {
         <p className="text-[16px] max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
           {group.mainDescription}
         </p>
-        <p className="text-center text-3xl font-bold text-[#262a2b]">
+        {/* <p className="text-center text-3xl font-bold text-[#262a2b]">
           {group.mainTitle}
-        </p>
+        </p> */}
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
@@ -88,8 +88,8 @@ export const Group = () => {
           {group.items.map((item, i) => (
             <div
               key={i}
-              className={`bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg transition ${
-                item.website ? "cursor-pointer hover:shadow-red-500/60" : ""
+              className={`bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg transition hover:shadow-red-500/60 ${
+                item.website ? "cursor-pointer " : ""
               }`}
               onClick={() => handleRedirect(item.website)}
             >
@@ -106,4 +106,3 @@ export const Group = () => {
     </section>
   );
 };
-

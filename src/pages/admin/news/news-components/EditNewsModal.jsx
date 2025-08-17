@@ -3,10 +3,35 @@ import Swal from "sweetalert2";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ContentEditor from "../../../../components/content_editor/ContentEditor";
-import { updateNewsApi } from "../../../../apis/api";
+import { updateNewsApi, getCategoriesApi } from "../../../../apis/api";
 
 export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
   const [previewImage, setPreviewImage] = useState(null);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const fetchCategories = async () => {
+      try {
+        const res = await getCategoriesApi("newsEvents");
+        if (res?.data?.success) {
+          const fetchedCategories = (res.data.data || [])
+            .filter((c) => !c.isDeleted)
+            .sort((a, b) => {
+              if (a.title?.toLowerCase() === "others") return -1;
+              if (b.title?.toLowerCase() === "others") return 1;
+              return 0;
+            });
+          setCategories(fetchedCategories);
+        }
+      } catch (err) {
+        console.error("Error fetching news categories:", err);
+      }
+    };
+
+    fetchCategories();
+  }, [open]);
 
   if (!open) return null;
 
@@ -19,30 +44,41 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
         "News Description is required",
         (value) => value && value.replace(/<(.|\n)*?>/g, "").trim().length > 0
       ),
-    // image is optional here, no required validation
+    categoryTitle: Yup.string().required("Category is required"),
   });
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg lg:w-[60%] md:w-[80%] w-[95%] h-[90vh] overflow-auto">
         <h2 className="text-xl font-bold mb-4">Edit News</h2>
+
         <Formik
           enableReinitialize
           initialValues={{
             title: selectedNews?.title || "",
             description: selectedNews?.description || "",
-            newsImage: null, // for new upload
+            categoryTitle:
+              selectedNews?.categoryTitle ||
+              categories.find((c) => c.title?.toLowerCase() === "others")?.title ||
+              "Others",
+            newsImage: null,
           }}
           validationSchema={NewsSchema}
           onSubmit={async (values, { setSubmitting }) => {
-            const formData = new FormData();
-            formData.append("title", values.title);
-            formData.append("description", values.description);
-            if (values.newsImage) {
-              formData.append("newsImage", values.newsImage);
-            }
-
             try {
+              const selectedCategory =
+                values.categoryTitle ||
+                categories.find((c) => c.title?.toLowerCase() === "others")?.title ||
+                "Others";
+
+              const formData = new FormData();
+              formData.append("title", values.title);
+              formData.append("description", values.description);
+              formData.append("categoryTitle", selectedCategory);
+              if (values.newsImage) {
+                formData.append("newsImage", values.newsImage);
+              }
+
               const response = await updateNewsApi(formData, selectedNews._id);
               if (response.data.success) {
                 Swal.fire("Success!", "News updated successfully.", "success");
@@ -56,48 +92,63 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
             }
           }}
         >
-          {({ setFieldValue, values, isSubmitting }) => (
+          {({ setFieldValue, isSubmitting }) => (
             <Form className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium">News Image</label>
-                <input
-                  name="newsImage"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => {
-                    const file = event.currentTarget.files[0];
-                    setFieldValue("newsImage", file);
-                    if (file) setPreviewImage(URL.createObjectURL(file));
-                    else setPreviewImage(null);
-                  }}
-                  className="w-full border rounded p-2"
-                />
-                <ErrorMessage
-                  name="newsImage"
-                  component="div"
-                  className="text-red-600 text-sm mt-1"
-                />
-                {previewImage && (
-                  <>
-                    <p className="mt-2">Preview:</p>
-                    <img
-                      src={previewImage}
-                      alt="Preview"
-                      className="mt-2 w-20"
-                    />
-                  </>
-                )}
-                {!previewImage && selectedNews?.image && (
-                  <>
-                    <p className="mt-2">Current Image:</p>
-                    <img
-                      src={`${process.env.REACT_APP_API_URL}/uploads/${selectedNews.image}`}
-                      alt="Current"
-                      className="mt-2 w-20"
-                    />
-                  </>
-                )}
+              {/* Category + Image */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium">Category</label>
+                  <Field
+                    as="select"
+                    name="categoryTitle"
+                    className="w-full border rounded p-2"
+                  >
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.title}>
+                        {cat.title}
+                      </option>
+                    ))}
+                  </Field>
+                  <ErrorMessage
+                    name="categoryTitle"
+                    component="div"
+                    className="text-red-600 text-sm mt-1"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium">News Image</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) => {
+                      const file = event.currentTarget.files[0];
+                      setFieldValue("newsImage", file);
+                      setPreviewImage(file ? URL.createObjectURL(file) : null);
+                    }}
+                    className="w-full border rounded p-2"
+                  />
+                  {previewImage ? (
+                    <>
+                      <p className="mt-2">Preview:</p>
+                      <img src={previewImage} alt="Preview" className="mt-2 w-20" />
+                    </>
+                  ) : (
+                    selectedNews?.image && (
+                      <>
+                        <p className="mt-2">Current Image:</p>
+                        <img
+                          src={`${process.env.REACT_APP_API_URL}/uploads/${selectedNews.image}`}
+                          alt="Current"
+                          className="mt-2 w-20"
+                        />
+                      </>
+                    )
+                  )}
+                </div>
               </div>
+
+              {/* Title */}
               <div>
                 <label className="block text-sm font-medium">News Title</label>
                 <Field
@@ -111,10 +162,10 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
                   className="text-red-600 text-sm mt-1"
                 />
               </div>
+
+              {/* Description */}
               <div>
-                <label className="block text-sm font-medium">
-                  News Description
-                </label>
+                <label className="block text-sm font-medium">News Description</label>
                 <Field name="description">
                   {({ field, form }) => (
                     <ContentEditor
@@ -131,6 +182,8 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
                   className="text-red-600 text-sm mt-1"
                 />
               </div>
+
+              {/* Actions */}
               <div className="flex justify-start space-x-2">
                 <button
                   type="submit"

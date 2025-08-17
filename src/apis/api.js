@@ -72,6 +72,7 @@ export const getAllNewsApi = () => Api.get('/api/admin/news/all');
 export const deleteNewsApi = (id) => Api.delete(`/api/admin/news/delete/${id}`, config);
 export const getSingleNewsApi = (id) => Api.get(`/api/admin/news/get/${id}`);
 export const updateNewsApi = (formData, id) => ApiWithFormData.put(`/api/admin/news/update/${id}`, formData, config);
+export const getNewsCategoriesApi = () => Api.get("/api/admin/news/newscategories");
 
 // glimpse
 export const getGlimpseApi = (page, limit) => Api.get(`/api/admin/glimpses/get?page=${page}&limit=${limit}`);

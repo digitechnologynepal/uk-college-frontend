@@ -3,12 +3,14 @@ import {
   getCategoriesApi,
   addCategoryApi,
   updateCategoryApi,
-  softDeleteCategoryApi
+  softDeleteCategoryApi,
 } from "../../apis/api";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
+import { Edit, Trash } from "lucide-react";
 
-const Category = () => {
+export const Category = () => {
   const [activeTab, setActiveTab] = useState("gallery");
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -33,23 +35,50 @@ const Category = () => {
   const handleAddOrUpdate = async (values, { resetForm }) => {
     try {
       if (editItem) {
-        await updateCategoryApi(activeTab, { id: editItem._id, title: values.title });
+        await updateCategoryApi(activeTab, {
+          id: editItem._id,
+          title: values.title,
+        });
+        Swal.fire("Success!", "Category updated successfully.", "success");
       } else {
         await addCategoryApi(activeTab, { title: values.title });
+        Swal.fire("Success!", "Category added successfully.", "success");
       }
       resetForm();
       setEditItem(null);
       fetchCategories();
     } catch (err) {
       console.error("Error saving category:", err);
+      Swal.fire(
+        "Error!",
+        "Something went wrong while saving the category.",
+        "error"
+      );
     }
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this category?")) {
+    const result = await Swal.fire({
+      title: "Are you sure you want to delete this category?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#003366",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete",
+    });
+
+    if (result.isConfirmed) {
       try {
-        await softDeleteCategoryApi(activeTab, { id });
-        fetchCategories();
+        const res = await softDeleteCategoryApi(activeTab, { id });
+        if (res?.data?.success) {
+          Swal.fire({
+            icon: "success",
+            title: "Category deleted successfully",
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          fetchCategories();
+        }
       } catch (err) {
         console.error("Error deleting category:", err);
       }
@@ -58,7 +87,11 @@ const Category = () => {
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Manage Categories</h2>
+      <h2 className="text-xl font-semibold mb-2">Categories</h2>
+      <p className="mb-4">
+        These will appear in the category dropdown in the Manage Gallery/News
+        section.
+      </p>
 
       {/* Tabs */}
       <div className="flex gap-4 mb-6 border-b">
@@ -71,8 +104,8 @@ const Category = () => {
             }}
             className={`pb-2 px-4 font-medium capitalize border-b-2 transition-colors ${
               activeTab === tab
-                ? "border-blue-600 text-blue-600"
-                : "border-transparent text-gray-500 hover:text-blue-500"
+                ? "border-[#204081] text-[#204081]"
+                : "border-transparent text-gray-500 hover:text-[#204081]"
             }`}
           >
             {tab === "gallery" ? "Gallery" : "News & Events"}
@@ -85,7 +118,7 @@ const Category = () => {
         enableReinitialize
         initialValues={{ title: editItem?.title || "" }}
         validationSchema={Yup.object({
-          title: Yup.string().trim().required("Title is required")
+          title: Yup.string().trim().required("Title is required"),
         })}
         onSubmit={handleAddOrUpdate}
       >
@@ -103,10 +136,7 @@ const Category = () => {
                 className="text-red-500 text-sm"
               />
             </div>
-            <button
-              type="submit"
-              className="btn-primary "
-            >
+            <button type="submit" className="btn-primary ">
               {editItem ? "Update" : "Add"}
             </button>
             {editItem && (
@@ -134,30 +164,44 @@ const Category = () => {
         <table className="w-full border-collapse">
           <thead>
             <tr className="bg-gray-100">
-              <th className="border p-2 text-left">Title</th>
-              <th className="border p-2 text-center w-32">Actions</th>
+              <th style={styles.th}>Title</th>
+              <th style={styles.th}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {categories.map((cat) => (
-              <tr key={cat._id}>
-                <td className="border p-2">{cat.title}</td>
-                <td className="border p-2 text-center">
-                  <button
-                    onClick={() => setEditItem(cat)}
-                    className="text-blue-600 hover:underline mr-3"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(cat._id)}
-                    className="text-red-600 hover:underline"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
+            {categories.map((cat) => {
+              const isProtected = cat.title.toLowerCase() === "others";
+              return (
+                <tr key={cat._id}>
+                  <td style={styles.td}>{cat.title}</td>
+                  <td style={styles.td} className="flex gap-2">
+                    {!isProtected && (
+                      <>
+                        <button
+                          onClick={() => setEditItem(cat)}
+                          className="icon-primary bg-blue-600 hover:bg-blue-600"
+                          title="Edit"
+                        >
+                          <Edit size={12} />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(cat._id)}
+                          className="icon-primary bg-red-600 hover:bg-red-600"
+                          title="Delete"
+                        >
+                          <Trash size={12} />
+                        </button>
+                      </>
+                    )}
+                    {isProtected && (
+                      <span className="text-gray-400 italic">
+                        Cannot edit or delete this
+                      </span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       )}
@@ -165,4 +209,17 @@ const Category = () => {
   );
 };
 
-export default Category;
+const styles = {
+  th: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    textAlign: "left",
+    backgroundColor: "#f9f9f9",
+    fontWeight: "bold",
+  },
+  td: {
+    border: "1px solid #ddd",
+    padding: "10px",
+    verticalAlign: "top",
+  },
+};

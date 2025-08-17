@@ -109,21 +109,29 @@ export const NewsDescription = () => {
   }
 
   return (
-    <div className="text-[#262a2b] pb-28 pt-32 px-4 sm:px-6 bg-[#f9fafb]">
+    <div className="text-[#262a2b] pb-28 pt-32 px-4 sm:px-6">
       {/* Main Container */}
       <div className="max-w-7xl mx-auto grid md:grid-cols-3 gap-10">
         {/* Left: Main Article */}
         <div className="md:col-span-2 space-y-6">
           {/* Title and Date */}
           <div className="space-y-2">
+            {singleNews.categoryTitle && (
+              <div className="flex items-center gap-2">
+                <span className="h-5 w-1 bg-[#d91b1a]" />
+                <p className="text-md font-bold text-[#d91b1a] capitalize">
+                  {singleNews.categoryTitle}
+                </p>
+              </div>
+            )}
             <h1 className="text-3xl font-bold text-[#262a2b]">
               {singleNews.title}
             </h1>
 
             <div className="flex items-center justify-between w-full">
               {/* Date Blob */}
-              <div className="bg-[#e7efff] text-[#204081] px-4 py-1 rounded-full font-semibold shadow-sm text-base flex items-center gap-2 whitespace-nowrap">
-                <CalendarDays size={20} />
+              <div className="bg-[#ffe3e6] text-[#d91b1a] px-4 py-1 rounded-full font-semibold shadow-sm text-sm flex items-center gap-2 whitespace-nowrap">
+                <CalendarDays size={18} />
                 <span>
                   {moment(singleNews.createdAt).format("MMMM D, YYYY")}
                 </span>
@@ -139,7 +147,7 @@ export const NewsDescription = () => {
                     <FaLinkedinIn size={16} />
                   </div>
                 </LinkedinShareButton>
-                
+
                 <FacebookShareButton
                   url={window.location.href}
                   quote={singleNews.title}

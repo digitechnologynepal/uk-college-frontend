@@ -69,7 +69,7 @@ export const Group = () => {
       const res = await manageGroupApi(formData);
       if (res.data.success) {
         setMainData(res.data.result);
-        toast.success("Group saved successfully");
+        Swal.fire("Success!", "Group saved successfully.", "success");
       }
     } catch (error) {
       ErrorHandler(error);
@@ -82,7 +82,7 @@ export const Group = () => {
       text: "You won't be able to revert this!",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#3085d6",
+      confirmButtonColor: "#003366",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes",
     }).then(async (result) => {

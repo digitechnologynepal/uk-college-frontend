@@ -81,7 +81,7 @@ function AdminSidebar() {
 
   return (
     <div
-      className="transition-all duration-300 transform hidden top-0 start-0 bottom-0 z-[10] w-80 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block fixed lg:relative lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300"
+      className=" transition-all duration-300 transform hidden top-0 start-0 bottom-0 z-[10] w-80 bg-white border-e border-gray-200 pt-7 pb-10 overflow-y-auto lg:block fixed lg:relative lg:translate-x-0 lg:end-auto lg:bottom-0 [&::-webkit-scrollbar]:w-2 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-gray-100 [&::-webkit-scrollbar-thumb]:bg-gray-300"
       role="dialog"
       aria-label="Sidebar"
     >

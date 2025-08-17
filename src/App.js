@@ -30,7 +30,7 @@ import { Team } from "./pages/admin/Team";
 import { Clients } from "./pages/admin/Clients";
 import { ClientsView } from "./pages/user/landing/landing-components/ClientsView";
 import ScrollToTop from "./components/ScrollToTop";
-import Category from "./pages/admin/Category";
+import { Category } from "./pages/admin/Category";
 
 function App() {
   const [institutionprofile, setInstitutionProfile] = useState({});
