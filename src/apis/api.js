@@ -161,3 +161,9 @@ export const getCategoriesApi = (tab, includeDeleted = false) => Api.get(`/api/a
 export const addCategoryApi = (tab, data) => Api.post(`/api/admin/category/${tab}/add`, data);
 export const updateCategoryApi = (tab, data) => Api.put(`/api/admin/category/${tab}/update`, data);
 export const softDeleteCategoryApi = (tab, data) => Api.delete(`/api/admin/category/${tab}/soft-delete`, { data });
+
+//Testimonial
+export const createTestimonialApi = (formData) => ApiWithFormData.post("/api/admin/testimonial", formData);
+export const getAllTestimonialsApi = () => Api.get("/api/admin/testimonial");
+export const updateTestimonialApi = (id, formData) => ApiWithFormData.put(`/api/admin/testimonial/${id}`, formData);
+export const deleteTestimonialApi = (id) => Api.delete(`/api/admin/testimonial/${id}`);

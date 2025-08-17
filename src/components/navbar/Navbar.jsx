@@ -21,6 +21,7 @@ export const Navbar = ({ institutionProfile }) => {
     "/admin/news",
     "/admin/manage-group",
     "/admin/manage-team-members",
+    "/admin/manage-testimonial",
     "/admin/manage-clients",
     "/admin/categories",
   ];

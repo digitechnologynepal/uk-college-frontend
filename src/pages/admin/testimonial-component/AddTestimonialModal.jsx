@@ -2,23 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import Swal from "sweetalert2";
 import { Modal } from "../../../components/Modal";
 import { Button } from "../../../components/Button";
-import { createTeamMemberApi } from "../../../apis/api";
+import { createTestimonialApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 
-export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
+export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
+  const [wordCount, setWordCount] = useState(0);
 
   useEffect(() => {
     if (!open) {
       setFormKey((k) => k + 1);
       setPreviewImage(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }, [open]);
 
@@ -28,40 +27,22 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
     };
   }, [previewImage]);
 
-  useEffect(() => {
-    if (open) {
-      setPreviewImage(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
-    }
-  }, [open]);
-
-  // Validation schema with Yup
-  const TeamMemberSchema = Yup.object().shape({
+  // Validation schema
+  const TestimonialSchema = Yup.object().shape({
     name: Yup.string().trim().required("Name is required"),
-    role: Yup.string().trim().required("Role is required"),
-    email: Yup.string()
+    role: Yup.string().trim(),
+    description: Yup.string()
       .trim()
-      .email("Invalid email format")
-      .nullable()
-      .notRequired(),
-    number: Yup.string()
-      .required("Number is required")
-      .trim()
-      .matches(/^(\+)?[\d\s\-()]{7,20}$/, "Invalid phone number format")
-      .nullable(),
-    facebook: Yup.string().url("Invalid URL").nullable().notRequired(),
-    threadLink: Yup.string().url("Invalid URL").nullable().notRequired(),
-    whatsapp: Yup.string()
-      .trim()
-      .matches(/^(\+)?[\d\s\-()]{7,20}$/, "Invalid WhatsApp number format")
-      .nullable()
-      .notRequired(),
-    insta: Yup.string().url("Invalid URL").nullable().notRequired(),
-    linkedin: Yup.string().url("Invalid URL").nullable().notRequired(),
+      .required("Description is required")
+      .test("maxWords", "Description cannot exceed 50 words", (value) => {
+        if (!value) return true;
+        // Normalize multiple spaces, tabs, newlines
+        const words = value.trim().replace(/\s+/g, " ").split(" ");
+        return words.length <= 50;
+      }),
+
     image: Yup.mixed()
-      .required("Image is required")
+      .notRequired()
       .test(
         "fileType",
         "Unsupported file format",
@@ -75,23 +56,17 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
   });
 
   return (
-    <Modal open={open} onClose={onClose} modalTitle="Add Team Member">
+    <Modal open={open} onClose={onClose} modalTitle="Add Testimonial">
       <section className="w-full max-w-3xl p-6 mx-auto">
         <Formik
           key={formKey}
           initialValues={{
             name: "",
             role: "",
-            email: "",
-            number: "",
-            facebook: "",
-            threadLink: "",
-            whatsapp: "",
-            insta: "",
-            linkedin: "",
+            description: "",
             image: null,
           }}
-          validationSchema={TeamMemberSchema}
+          validationSchema={TestimonialSchema}
           onSubmit={async (values, { setSubmitting, resetForm }) => {
             const payload = new FormData();
             Object.entries(values).forEach(([key, value]) => {
@@ -104,19 +79,17 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
 
             try {
               setSubmitting(true);
-              const res = await createTeamMemberApi(payload);
+              const res = await createTestimonialApi(payload);
               if (res?.data?.success) {
                 Swal.fire(
                   "Success",
-                  "Team member added successfully",
+                  "Testimonial added successfully",
                   "success"
                 );
                 onAdded();
                 resetForm();
                 setPreviewImage(null);
-                if (fileInputRef.current) {
-                  fileInputRef.current.value = "";
-                }
+                if (fileInputRef.current) fileInputRef.current.value = "";
                 onClose();
               }
             } catch (err) {
@@ -126,7 +99,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
             }
           }}
         >
-          {({ setFieldValue, isSubmitting, values }) => (
+          {({ setFieldValue, isSubmitting }) => (
             <Form className="space-y-4">
               {/* Name */}
               <div>
@@ -155,7 +128,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
                   className="block text-sm font-medium mb-1"
                   htmlFor="role"
                 >
-                  Role/Position *
+                  Role
                 </label>
                 <Field
                   id="role"
@@ -170,37 +143,34 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
                 />
               </div>
 
-              {/* Contact & Socials */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {[
-                  { label: "Email", name: "email", type: "email" },
-                  { label: "Phone Number *", name: "number", type: "text" },
-                  { label: "Facebook", name: "facebook", type: "url" },
-                  { label: "Threads Link", name: "threadLink", type: "url" },
-                  { label: "WhatsApp", name: "whatsapp", type: "text" },
-                  { label: "Instagram", name: "insta", type: "url" },
-                  { label: "LinkedIn", name: "linkedin", type: "url" },
-                ].map(({ label, name, type }) => (
-                  <div key={name}>
-                    <label
-                      className="block text-sm font-medium mb-1"
-                      htmlFor={name}
-                    >
-                      {label}
-                    </label>
-                    <Field
-                      id={name}
-                      name={name}
-                      type={type}
-                      className="w-full border p-2 rounded"
-                    />
-                    <ErrorMessage
-                      name={name}
-                      component="div"
-                      className="text-red-600 text-sm mt-1"
-                    />
-                  </div>
-                ))}
+              {/* Description */}
+              <div>
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="description"
+                >
+                  Description *
+                </label>
+                <Field
+                  id="description"
+                  name="description"
+                  as="textarea"
+                  rows={4}
+                  className="w-full border p-2 rounded"
+                  onChange={(e) => {
+                    setFieldValue("description", e.target.value);
+                    setWordCount(
+                      e.target.value.trim().split(/\s+/).filter(Boolean).length
+                    );
+                  }}
+                />
+                <p className="text-sm text-gray-500">{wordCount}/50 words</p>
+
+                <ErrorMessage
+                  name="description"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
               </div>
 
               {/* Image Upload */}
@@ -209,7 +179,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
                   className="block text-sm font-medium mb-1"
                   htmlFor="image"
                 >
-                  Image *
+                  Image
                 </label>
                 {previewImage && (
                   <img
@@ -228,11 +198,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
                     const file = e.currentTarget.files[0];
                     setFieldValue("image", file);
                     if (previewImage) URL.revokeObjectURL(previewImage);
-                    if (file) {
-                      setPreviewImage(URL.createObjectURL(file));
-                    } else {
-                      setPreviewImage(null);
-                    }
+                    setPreviewImage(file ? URL.createObjectURL(file) : null);
                   }}
                   className="border p-2 rounded w-full"
                 />
@@ -250,7 +216,7 @@ export const AddTeamMemberModal = ({ open, onClose, onAdded }) => {
                   disabled={isSubmitting}
                   className="btn-primary"
                 >
-                  {isSubmitting ? "Adding..." : "Add Team Member"}
+                  {isSubmitting ? "Adding..." : "Add Testimonial"}
                 </Button>
               </div>
             </Form>

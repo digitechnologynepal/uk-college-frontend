@@ -7,6 +7,7 @@ import webbanner from "../../../assets/images/wbanner.png";
 import mobbanner from "../../../assets/images/mbanner.png";
 // import model from "../../../assets/images/girl-reading-book.png";
 import model from "../../../assets/images/banner-girl.png";
+import { ClientTestimonial } from "./landing-components/ClientTestimonial";
 
 export const Landing = ({ institutionProfile }) => {
   const [bannerTitle, setBannerTitle] = useState("");
@@ -78,6 +79,7 @@ export const Landing = ({ institutionProfile }) => {
       </div>
       <AboutUsSection />
       <ChooseUs />
+      <ClientTestimonial/>
       {/* <OurMotto /> */}
       <RecentNewsSection />
     </>

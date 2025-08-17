@@ -41,6 +41,8 @@ export const AdminNavbar = () => {
       setTitle("Manage Group");
     } else if (location.pathname === "/admin/manage-team-members") {
       setTitle("Manage Team Members");
+    } else if (location.pathname === "/admin/manage-testimonial") {
+      setTitle("Manage Testimonial");
     } else if (location.pathname === "/admin/manage-clients") {
       setTitle("Manage Clients");
     } else if (location.pathname === "/admin/categories") {

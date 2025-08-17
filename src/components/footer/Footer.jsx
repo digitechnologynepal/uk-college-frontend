@@ -35,6 +35,7 @@ export const Footer = () => {
     "/admin/news",
     "/admin/manage-group",
     "/admin/manage-team-members",
+    "/admin/manage-testimonial",
     "/admin/manage-clients",
     "/admin/categories",
   ];

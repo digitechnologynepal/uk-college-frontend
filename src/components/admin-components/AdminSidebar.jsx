@@ -1,3 +1,4 @@
+import { Card } from "flowbite-react";
 import {
   Award,
   CircleHelp,
@@ -12,6 +13,7 @@ import {
   SquareChartGantt,
 } from "lucide-react";
 import React from "react";
+import { TbCards } from "react-icons/tb";
 import { Link, useLocation } from "react-router-dom";
 
 function AdminSidebar() {
@@ -46,6 +48,11 @@ function AdminSidebar() {
       label: "manage team members",
       icon: <User className="size-4" />,
       link: "/admin/manage-team-members",
+    },
+    {
+      label: "manage testimonial",
+      icon: <TbCards className="size-4" />,
+      link: "/admin/manage-testimonial",
     },
     {
       label: "manage courses",

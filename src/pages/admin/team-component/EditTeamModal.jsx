@@ -154,7 +154,7 @@ export const EditTeamMemberModal = ({ open, onClose, member, onUpdated }) => {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {[
                   { label: "Email", name: "email", type: "email" },
-                  { label: "Phone Number", name: "number", type: "text" },
+                  { label: "Phone Number *", name: "number", type: "text" },
                   { label: "Facebook", name: "facebook", type: "url" },
                   { label: "Threads Link", name: "threadLink", type: "url" },
                   { label: "WhatsApp", name: "whatsapp", type: "text" },

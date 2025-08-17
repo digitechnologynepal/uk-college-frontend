@@ -19,28 +19,26 @@ function useCanHover() {
   return canHover;
 }
 
-const SkeletonGallery = () => {
-  return (
-    <div>
-      <div className="flex items-center gap-3 mb-5">
-        <div className="bg-gray-200 rounded-md w-48 h-10" />
-        <div className="bg-gray-200 rounded-full w-12 h-12" />
-      </div>
-
-      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1 animate-pulse">
-        {Array.from({ length: 4 }).map((_, idx) => (
-          <div
-            key={idx}
-            className="relative rounded-lg overflow-hidden bg-gray-200 h-40 lg:h-64 sm:h-40"
-            aria-hidden="true"
-          >
-            <div className="absolute inset-0 bg-gray-200 opacity-30" />
-          </div>
-        ))}
-      </div>
+const SkeletonGallery = () => (
+  <div>
+    <div className="flex items-center gap-3 mb-5">
+      <div className="bg-gray-200 rounded-md w-48 h-10" />
+      <div className="bg-gray-200 rounded-full w-12 h-12" />
     </div>
-  );
-};
+
+    <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1 animate-pulse">
+      {Array.from({ length: 4 }).map((_, idx) => (
+        <div
+          key={idx}
+          className="relative rounded-lg overflow-hidden bg-gray-200 h-40 lg:h-64 sm:h-40"
+          aria-hidden="true"
+        >
+          <div className="absolute inset-0 bg-gray-200 opacity-30" />
+        </div>
+      ))}
+    </div>
+  </div>
+);
 
 export const GalleryView = () => {
   const [galleryList, setGalleryList] = useState([]);
@@ -103,13 +101,14 @@ export const GalleryView = () => {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (selectedIndex === null) return;
-      if (e.key === "ArrowLeft" && selectedIndex > 0) {
+      if (e.key === "ArrowLeft" && selectedIndex > 0)
         setSelectedIndex((prev) => prev - 1);
-      } else if (e.key === "ArrowRight" && selectedIndex < filteredGallery.length - 1) {
+      else if (
+        e.key === "ArrowRight" &&
+        selectedIndex < filteredGallery.length - 1
+      )
         setSelectedIndex((prev) => prev + 1);
-      } else if (e.key === "Escape") {
-        setSelectedIndex(null);
-      }
+      else if (e.key === "Escape") setSelectedIndex(null);
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
@@ -129,7 +128,6 @@ export const GalleryView = () => {
       prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
     );
   };
-
   const clearAll = () => setSelectedCategories([]);
 
   const filteredGallery =
@@ -141,9 +139,11 @@ export const GalleryView = () => {
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentGallery = filteredGallery.slice(indexOfFirstItem, indexOfLastItem);
+  const currentGallery = filteredGallery.slice(
+    indexOfFirstItem,
+    indexOfLastItem
+  );
   const totalPages = Math.ceil(filteredGallery.length / itemsPerPage);
-
   const selectedContent =
     selectedIndex !== null ? filteredGallery[selectedIndex] : null;
 
@@ -153,20 +153,22 @@ export const GalleryView = () => {
         {loading ? (
           <SkeletonGallery />
         ) : galleryList.length === 0 ? (
+          // No content at all
           <div className="flex flex-col items-center justify-center w-full p-6">
             <Lottie
               animationData={animationData}
-              loop={true}
-              autoplay={true}
+              loop
+              autoplay
               className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
             />
-            <p className="mt-4 text-xl text-gray-500 font-medium">
+            <p className="mt-4 text-xl text-gray-500 font-medium text-center">
               No content available at the moment.
               <br />
               New content is on the way — don't miss it!
             </p>
           </div>
         ) : (
+          // Content exists
           <div className="flex flex-col">
             {/* Heading */}
             <p className="text-left text-2xl lg:text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
@@ -228,98 +230,131 @@ export const GalleryView = () => {
               </div>
             </div>
 
-            {/* Gallery Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
-              {currentGallery.map((item, index) => {
-                const globalIndex = indexOfFirstItem + index;
-                return (
-                  <div
-                    key={item._id}
-                    onClick={() => setSelectedIndex(globalIndex)}
-                    className={`relative cursor-pointer rounded-lg overflow-hidden shadow-md transition-all duration-300
-                      ${canHover && isDesktop ? "group hover:shadow-xl" : ""}
-                    `}
-                  >
-                    {/* Image / Video */}
-                    {item.fileType === "video" ? (
-                      <div>
-                        <video
-                          src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
-                          className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
-                            canHover && isDesktop ? "lg:group-hover:scale-105" : ""
+            {/* Show Lottie if filter returns empty */}
+            {filteredGallery.length === 0 ? (
+              <div className="flex flex-col items-center justify-center w-full">
+                <Lottie
+                  animationData={animationData}
+                  loop
+                  autoplay
+                  className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
+                />
+                <p className="text-xl text-gray-500 font-medium text-center">
+                  No content matches your filter selection.
+                </p>
+              </div>
+            ) : (
+              <>
+                {/* Gallery Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
+                  {currentGallery.map((item, index) => {
+                    const globalIndex = indexOfFirstItem + index;
+                    return (
+                      <div
+                        key={item._id}
+                        onClick={() => setSelectedIndex(globalIndex)}
+                        className={`relative cursor-pointer rounded-lg overflow-hidden shadow-md transition-all duration-300
+                          ${
+                            canHover && isDesktop ? "group hover:shadow-xl" : ""
                           }`}
-                          muted
-                          playsInline
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <svg
-                            className="w-12 h-12 text-white bg-black bg-opacity-50 rounded-full p-2"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      </div>
-                    ) : (
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
-                        alt={item.name}
-                        className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
-                          canHover && isDesktop ? "lg:group-hover:scale-105" : ""
-                        }`}
-                      />
-                    )}
-
-                    {/* Hover overlay */}
-                    {canHover && isDesktop && (
-                      <>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
-                          <Maximize className="text-white" />
-                          <span className="text-white ml-2 font-semibold text-md">
-                            Click to expand
-                          </span>
-                        </div>
-                        <div className="absolute bottom-4 left-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <div className="flex items-center text-xs text-white ">
-                            <p className="font-bold">{item.fileType === "video" ? "Video" : "Image"}</p>
-                            <Dot />
-                            <p>
-                              {item.date
-                                ? new Date(item.date).toLocaleDateString(undefined, {
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  })
-                                : "No date provided"}
-                            </p>
+                      >
+                        {/* Image / Video */}
+                        {item.fileType === "video" ? (
+                          <div>
+                            <video
+                              src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
+                              className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
+                                canHover && isDesktop
+                                  ? "lg:group-hover:scale-105"
+                                  : ""
+                              }`}
+                              muted
+                              playsInline
+                            />
+                            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                              <svg
+                                className="w-12 h-12 text-white bg-black bg-opacity-50 rounded-full p-2"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                              >
+                                <path d="M8 5v14l11-7z" />
+                              </svg>
+                            </div>
                           </div>
-                          <h3 className="text-white text-md md:text-xl font-semibold mb-1">{item.name}</h3>
-                        </div>
-                      </>
+                        ) : (
+                          <img
+                            src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
+                            alt={item.name}
+                            className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
+                              canHover && isDesktop
+                                ? "lg:group-hover:scale-105"
+                                : ""
+                            }`}
+                          />
+                        )}
+
+                        {/* Hover overlay */}
+                        {canHover && isDesktop && (
+                          <>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
+                              <Maximize className="text-white" />
+                              <span className="text-white ml-2 font-semibold text-md">
+                                Click to expand
+                              </span>
+                            </div>
+                            <div className="absolute bottom-4 left-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                              <div className="flex items-center text-xs text-white ">
+                                <p className="font-bold">
+                                  {item.fileType === "video"
+                                    ? "Video"
+                                    : "Image"}
+                                </p>
+                                <Dot />
+                                <p>
+                                  {item.date
+                                    ? new Date(item.date).toLocaleDateString(
+                                        undefined,
+                                        {
+                                          year: "numeric",
+                                          month: "long",
+                                          day: "numeric",
+                                        }
+                                      )
+                                    : "No date provided"}
+                                </p>
+                              </div>
+                              <h3 className="text-white text-md md:text-xl font-semibold mb-1">
+                                {item.name}
+                              </h3>
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="flex justify-center items-center mt-8 gap-2 flex-wrap">
+                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (pageNum) => (
+                        <button
+                          key={pageNum}
+                          onClick={() => setCurrentPage(pageNum)}
+                          className={`px-3 py-1 text-sm rounded-full font-semibold ${
+                            currentPage === pageNum
+                              ? "bg-[#204081] text-white"
+                              : "bg-gray-300 text-gray-800 hover:bg-gray-400"
+                          }`}
+                        >
+                          {pageNum}
+                        </button>
+                      )
                     )}
                   </div>
-                );
-              })}
-            </div>
-
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="flex justify-center items-center mt-8 gap-2 flex-wrap">
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNum) => (
-                  <button
-                    key={pageNum}
-                    onClick={() => setCurrentPage(pageNum)}
-                    className={`px-3 py-1 text-sm rounded-full font-semibold ${
-                      currentPage === pageNum
-                        ? "bg-[#204081] text-white"
-                        : "bg-gray-300 text-gray-800 hover:bg-gray-400"
-                    }`}
-                  >
-                    {pageNum}
-                  </button>
-                ))}
-              </div>
+                )}
+              </>
             )}
           </div>
         )}
@@ -385,11 +420,14 @@ export const GalleryView = () => {
               <div className="px-10 py-3 bg-gray-950">
                 {selectedContent.date && (
                   <p className="text-white text-sm mb-1">
-                    {new Date(selectedContent.date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
+                    {new Date(selectedContent.date).toLocaleDateString(
+                      undefined,
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </p>
                 )}
                 <h2 className="text-sm lg:text-xl md:text-lg font-semibold text-white">
