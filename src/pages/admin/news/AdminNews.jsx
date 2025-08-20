@@ -13,20 +13,42 @@ export const AdminNews = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedNews, setSelectedNews] = useState(null);
   const [news, setNews] = useState([]);
+  const [filteredNews, setFilteredNews] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 8;
 
   useEffect(() => {
-    getAllNewsApi()
-      .then((res) => {
-        if (res?.data?.success === true) {
-          setNews(res?.data?.result);
-        }
-      })
-      .catch((err) => {
-        ErrorHandler(err);
-      });
+    fetchNews();
   }, [updated]);
 
-  function deleteNews(id) {
+  useEffect(() => {
+    const filtered = news.filter((item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredNews(filtered);
+    setCurrentPage(1); // reset to first page when search changes
+  }, [searchTerm, news]);
+
+  const fetchNews = async () => {
+    try {
+      const res = await getAllNewsApi();
+      if (res?.data?.success) {
+        setNews(res.data.result);
+      }
+    } catch (err) {
+      ErrorHandler(err);
+    }
+  };
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentNews = filteredNews.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredNews.length / itemsPerPage);
+
+  const deleteNews = (id) => {
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -44,24 +66,37 @@ export const AdminNews = () => {
               Swal.fire("Deleted!", "News has been deleted.", "success");
             }
           })
-          .catch((err) => {
-            ErrorHandler(err);
-          });
+          .catch((err) => ErrorHandler(err));
       }
     });
-  }
+  };
 
   return (
     <>
       <main className="p-4">
-        <div className="flex justify-between mb-10">
+        <div className="flex flex-col sm:flex-row justify-between mb-6 items-center gap-4">
           <Title title="All News" />
-          <button onClick={() => setShowAddModal(true)} className="btn-primary">
-            Add News
-          </button>
+          <div className="flex items-center gap-3 flex-wrap w-auto">
+            <input
+              type="text"
+              placeholder="Search news..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-[#204081]"
+            />
+            <button onClick={() => setShowAddModal(true)} className="btn-primary">
+              Add News
+            </button>
+          </div>
         </div>
-        <div className="overflow-x-auto">
-          {news.length > 0 ? (
+
+        <p className="mb-4 font-medium text-lg">
+          Showing <b>{filteredNews.length}</b>{" "}
+          {filteredNews.length === 1 ? "news" : "news"}
+        </p>
+
+        {currentNews.length > 0 ? (
+          <div className="overflow-x-auto">
             <table className="w-full border-collapse border mt-2">
               <thead>
                 <tr style={{ backgroundColor: "#f2f2f2" }}>
@@ -72,17 +107,14 @@ export const AdminNews = () => {
                 </tr>
               </thead>
               <tbody>
-                {news.map((newsItem, index) => (
-                  <tr
-                    key={newsItem._id || index}
-                    className="border-b hover:bg-white"
-                  >
-                    <td style={styles.td}>{index + 1}</td>
+                {currentNews.map((newsItem, index) => (
+                  <tr key={newsItem._id || index} className="border-b hover:bg-white">
+                    <td style={styles.td}>{indexOfFirstItem + index + 1}</td>
                     <td style={styles.td}>
                       <img
-                        className="w-20"
+                        className="h-12"
                         src={`${process.env.REACT_APP_API_URL}/uploads/${newsItem.image}`}
-                        alt="News Image"
+                        alt="News"
                       />
                     </td>
                     <td style={styles.td}>{newsItem.title}</td>
@@ -109,13 +141,29 @@ export const AdminNews = () => {
                 ))}
               </tbody>
             </table>
-          ) : (
-            <p className="text-gray-500 text-center mt-10">
-              No news added yet.
-            </p>
-          )}
-        </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-6 space-x-2">
+              {Array.from({ length: totalPages }, (_, idx) => idx + 1).map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 rounded-md border ${
+                    currentPage === page
+                      ? "bg-[#204081] text-white"
+                      : "bg-white text-gray-700 hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center mt-10">No news found.</p>
+        )}
       </main>
+
       <AddNewsModal
         open={showAddModal}
         onClose={() => setShowAddModal(false)}

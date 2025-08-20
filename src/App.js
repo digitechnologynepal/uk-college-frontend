@@ -63,7 +63,7 @@ function App() {
             <Route path="/galleryview" element={<GalleryView />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/news" element={<News />} />
-            <Route path="/clients" element={<ClientsView />} />
+            <Route path="/partners" element={<ClientsView />} />
             <Route path="/news-description/:id" element={<NewsDescription />} />
             <Route path="/" element={<Landing institutionProfile={institutionprofile} />} />
             <Route element={<AdminRoutes />}>

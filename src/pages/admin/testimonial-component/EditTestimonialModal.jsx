@@ -7,10 +7,18 @@ import { Button } from "../../../components/Button";
 import { updateTestimonialApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
 
-export const EditTestimonialModal = ({ open, onClose, testimonial, onUpdated }) => {
+export const EditTestimonialModal = ({
+  open,
+  onClose,
+  testimonial,
+  onUpdated,
+}) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [charCount, setCharCount] = useState(0);
+
+  const MAX_CHARS = 600;
 
   useEffect(() => {
     if (testimonial) {
@@ -20,14 +28,25 @@ export const EditTestimonialModal = ({ open, onClose, testimonial, onUpdated }) 
           : null
       );
       setImageFile(null);
+      setCharCount(testimonial.description?.length || 0);
     }
   }, [testimonial]);
 
-  // Validation schema (no image validation, like team modal)
+  useEffect(() => {
+    if (!open) {
+      setPreviewImage(null);
+      setImageFile(null);
+      setCharCount(0);
+    }
+  }, [open]);
+
   const TestimonialSchema = Yup.object().shape({
     name: Yup.string().trim().required("Name is required"),
     role: Yup.string().trim(),
-    description: Yup.string().trim().required("Description is required"),
+    description: Yup.string()
+      .trim()
+      .required("Description is required")
+      .max(MAX_CHARS, `Description cannot exceed ${MAX_CHARS} characters`),
   });
 
   const handleImageChange = (e) => {
@@ -76,14 +95,19 @@ export const EditTestimonialModal = ({ open, onClose, testimonial, onUpdated }) 
           validationSchema={TestimonialSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, isSubmitting }) => (
+          {({ errors, touched, setFieldValue, isSubmitting }) => (
             <Form className="space-y-4">
               {/* Name */}
               <div>
                 <label className="block text-sm font-medium mb-1" htmlFor="name">
                   Name *
                 </label>
-                <Field id="name" name="name" type="text" className="w-full border p-2 rounded" />
+                <Field
+                  id="name"
+                  name="name"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                />
                 {errors.name && touched.name && (
                   <div className="text-red-600 text-sm mt-1">{errors.name}</div>
                 )}
@@ -94,15 +118,23 @@ export const EditTestimonialModal = ({ open, onClose, testimonial, onUpdated }) 
                 <label className="block text-sm font-medium mb-1" htmlFor="role">
                   Role
                 </label>
-                <Field id="role" name="role" type="text" className="w-full border p-2 rounded" />
+                <Field
+                  id="role"
+                  name="role"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                />
                 {errors.role && touched.role && (
                   <div className="text-red-600 text-sm mt-1">{errors.role}</div>
                 )}
               </div>
 
               {/* Description */}
-              <div>
-                <label className="block text-sm font-medium mb-1" htmlFor="description">
+              <div className="relative">
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="description"
+                >
                   Description *
                 </label>
                 <Field
@@ -111,7 +143,28 @@ export const EditTestimonialModal = ({ open, onClose, testimonial, onUpdated }) 
                   as="textarea"
                   rows={4}
                   className="w-full border p-2 rounded"
+                  onChange={(e) => {
+                    let value = e.target.value;
+
+                    // Normalize newlines & remove trailing spaces
+                    value = value.replace(/\r?\n/g, "\n").replace(/\s+$/g, "");
+
+                    // Limit characters to MAX_CHARS
+                    if (value.length > MAX_CHARS) {
+                      value = value.slice(0, MAX_CHARS);
+                    }
+
+                    setFieldValue("description", value);
+                    setCharCount(value.length);
+                  }}
                 />
+                <p
+                  className={`text-sm ${
+                    charCount === MAX_CHARS ? "text-red-500" : "text-gray-500"
+                  }`}
+                >
+                  {charCount}/{MAX_CHARS} characters
+                </p>
                 {errors.description && touched.description && (
                   <div className="text-red-600 text-sm mt-1">{errors.description}</div>
                 )}

@@ -47,6 +47,8 @@ export const AdminNavbar = () => {
       setTitle("Manage Clients");
     } else if (location.pathname === "/admin/categories") {
       setTitle("Manage Categories");
+    } else if (location.pathname === "/admin/news") {
+      setTitle("Manage News");
     } else if (location.pathname === "/admin/manage-courses") {
       setTitle("Manage Courses");
     } else if (location.pathname === "/admin/course-application") {

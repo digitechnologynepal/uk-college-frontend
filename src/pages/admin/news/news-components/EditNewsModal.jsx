@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import ContentEditor from "../../../../components/content_editor/ContentEditor";
 import { updateNewsApi, getCategoriesApi } from "../../../../apis/api";
+import { X } from "lucide-react";
 
 export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -45,6 +46,9 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
         (value) => value && value.replace(/<(.|\n)*?>/g, "").trim().length > 0
       ),
     categoryTitle: Yup.string().required("Category is required"),
+    tags: Yup.array()
+      .of(Yup.string().required())
+      .min(2, "At least 2 tags are required"),
   });
 
   return (
@@ -59,16 +63,19 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
             description: selectedNews?.description || "",
             categoryTitle:
               selectedNews?.categoryTitle ||
-              categories.find((c) => c.title?.toLowerCase() === "others")?.title ||
+              categories.find((c) => c.title?.toLowerCase() === "others")
+                ?.title ||
               "Others",
             newsImage: null,
+            tags: selectedNews?.tags || [],
           }}
           validationSchema={NewsSchema}
           onSubmit={async (values, { setSubmitting }) => {
             try {
               const selectedCategory =
                 values.categoryTitle ||
-                categories.find((c) => c.title?.toLowerCase() === "others")?.title ||
+                categories.find((c) => c.title?.toLowerCase() === "others")
+                  ?.title ||
                 "Others";
 
               const formData = new FormData();
@@ -78,6 +85,7 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
               if (values.newsImage) {
                 formData.append("newsImage", values.newsImage);
               }
+              values.tags.forEach((tag) => formData.append("tags[]", tag));
 
               const response = await updateNewsApi(formData, selectedNews._id);
               if (response.data.success) {
@@ -92,7 +100,7 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
             }
           }}
         >
-          {({ setFieldValue, isSubmitting }) => (
+          {({ setFieldValue, isSubmitting, values }) => (
             <Form className="space-y-4">
               {/* Category + Image */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -117,7 +125,9 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium">News Image</label>
+                  <label className="block text-sm font-medium">
+                    News Image
+                  </label>
                   <input
                     type="file"
                     accept="image/*"
@@ -131,7 +141,11 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
                   {previewImage ? (
                     <>
                       <p className="mt-2">Preview:</p>
-                      <img src={previewImage} alt="Preview" className="mt-2 w-20" />
+                      <img
+                        src={previewImage}
+                        alt="Preview"
+                        className="mt-2 w-20"
+                      />
                     </>
                   ) : (
                     selectedNews?.image && (
@@ -165,7 +179,9 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-medium">News Description</label>
+                <label className="block text-sm font-medium">
+                  News Description
+                </label>
                 <Field name="description">
                   {({ field, form }) => (
                     <ContentEditor
@@ -178,6 +194,52 @@ export const EditNewsModal = ({ open, onClose, setUpdated, selectedNews }) => {
                 </Field>
                 <ErrorMessage
                   name="description"
+                  component="div"
+                  className="text-red-600 text-sm mt-1"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium">Tags *</label>
+                <div className="flex flex-wrap gap-2 mt-1">
+                  {values.tags.map((tag, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-blue-100 px-2 py-1 rounded flex items-center space-x-1"
+                    >
+                      <span>{tag}</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const newTags = values.tags.filter(
+                            (_, i) => i !== idx
+                          );
+                          setFieldValue("tags", newTags);
+                        }}
+                        className="text-[#204081] font-bold"
+                      >
+                        <X size={15} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Add a tag and press Enter"
+                  className="mt-1 w-full border rounded p-2"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      const newTag = e.target.value.trim();
+                      if (newTag && !values.tags.includes(newTag)) {
+                        setFieldValue("tags", [...values.tags, newTag]);
+                      }
+                      e.target.value = "";
+                    }
+                  }}
+                />
+                <ErrorMessage
+                  name="tags"
                   component="div"
                   className="text-red-600 text-sm mt-1"
                 />

@@ -92,18 +92,18 @@ export const ChooseUs = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={fadeInUp}
-          className="text-center mb-14 max-w-3xl mx-auto"
+          className="text-center mb-10 lg:mb-14 max-w-3xl mx-auto"
         >
-          <h2 className="relative text-3xl sm:text-4xl font-extrabold text-[#262a2b] mb-5">
+          <h2 className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
             Why Choose Us?
           </h2>
-          <p className="font-medium mt-4 text-xl text-gray-600 max-w-3xl mx-auto">
+          <p className="font-medium mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
             {data?.mainTitle}
           </p>
         </motion.div>
 
         {/* Items List */}
-        <div className="space-y-12 lg:space-y-14">
+        <div className="space-y-10 lg:space-y-14">
           {data?.items.map(({ _id, title, description, imageUrl }, i) => (
             <React.Fragment key={_id}>
               <motion.div
@@ -118,7 +118,7 @@ export const ChooseUs = () => {
                 } `}
               >
                 {/* Image */}
-                <div className="w-full md:w-5/12">
+                <div className="w-full md:w-6/12">
                   <div className="w-full h-48 lg:h-72 rounded-lg overflow-hidden shadow-lg">
                     <img
                       src={`${process.env.REACT_APP_API_URL}${imageUrl}`}
@@ -131,12 +131,12 @@ export const ChooseUs = () => {
                 </div>
 
                 {/* Text Content */}
-                <div className="w-full md:w-7/12 md:p-5">
+                <div className="w-full md:w-6/12 ">
                   <h3 className="text-2xl md:text-2xl lg:text-3xl font-semibold text-[#262a2b] mb-3 relative inline-block">
                     {title}
                     <span className="block h-1 w-16 bg-[#d91b1a] rounded mt-2"></span>
                   </h3>
-                  <p className="text-xl text-gray-700 leading-relaxed text-justify">
+                  <p className="text-md lg:text-xl text-gray-700 leading-relaxed text-justify">
                     {description}
                   </p>
                 </div>

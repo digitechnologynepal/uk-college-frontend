@@ -4,15 +4,14 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { updateGalleryContentApi, getCategoriesApi } from "../../../apis/api";
 import { Modal } from "../../../components/Modal";
+import { X } from "lucide-react";
 
 const videoExtensions = [".mp4", ".mov", ".avi", ".mkv", ".webm"];
-const imageExtensions = [".jpg", ".jpeg", ".png"];
 
 export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
   const [preview, setPreview] = useState(null);
   const [categories, setCategories] = useState([]);
 
-  // Fetch categories for "gallery" tab
   useEffect(() => {
     if (!open) return;
 
@@ -44,6 +43,9 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
     date: Yup.string(),
     categoryTitle: Yup.string().required("Category is required"),
     file: Yup.mixed().nullable(),
+    tags: Yup.array()
+      .of(Yup.string().required())
+      .min(2, "At least 2 tags are required"),
   });
 
   const getExtension = (filename) =>
@@ -63,6 +65,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
             categories.find((c) => c.title?.toLowerCase() === "others")?.title ||
             "Others",
           file: null,
+          tags: Array.isArray(item?.tags) ? item.tags : [],
         }}
         validationSchema={GallerySchema}
         onSubmit={async (values, { setSubmitting }) => {
@@ -71,9 +74,8 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
             formData.append("name", values.name);
             formData.append("date", values.date);
             formData.append("categoryTitle", values.categoryTitle);
-            if (values.file) {
-              formData.append("file", values.file);
-            }
+            if (values.file) formData.append("file", values.file);
+            values.tags.forEach((tag) => formData.append("tags[]", tag));
 
             const res = await updateGalleryContentApi(item._id, formData);
             if (res?.data?.success) {
@@ -88,7 +90,7 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
           }
         }}
       >
-        {({ setFieldValue, isSubmitting }) => (
+        {({ setFieldValue, isSubmitting, values }) => (
           <Form className="space-y-4 p-6">
             {/* Name */}
             <div>
@@ -121,6 +123,51 @@ export const EditGalleryModal = ({ item, open, onClose, onUpdated }) => {
                 name="categoryTitle"
                 component="div"
                 className="text-red-500 text-sm mt-1"
+              />
+            </div>
+
+            {/* Tags */}
+            <div>
+              <label className="block text-sm font-medium">Tags</label>
+              <div className="flex flex-wrap gap-2 mt-1">
+                {values.tags.map((tag, idx) => (
+                  <div
+                    key={idx}
+                    className="bg-blue-100 px-2 py-1 rounded flex items-center space-x-1"
+                  >
+                    <span>{tag}</span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newTags = values.tags.filter((_, i) => i !== idx);
+                        setFieldValue("tags", newTags);
+                      }}
+                      className="text-[#204081] font-bold"
+                    >
+                      <X size={15} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <input
+                type="text"
+                placeholder="Add a tag and press Enter"
+                className="mt-1 w-full border rounded p-2"
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    const newTag = e.target.value.trim();
+                    if (newTag && !values.tags.includes(newTag)) {
+                      setFieldValue("tags", [...values.tags, newTag]);
+                    }
+                    e.target.value = "";
+                  }
+                }}
+              />
+              <ErrorMessage
+                name="tags"
+                component="div"
+                className="text-red-600 text-sm mt-1"
               />
             </div>
 

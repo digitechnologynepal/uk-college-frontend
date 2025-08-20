@@ -5,11 +5,11 @@ module.exports = {
   ],
   theme: {
     extend: {
-      colors: {
-        primary: "#003366",
+      screens: {
+        'tablet': '820px', 
       },
     },
-   
+
   },
   plugins: [],
   variants: {

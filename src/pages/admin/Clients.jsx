@@ -94,7 +94,7 @@ export const Clients = () => {
     <>
       <main className="p-4">
         <div className="flex flex-col sm:flex-row justify-between mb-6 items-center gap-4">
-          <Title title="Clients" />
+          <Title title="Clients ('Our Partners')" />
           <div className="flex items-center gap-3 flex-wrap w-auto">
             <input
               type="text"
@@ -111,7 +111,6 @@ export const Clients = () => {
             </button>
           </div>
         </div>
-
         <p className="mb-4 font-medium text-lg">
           Showing <b>{filteredClients.length}</b>{" "}
           {filteredClients.length === 1 ? "client" : "clients"}
@@ -193,7 +192,7 @@ export const Clients = () => {
                     onClick={() => setCurrentPage(page)}
                     className={`px-3 py-1 rounded-md border ${
                       currentPage === page
-                        ? "bg-blue-600 text-white"
+                        ? "bg-[#204081] text-white"
                         : "bg-white text-gray-700 hover:bg-gray-100"
                     }`}
                   >

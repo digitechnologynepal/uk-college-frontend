@@ -92,7 +92,7 @@ export const Navbar = ({ institutionProfile }) => {
                 { path: "/", label: "Home" },
                 { path: "/aboutus", label: "About Us" },
                 { path: "/course", label: "Courses" },
-                { path: "/clients", label: "Our Clients" },
+                { path: "/partners", label: "Our Partners" },
                 { path: "/galleryview", label: "Gallery" },
                 { path: "/news", label: "News & Events" },
               ].map(({ path, label }) => (
@@ -169,7 +169,7 @@ export const Navbar = ({ institutionProfile }) => {
               { to: "/", label: "Home" },
               { to: "/aboutus", label: "About Us" },
               { to: "/course", label: "Courses" },
-              { to: "/clients", label: "Our Clients" },
+              { to: "/partners", label: "Our Partners" },
               { to: "/galleryview", label: "Gallery" },
               { to: "/news", label: "News & Events" },
               { to: "/contact", label: "Contact" },

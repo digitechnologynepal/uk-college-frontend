@@ -117,9 +117,9 @@ export const NewsDescription = () => {
           {/* Title and Date */}
           <div className="space-y-2">
             {singleNews.categoryTitle && (
-              <div className="flex items-center gap-2">
-                <span className="h-5 w-1 bg-[#d91b1a]" />
-                <p className="text-md font-bold text-[#d91b1a] capitalize">
+              <div className="flex items-center gap-2 mb-5">
+                <span className="h-10 w-1 bg-[#d91b1a]" />
+                <p className="text-xl text-[#d91b1a] capitalize">
                   {singleNews.categoryTitle}
                 </p>
               </div>
@@ -190,6 +190,18 @@ export const NewsDescription = () => {
           {/* Description */}
           <div className="text-justify prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-md prose-img:shadow">
             <ContentView model={singleNews.description} />
+            {singleNews.tags && singleNews.tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-6">
+                {singleNews.tags.map((tag, idx) => (
+                  <span
+                    key={idx}
+                    className="text-[#204081] px-2 py-1 rounded font-bold"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 

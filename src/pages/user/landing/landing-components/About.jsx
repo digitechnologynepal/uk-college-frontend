@@ -161,7 +161,7 @@ export const About = () => {
         <div className="flex flex-col max-w-6xl mx-auto">
           <section className="pb-24">
             <div>
-              <p className="mb-0 lg:mb-10 text-center text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
+              <p className="mb-0 lg:mb-10 text-center text-2xl lg:text-4xl font-bold text-[#262a2b]">
                 {data?.title}
               </p>
             </div>
@@ -196,7 +196,7 @@ export const About = () => {
           ) : (
             <section className="w-full pb-24">
               <div className="max-w-6xl text-center">
-                <p className="mb-10 text-left text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
+                <p className="mb-10 text-center text-2xl lg:text-4xl font-bold text-[#262a2b]">
                   {mottoData.motoTitle}
                 </p>
 

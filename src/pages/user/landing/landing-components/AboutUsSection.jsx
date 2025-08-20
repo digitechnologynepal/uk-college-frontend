@@ -68,9 +68,9 @@ export const AboutUsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
           viewport={{ once: true }}
-          className="text-center mb-20"
+          className="text-center mb-10 lg:mb-20"
         >
-          <h2 className="relative text-4xl font-extrabold text-[#262a2b]">
+          <h2 className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b]">
             {data.title}
           </h2>
         </motion.div>
@@ -81,7 +81,7 @@ export const AboutUsSection = () => {
           whileInView={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
           viewport={{ once: true }}
-          className="grid md:grid-cols-3 gap-6 items-start"
+          className="grid md:grid-cols-3 gap-3 lg:gap-6 items-start"
         >
           <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
             <img
@@ -109,7 +109,7 @@ export const AboutUsSection = () => {
           </div>
         </motion.div>
 
-        <div className="mt-20 text-center">
+        <div className="mt-10 lg:mt-20 text-center">
           <button
             onClick={handleReadMore}
             className="inline-flex items-center gap-2 text-white bg-[#204081] hover:bg-[#4671c8] px-6 py-3 rounded-md shadow-lg transition"

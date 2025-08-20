@@ -4,6 +4,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { createGalleryContentApi, getCategoriesApi } from "../../../apis/api";
 import { Modal } from "../../../components/Modal";
+import { X } from "lucide-react";
 
 const isVideoFile = (file) => file?.type?.startsWith("video/");
 
@@ -53,6 +54,9 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
           file: Yup.mixed().required("File is required"),
           categoryTitle: Yup.string(),
           date: Yup.string().nullable(),
+          tags: Yup.array()
+            .of(Yup.string().required())
+            .min(2, "At least 2 tags are required"),
         })
       )
       .min(1, "Add at least one item"),
@@ -71,6 +75,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                 categories.find((c) => c.title?.toLowerCase() === "others")
                   ?.title || "Others",
               date: "",
+              tags: [],
             },
           ],
         }}
@@ -102,6 +107,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                   ?.title ||
                 "Others";
               formData.append("categoryTitle", selectedCategory);
+              item.tags.forEach((tag) => formData.append("tags[]", tag));
             });
 
             const res = await createGalleryContentApi(formData);
@@ -182,6 +188,59 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                   />
                 </div>
 
+                {/* Tags */}
+                <div>
+                  <label className="block text-sm font-medium">Tags</label>
+                  <div className="flex flex-wrap gap-2 mt-1">
+                    {values.items[index].tags.map((tag, idx) => (
+                      <div
+                        key={idx}
+                        className="bg-blue-100 px-2 py-1 rounded flex items-center space-x-1"
+                      >
+                        <span>{tag}</span>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const newTags = values.items[index].tags.filter(
+                              (_, i) => i !== idx
+                            );
+                            setFieldValue(`items.${index}.tags`, newTags);
+                          }}
+                          className="text-[#204081] font-bold"
+                        >
+                          <X size={15} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Add a tag and press Enter"
+                    className="mt-1 w-full border rounded p-2"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        const newTag = e.target.value.trim();
+                        if (
+                          newTag &&
+                          !values.items[index].tags.includes(newTag)
+                        ) {
+                          setFieldValue(`items.${index}.tags`, [
+                            ...values.items[index].tags,
+                            newTag,
+                          ]);
+                        }
+                        e.target.value = "";
+                      }
+                    }}
+                  />
+                  <ErrorMessage
+                    name={`items.${index}.tags`}
+                    component="div"
+                    className="text-red-600 text-sm mt-1"
+                  />
+                </div>
+
                 {/* File */}
                 <div>
                   <label className="block text-sm font-medium">File</label>
@@ -234,7 +293,6 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                       </div>
                     )}
 
-                    {/* New preview */}
                     {previews[index] && (
                       <div className="text-sm text-gray-700">
                         <p className="mb-1">New Preview:</p>

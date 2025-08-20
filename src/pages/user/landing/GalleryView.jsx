@@ -430,9 +430,22 @@ export const GalleryView = () => {
                     )}
                   </p>
                 )}
-                <h2 className="text-sm lg:text-xl md:text-lg font-semibold text-white">
+                <h2 className="text-sm lg:text-2xl md:text-lg font-semibold text-white">
                   {selectedContent.name}
                 </h2>
+
+                {selectedContent.tags && selectedContent.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-2">
+                    {selectedContent.tags.map((tag, idx) => (
+                      <span
+                        key={idx}
+                        className="text-white py-1 rounded font-bold"
+                      >
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             </motion.div>
           </motion.div>

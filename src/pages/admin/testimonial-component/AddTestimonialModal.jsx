@@ -11,12 +11,15 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const fileInputRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
-  const [wordCount, setWordCount] = useState(0);
+  const [charCount, setCharCount] = useState(0);
+
+  const MAX_CHARS = 600;
 
   useEffect(() => {
     if (!open) {
       setFormKey((k) => k + 1);
       setPreviewImage(null);
+      setCharCount(0); // reset character count when modal closes
       if (fileInputRef.current) fileInputRef.current.value = "";
     }
   }, [open]);
@@ -27,20 +30,13 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
     };
   }, [previewImage]);
 
-  // Validation schema
   const TestimonialSchema = Yup.object().shape({
     name: Yup.string().trim().required("Name is required"),
     role: Yup.string().trim(),
     description: Yup.string()
       .trim()
       .required("Description is required")
-      .test("maxWords", "Description cannot exceed 50 words", (value) => {
-        if (!value) return true;
-        // Normalize multiple spaces, tabs, newlines
-        const words = value.trim().replace(/\s+/g, " ").split(" ");
-        return words.length <= 50;
-      }),
-
+      .max(MAX_CHARS, `Description cannot exceed ${MAX_CHARS} characters`),
     image: Yup.mixed()
       .notRequired()
       .test(
@@ -89,6 +85,7 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
                 onAdded();
                 resetForm();
                 setPreviewImage(null);
+                setCharCount(0);
                 if (fileInputRef.current) fileInputRef.current.value = "";
                 onClose();
               }
@@ -158,14 +155,22 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
                   rows={4}
                   className="w-full border p-2 rounded"
                   onChange={(e) => {
-                    setFieldValue("description", e.target.value);
-                    setWordCount(
-                      e.target.value.trim().split(/\s+/).filter(Boolean).length
-                    );
+                    let value = e.target.value;
+
+                    // Limit characters
+                    if (value.length > MAX_CHARS) value = value.slice(0, MAX_CHARS);
+
+                    setFieldValue("description", value);
+                    setCharCount(value.length);
                   }}
                 />
-                <p className="text-sm text-gray-500">{wordCount}/50 words</p>
-
+                <p
+                  className={`text-sm ${
+                    charCount === MAX_CHARS ? "text-red-500" : "text-gray-500"
+                  }`}
+                >
+                  {charCount}/{MAX_CHARS} characters
+                </p>
                 <ErrorMessage
                   name="description"
                   component="div"

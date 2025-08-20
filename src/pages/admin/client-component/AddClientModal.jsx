@@ -5,13 +5,13 @@ import { createClientApi } from "../../../apis/api";
 import { ErrorHandler } from "../../../components/error/errorHandler";
 import { Field, Form, Formik } from "formik";
 import * as Yup from "yup";
-import toast from "react-hot-toast";
-import { CircleX } from "lucide-react";
 import Swal from "sweetalert2";
+import { CircleX } from "lucide-react";
 
 export const AddClientModal = ({ open, onClose, onAdded }) => {
   const [previewImage, setPreviewImage] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [previewClientImage, setPreviewClientImage] = useState(null);
   const fileInputRef = useRef(null);
   const [formKey, setFormKey] = useState(0);
 
@@ -20,9 +20,8 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
     if (!open) {
       setPreviewImage(null);
       setImageFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = null;
-      }
+      setPreviewClientImage(null);
+      if (fileInputRef.current) fileInputRef.current.value = null;
       setFormKey((prev) => prev + 1);
     }
   }, [open]);
@@ -40,7 +39,34 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
       .trim()
       .matches(/^$|^(\+)?[\d\s\-()]{7,20}$/, "Invalid phone number format"),
     location: Yup.string().trim(),
-    image: Yup.mixed().required("Image is required"),
+    image: Yup.mixed()
+      .required("Main image is required")
+      .test(
+        "fileType",
+        "Only JPEG/PNG files are allowed",
+        (value) =>
+          value && ["image/jpeg", "image/png", "image/jpg"].includes(value.type)
+      )
+      .test(
+        "fileSize",
+        "File is too large (max 5MB)",
+        (value) => value && value.size <= 5 * 1024 * 1024
+      ),
+    clientImageURL: Yup.string()
+      .trim()
+      .notRequired()
+      .url("Must be a valid URL starting with http:// or https://")
+      .matches(/^$|^https?:\/\//, "URL must start with http:// or https://"),
+    fbVideoUrl: Yup.string()
+      .trim()
+      .url("Must be a valid Facebook video URL")
+      .matches(/^$|^https?:\/\//)
+      .notRequired(),
+    ytVideoUrl: Yup.string()
+      .trim()
+      .url("Must be a valid YouTube URL")
+      .matches(/^$|^https?:\/\//)
+      .notRequired(),
   });
 
   const handleSubmit = async (values, { resetForm }) => {
@@ -50,6 +76,12 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
     if (values.number) formData.append("number", values.number.trim());
     if (values.location) formData.append("location", values.location.trim());
     if (imageFile) formData.append("image", imageFile);
+    if (values.clientImageURL)
+      formData.append("clientImage", values.clientImageURL);
+    if (values.fbVideoUrl)
+      formData.append("fbVideoUrl", values.fbVideoUrl.trim());
+    if (values.ytVideoUrl)
+      formData.append("ytVideoUrl", values.ytVideoUrl.trim());
 
     try {
       const res = await createClientApi(formData);
@@ -59,6 +91,7 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
         resetForm();
         setPreviewImage(null);
         setImageFile(null);
+        setPreviewClientImage(null);
         if (fileInputRef.current) fileInputRef.current.value = null;
         onClose();
       }
@@ -78,11 +111,14 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
             number: "",
             location: "",
             image: null,
+            clientImageURL: "",
+            fbVideoUrl: "",
+            ytVideoUrl: "",
           }}
           validationSchema={clientSchema}
           onSubmit={handleSubmit}
         >
-          {({ errors, touched, setFieldValue, isSubmitting }) => (
+          {({ errors, touched, setFieldValue, values, isSubmitting }) => (
             <Form className="space-y-4">
               {/* Name */}
               <div>
@@ -141,10 +177,10 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
                 />
               </div>
 
-              {/* Image */}
+              {/* Main Image */}
               <div>
                 <label className="block text-sm font-medium mb-1">
-                  Image *
+                  Main Image *
                 </label>
                 {previewImage && (
                   <div className="flex items-center gap-4 mb-2">
@@ -175,16 +211,86 @@ export const AddClientModal = ({ open, onClose, onAdded }) => {
                     const file = e.target.files[0];
                     setImageFile(file);
                     setFieldValue("image", file || null);
-                    if (file) {
-                      setPreviewImage(URL.createObjectURL(file));
-                    } else {
-                      setPreviewImage(null);
-                    }
+                    setPreviewImage(file ? URL.createObjectURL(file) : null);
                   }}
                 />
                 {errors.image && touched.image && (
                   <div className="text-red-600 text-sm">{errors.image}</div>
                 )}
+              </div>
+
+              {/* Client Image URL */}
+              <div>
+                <label className="block text-sm font-medium">
+                  Client Image URL
+                </label>
+                <p className="text-xs text-[#2d5dbc] mb-1">
+                  Guide: Go to the facebook image and <b>"Copy image address"</b>
+                </p>
+                <Field
+                  name="clientImageURL"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  placeholder="https://example.com/image.jpg"
+                  onChange={(e) => {
+                    setFieldValue("clientImageURL", e.target.value);
+                    setPreviewClientImage(e.target.value || null);
+                  }}
+                />
+                {errors.clientImageURL && touched.clientImageURL && (
+                  <div className="text-red-600 text-sm">
+                    {errors.clientImageURL}
+                  </div>
+                )}
+                {previewClientImage && (
+                  <div className="flex items-center gap-4 mt-2">
+                    <img
+                      src={previewClientImage}
+                      alt="Client Preview"
+                      className="w-24 h-24 object-cover rounded shadow"
+                    />
+                    <CircleX
+                      className="text-red-600 cursor-pointer"
+                      size={28}
+                      onClick={() => {
+                        setPreviewClientImage(null);
+                        setFieldValue("clientImageURL", "");
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Facebook Video URL */}
+              <div>
+                <label className="block text-sm font-medium">
+                  Facebook Video URL
+                </label>
+                <p className="text-xs text-[#2d5dbc] mb-1">
+                  Guide: <b>Open</b> the facebook video and <b>"Copy address"</b>
+                  <br />
+                  The URL should look something like
+                  "https://www.facebook.com/ukcolleges/videos/videoId"
+                </p>
+                <Field
+                  name="fbVideoUrl"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  placeholder="https://www.facebook.com/..."
+                />
+              </div>
+
+              {/* YouTube Video URL */}
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  YouTube Video URL
+                </label>
+                <Field
+                  name="ytVideoUrl"
+                  type="text"
+                  className="w-full border p-2 rounded"
+                  placeholder="https://www.youtube.com/..."
+                />
               </div>
 
               {/* Submit */}

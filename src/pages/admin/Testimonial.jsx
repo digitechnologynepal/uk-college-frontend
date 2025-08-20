@@ -14,6 +14,8 @@ export const Testimonial = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [selectedTestimonial, setSelectedTestimonial] = useState(null);
 
+  const MAX_TESTIMONIALS = 6;
+
   useEffect(() => {
     fetchTestimonials();
   }, []);
@@ -65,7 +67,25 @@ export const Testimonial = () => {
       <main className="p-4">
         <div className="flex justify-between mb-10">
           <Title title="Client Testimonials" />
-          <button onClick={() => setShowAddModal(true)} className="btn-primary">
+          <button
+            onClick={() => {
+              if (testimonials.length >= MAX_TESTIMONIALS) {
+                Swal.fire(
+                  "Limit reached",
+                  `You can only add up to ${MAX_TESTIMONIALS} testimonials.`,
+                  "warning"
+                );
+                return;
+              }
+              setShowAddModal(true);
+            }}
+            className={`btn-primary ${
+              testimonials.length >= MAX_TESTIMONIALS
+                ? "opacity-50 cursor-not-allowed"
+                : ""
+            }`}
+          >
+            {" "}
             Add Testimonial
           </button>
         </div>
