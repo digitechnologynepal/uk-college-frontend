@@ -83,7 +83,7 @@ export const Group = () => {
         </p> */}
       </div>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-6xl mx-auto">
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {group.items.map((item, i) => (
             <div

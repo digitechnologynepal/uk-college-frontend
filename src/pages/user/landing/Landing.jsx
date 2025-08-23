@@ -3,54 +3,45 @@ import { AboutUsSection } from "./landing-components/AboutUsSection";
 import { getBannerApi } from "../../../apis/api";
 import { RecentNewsSection } from "./landing-components/RecentNewsSection";
 import { ChooseUs } from "./landing-components/ChooseUs";
-import webbanner from "../../../assets/images/bannerrrr.png";
-import mobbanner from "../../../assets/images/mbannerrrr.png";
-// import model from "../../../assets/images/girl-reading-book.png";
 import model from "../../../assets/images/model.png";
 import ncc from "../../../assets/images/nccs.png";
 import ofqual from "../../../assets/images/ofqual.png";
 import { ClientTestimonial } from "./landing-components/ClientTestimonial";
 
 export const Landing = ({ institutionProfile }) => {
-  const [bannerTitle, setBannerTitle] = useState("");
-  const [bannerDescription, setBannerDescription] = useState("");
-  const [heroImage, setHeroImage] = useState("");
+  const [banners, setBanners] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  // Fetch banners
   useEffect(() => {
-    const fetchHeroImage = async () => {
+    const fetchBanners = async () => {
       try {
         const res = await getBannerApi();
         if (res.data.success && res.data.result.length > 0) {
-          const banner = res.data.result[0];
-
-          setBannerTitle(banner.title || "");
-          setBannerDescription(banner.description || "");
-
-          const updateImage = () => {
-            const isMobile = window.innerWidth <= 820; // Change image when below 820px
-            // setHeroImage(
-            //   `${process.env.REACT_APP_API_URL}/uploads/${
-            //     isMobile ? banner.mobileImage : banner.desktopImage
-            //   }`
-            // );
-            setHeroImage(isMobile ? mobbanner : webbanner);
-          };
-
-          updateImage();
-          window.addEventListener("resize", updateImage);
-
-          return () => window.removeEventListener("resize", updateImage);
+          setBanners(res.data.result.slice(0, 2)); // max 2 banners
         }
       } catch (err) {
-        console.error("Error fetching banner image", err);
+        console.error("Error fetching banners", err);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHeroImage();
+    fetchBanners();
   }, []);
+
+  // Switch banner infos if more than 1
+  useEffect(() => {
+    if (banners.length > 1) {
+      const interval = setInterval(() => {
+        setCurrentIndex((prev) => (prev + 1) % banners.length);
+      }, 4000);
+      return () => clearInterval(interval);
+    }
+  }, [banners]);
+
+  const currentBanner = banners[currentIndex];
 
   return (
     <>
@@ -69,11 +60,17 @@ export const Landing = ({ institutionProfile }) => {
 
             {/* Text Content */}
             <div className="relative z-20 flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-1/2 mt-12 lg:mt-0">
-              <h1 className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight">
-                {bannerTitle}
+              <h1
+                key={currentIndex}
+                className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight opacity-0 animate-slide-in-right"
+              >
+                {currentBanner?.title || ""}
               </h1>
-              <p className="mt-3 sm:mt-4 md:mt-6 text-base sm:text-lg md:text-xl lg:text-2xl lg:leading-relaxed max-w-xl md:max-w-2xl">
-                {bannerDescription}
+              <p
+                key={`desc-${currentIndex}`}
+                className="mt-3 sm:mt-4 md:mt-6 text-base sm:text-lg md:text-xl lg:text-2xl lg:leading-relaxed max-w-xl md:max-w-2xl opacity-0 animate-slide-in-right-slow"
+              >
+                {currentBanner?.description || ""}
               </p>
 
               {/* Logos */}
@@ -82,15 +79,15 @@ export const Landing = ({ institutionProfile }) => {
                   src={ncc}
                   className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
                 />
-                <div className="border-r-2 border-white h-6 sm:h-8 md:h-10 lg:h-14" />
+                {/* <div className="border-r-2 border-white h-6 sm:h-8 md:h-10 lg:h-14" />
                 <img
                   src={ofqual}
                   className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
-                />
+                /> */}
               </div>
             </div>
 
-            {/* Right Model Image - Always Stuck to Bottom */}
+            {/* Right Model Image */}
             <div className="absolute bottom-0 left-1/2 lg:left-auto lg:right-20 transform -translate-x-1/2 lg:translate-x-0 z-10 w-full lg:w-1/2 flex justify-center lg:justify-end">
               <img
                 src={model}
@@ -99,34 +96,6 @@ export const Landing = ({ institutionProfile }) => {
               />
             </div>
           </div>
-
-          {/* Tailwind Custom Animations */}
-          <style jsx>{`
-            @keyframes float {
-              0%,
-              100% {
-                transform: translateY(0px);
-              }
-              50% {
-                transform: translateY(-20px);
-              }
-            }
-            @keyframes float-slow {
-              0%,
-              100% {
-                transform: translateY(0px);
-              }
-              50% {
-                transform: translateY(-40px);
-              }
-            }
-            .animate-float {
-              animation: float 6s ease-in-out infinite;
-            }
-            .animate-float-slow {
-              animation: float-slow 10s ease-in-out infinite;
-            }
-          `}</style>
         </section>
       </div>
       <AboutUsSection />

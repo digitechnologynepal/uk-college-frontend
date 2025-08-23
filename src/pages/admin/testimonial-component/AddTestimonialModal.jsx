@@ -13,7 +13,7 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
   const [formKey, setFormKey] = useState(0);
   const [charCount, setCharCount] = useState(0);
 
-  const MAX_CHARS = 600;
+  const MAX_CHARS = 400;
 
   useEffect(() => {
     if (!open) {
@@ -158,7 +158,8 @@ export const AddTestimonialModal = ({ open, onClose, onAdded }) => {
                     let value = e.target.value;
 
                     // Limit characters
-                    if (value.length > MAX_CHARS) value = value.slice(0, MAX_CHARS);
+                    if (value.length > MAX_CHARS)
+                      value = value.slice(0, MAX_CHARS);
 
                     setFieldValue("description", value);
                     setCharCount(value.length);

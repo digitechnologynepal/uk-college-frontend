@@ -161,7 +161,7 @@ export const About = () => {
         <div className="flex flex-col max-w-6xl mx-auto">
           <section className="pb-24">
             <div>
-              <p className="mb-0 lg:mb-10 text-center text-2xl lg:text-4xl font-bold text-[#262a2b]">
+              <p className="relative text-center text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
                 {data?.title}
               </p>
             </div>
@@ -196,7 +196,7 @@ export const About = () => {
           ) : (
             <section className="w-full pb-24">
               <div className="max-w-6xl text-center">
-                <p className="mb-10 text-center text-2xl lg:text-4xl font-bold text-[#262a2b]">
+                <p className="relative text-center text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
                   {mottoData.motoTitle}
                 </p>
 
@@ -220,7 +220,7 @@ export const About = () => {
                   </div>
 
                   {/* Vision */}
-                   <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+                  <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
                     <div className="flex items-center justify-center mb-5 space-x-3 lg:block lg:mx-auto">
                       <div className="w-10 h-10 lg:w-16 lg:h-16 flex items-center justify-center rounded-full bg-[#d91b1a]/10 lg:mx-auto">
                         <TbTargetArrow className="text-[#d91b1a] w-2/3 h-2/3" />

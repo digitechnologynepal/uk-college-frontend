@@ -57,12 +57,12 @@ export const TeamMembers = () => {
   if (teamMembers.length === 0) return null;
 
   return (
-    <section className="py-24 px-4">
+    <section className="pb-24 px-4">
       <div className="max-w-7xl mx-auto text-center mb-14">
-        <p className="text-center text-[28px] sm:text-[32px] md:text-[40px] font-extrabold text-[#262a2b]">
+        <p className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
           Meet Our Team
         </p>
-        <p className="text-gray-500 text-2xl mt-2">
+        <p className="font-medium mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
           Talented minds behind our success
         </p>
       </div>

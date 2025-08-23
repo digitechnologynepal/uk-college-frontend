@@ -3,6 +3,7 @@ import toast from "react-hot-toast";
 import { createGroupItemApi, updateGroupItemApi } from "../../../apis/api";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
+import Swal from "sweetalert2";
 
 export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
   const [previewImage, setPreviewImage] = useState(null);
@@ -65,7 +66,7 @@ export const GroupItemForm = ({ item, onClose, setMainData, mainId }) => {
 
           if (res.data.success) {
             setMainData(res.data.result);
-            toast.success("Item saved successfully");
+            Swal.fire("Success", "Group member has been added.", "success");
             onClose();
           } else {
             toast.error("Failed to save item");

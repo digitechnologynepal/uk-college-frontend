@@ -10,7 +10,7 @@ export const Navbar = ({ institutionProfile }) => {
     "/admin/dashboard",
     "/admin/aboutus",
     "/admin/banner",
-    "/admin/achievements",
+    "/admin/motto",
     "/admin/stats",
     "/admin/manage-gallery",
     "/admin/manage-courses",

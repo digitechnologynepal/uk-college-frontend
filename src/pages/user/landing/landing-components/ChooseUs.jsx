@@ -112,7 +112,6 @@ export const ChooseUs = () => {
                 whileInView="visible"
                 viewport={{ once: true }}
                 variants={fadeInUp}
-                loading="lazy"
                 className={`flex flex-col md:flex-row items-center md:items-start gap-4 lg:gap-10 ${
                   i % 2 !== 0 ? "md:flex-row-reverse" : ""
                 } `}

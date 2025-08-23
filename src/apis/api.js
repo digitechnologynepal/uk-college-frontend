@@ -79,14 +79,14 @@ export const updateGlimpseStatusApi = (id, data) => Api.put(`/api/admin/glimpses
 export const deleteGlimpseApi = (id) => Api.delete(`/api/admin/glimpses/delete/${id}`, config)
 export const getGlimpseForUserApi = () => Api.get('/api/user/glimpses/get', config)
 
-// Banner
-export const addBannerApi = async (formData) => ApiWithFormData.post("/api/admin/banner/upload-banner", formData, config);
+// Banner APIs
+export const addBannerApi = async (data) => Api.post("/api/admin/banner/create", data, config);
+export const getBannerApi = async () => Api.get("/api/admin/banner", config);
+export const updateBannerApi = async (data, id) => Api.put(`/api/admin/banner/${id}`, data, config);
 export const deleteBannerApi = async (id) => Api.delete(`/api/admin/banner/${id}`, config);
-export const getBannerApi = async () => Api.get("/api/admin/banner");
-export const updateBannerApi = async (formData, id) => ApiWithFormData.put(`/api/admin/banner/${id}`, formData, config);
 
-export const addMottoApi = async (data) => ApiWithFormData.post("/api/admin/motto/add", data, config);
-export const getMottoApi = async () => ApiWithFormData.get("/api/admin/motto");
+export const addMottoApi = async (data) => Api.post("/api/admin/motto/add", data);
+export const getMottoApi = async () => Api.get("/api/admin/motto");
 
 export const sendContactFormApi = (data) => Api.post('/api/contact/send', data);
 export const getContactsApi = (page, limit) => Api.get(`/api/contact/?page=${page}&limit=${limit}`, config);

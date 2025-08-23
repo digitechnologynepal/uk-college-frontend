@@ -32,7 +32,7 @@ function AdminSidebar() {
     {
       label: "mission and vision section",
       icon: <Trophy className="size-4" />,
-      link: "/admin/achievements",
+      link: "/admin/motto",
     },
     {
       label: "manage gallery",

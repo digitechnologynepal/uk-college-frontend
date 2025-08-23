@@ -47,7 +47,6 @@ export const Courses = () => {
           Swal.fire({
             icon: "success",
             title: "Course deleted successfully",
-            showConfirmButton: false,
             timer: 1500,
           });
           setUpdated((prev) => !prev);

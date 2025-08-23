@@ -22,7 +22,7 @@ export const Footer = () => {
     "/admin/dashboard",
     "/admin/aboutus",
     "/admin/banner",
-    "/admin/achievements",
+    "/admin/motto",
     "/admin/stats",
     "/admin/applied-students",
     "/admin/test-preparation",

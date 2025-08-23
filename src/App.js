@@ -80,7 +80,7 @@ function App() {
                 element={<AdminLayout children={<AboutUsForm />} />}
               />
               <Route
-                path="/admin/achievements"
+                path="/admin/motto"
                 element={<AdminLayout children={<Motto />} />}
               />
               <Route

@@ -31,7 +31,7 @@ export const AdminNavbar = () => {
       setTitle("Banner Section");
     } else if (location.pathname === "/admin/aboutus") {
       setTitle("About Us");
-    } else if (location.pathname === "/admin/achievements") {
+    } else if (location.pathname === "/admin/motto") {
       setTitle("Mission and Vision");
     } else if (location.pathname === "/admin/whychooseus") {
       setTitle("Why Choose Us");

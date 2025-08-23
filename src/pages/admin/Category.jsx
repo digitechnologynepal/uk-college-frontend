@@ -74,7 +74,6 @@ export const Category = () => {
           Swal.fire({
             icon: "success",
             title: "Category deleted successfully",
-            showConfirmButton: false,
             timer: 1500,
           });
           fetchCategories();

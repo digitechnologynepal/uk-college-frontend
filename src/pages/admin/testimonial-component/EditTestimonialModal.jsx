@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import Swal from "sweetalert2";
 import * as Yup from "yup";
@@ -17,8 +17,8 @@ export const EditTestimonialModal = ({
   const [imageFile, setImageFile] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [charCount, setCharCount] = useState(0);
-
-  const MAX_CHARS = 600;
+  const formikRef = useRef(null);
+  const MAX_CHARS = 400;
 
   useEffect(() => {
     if (testimonial) {
@@ -33,12 +33,15 @@ export const EditTestimonialModal = ({
   }, [testimonial]);
 
   useEffect(() => {
+    if (open && testimonial) {
+      setCharCount(testimonial.description?.length || 0);
+    }
     if (!open) {
       setPreviewImage(null);
       setImageFile(null);
-      setCharCount(0);
+      formikRef.current?.resetForm();
     }
-  }, [open]);
+  }, [open, testimonial]);
 
   const TestimonialSchema = Yup.object().shape({
     name: Yup.string().trim().required("Name is required"),
@@ -86,6 +89,7 @@ export const EditTestimonialModal = ({
     <Modal open={open} onClose={onClose} modalTitle="Edit Testimonial">
       <section className="w-full max-w-3xl p-6 mx-auto">
         <Formik
+          innerRef={formikRef}
           enableReinitialize
           initialValues={{
             name: testimonial?.name || "",
@@ -99,7 +103,10 @@ export const EditTestimonialModal = ({
             <Form className="space-y-4">
               {/* Name */}
               <div>
-                <label className="block text-sm font-medium mb-1" htmlFor="name">
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="name"
+                >
                   Name *
                 </label>
                 <Field
@@ -115,7 +122,10 @@ export const EditTestimonialModal = ({
 
               {/* Role */}
               <div>
-                <label className="block text-sm font-medium mb-1" htmlFor="role">
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="role"
+                >
                   Role
                 </label>
                 <Field
@@ -145,9 +155,7 @@ export const EditTestimonialModal = ({
                   className="w-full border p-2 rounded"
                   onChange={(e) => {
                     let value = e.target.value;
-
-                    // Normalize newlines & remove trailing spaces
-                    value = value.replace(/\r?\n/g, "\n").replace(/\s+$/g, "");
+                    value = value.replace(/\r?\n/g, "\n");
 
                     // Limit characters to MAX_CHARS
                     if (value.length > MAX_CHARS) {
@@ -166,13 +174,18 @@ export const EditTestimonialModal = ({
                   {charCount}/{MAX_CHARS} characters
                 </p>
                 {errors.description && touched.description && (
-                  <div className="text-red-600 text-sm mt-1">{errors.description}</div>
+                  <div className="text-red-600 text-sm mt-1">
+                    {errors.description}
+                  </div>
                 )}
               </div>
 
               {/* Image Upload */}
               <div>
-                <label className="block text-sm font-medium mb-1" htmlFor="image">
+                <label
+                  className="block text-sm font-medium mb-1"
+                  htmlFor="image"
+                >
                   Image
                 </label>
                 {previewImage && (
@@ -199,7 +212,9 @@ export const EditTestimonialModal = ({
                   disabled={isSubmitting || isLoading}
                   className="btn-primary"
                 >
-                  {isSubmitting || isLoading ? "Updating..." : "Update Testimonial"}
+                  {isSubmitting || isLoading
+                    ? "Updating..."
+                    : "Update Testimonial"}
                 </Button>
               </div>
             </Form>

@@ -97,7 +97,7 @@ export const RecentNewsSection = () => {
         viewport={{ once: true }}
         className="text-center mb-12"
       >
-        <h2 className="text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b]">
+        <h2 className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
           Recent News
         </h2>
         <p className="font-medium mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">

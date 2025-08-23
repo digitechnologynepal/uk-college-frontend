@@ -1,78 +1,56 @@
 import { useState, useEffect } from "react";
-import { Button } from "../../components/Button";
+import { FaRegFileAlt, FaRegEdit } from "react-icons/fa";
+import { Trash } from "lucide-react";
+import Swal from "sweetalert2";
 import {
   addBannerApi,
   updateBannerApi,
   deleteBannerApi,
   getBannerApi,
 } from "../../apis/api";
-import toast from "react-hot-toast";
 import { ErrorHandler } from "../../components/error/errorHandler";
-import { FaImage, FaRegFileAlt, FaRegEdit } from "react-icons/fa";
-import { Trash } from "lucide-react";
 
 export const BannerPage = () => {
   const [banners, setBanners] = useState([]);
   const [isBuilderOpen, setIsBuilderOpen] = useState(false);
   const [currentBanner, setCurrentBanner] = useState(null);
-  const [newDesktopImagePreview, setNewDesktopImagePreview] = useState(null);
-  const [newMobileImagePreview, setNewMobileImagePreview] = useState(null);
 
-  // Fetch all banners
+  const MAX_BANNERS = 2;
+
   const fetchBanners = async () => {
     try {
       const res = await getBannerApi();
-      if (res.data.success) {
-        setBanners(res.data.result);
-      }
+      if (res.data.success) setBanners(res.data.result);
     } catch (err) {
       ErrorHandler(err);
     }
   };
 
+  useEffect(() => {
+    fetchBanners();
+  }, []);
+
   const handleSaveBanner = async () => {
+    const title = document.getElementById("title").value.trim();
+    const description = document.getElementById("description").value.trim();
+
+    if (!title || !description) {
+      Swal.fire("Error", "Title and description are required", "error");
+      return;
+    }
+
     try {
-      const title = document.getElementById("title").value;
-      const description = document.getElementById("description").value;
-      const desktopImageFile = document.getElementById("desktopImage").files[0];
-      const mobileImageFile = document.getElementById("mobileImage").files[0];
-
-      if (!title || !description) {
-        toast.error("Title and description are required");
-        return;
-      }
-
-      const formData = new FormData();
-      formData.append("title", title);
-      formData.append("description", description);
-
-      if (desktopImageFile) {
-        formData.append("desktopImage", desktopImageFile);
-      } else if (!currentBanner) {
-        toast.error("Desktop image is required for adding a new banner");
-        return;
-      }
-
-      if (mobileImageFile) {
-        formData.append("mobileImage", mobileImageFile);
-      } else if (!currentBanner) {
-        toast.error("Mobile image is required for adding a new banner");
-        return;
-      }
-
-      let res;
+      const data = { title, description };
       if (currentBanner) {
-        res = await updateBannerApi(formData, currentBanner._id);
-        toast.success("Banner updated successfully");
+        await updateBannerApi(data, currentBanner._id);
+        Swal.fire("Success", "Banner updated successfully", "success");
       } else {
-        res = await addBannerApi(formData);
-        toast.success("Banner added successfully");
+        await addBannerApi(data);
+        Swal.fire("Success", "Banner added successfully", "success");
       }
 
-      setIsBuilderOpen(false);
       setCurrentBanner(null);
-      setNewDesktopImagePreview(null);
-      setNewMobileImagePreview(null);
+      setIsBuilderOpen(false);
       fetchBanners();
     } catch (err) {
       ErrorHandler(err);
@@ -80,60 +58,44 @@ export const BannerPage = () => {
   };
 
   const handleDeleteBanner = async (id) => {
-    try {
-      await deleteBannerApi(id);
-      toast.success("Banner deleted successfully");
-      fetchBanners();
-    } catch (err) {
-      ErrorHandler(err);
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await deleteBannerApi(id);
+        Swal.fire("Deleted!", "Banner has been deleted.", "success");
+        fetchBanners();
+      } catch (err) {
+        ErrorHandler(err);
+      }
     }
   };
-
-  const handleDesktopImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewDesktopImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setNewDesktopImagePreview(null);
-    }
-  };
-
-  const handleMobileImageChange = (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewMobileImagePreview(reader.result);
-      };
-      reader.readAsDataURL(file);
-    } else {
-      setNewMobileImagePreview(null);
-    }
-  };
-
-  // Fetch banners on component load
-  useEffect(() => {
-    fetchBanners();
-  }, []);
 
   return (
     <main className="p-4">
-      {/* Header Section */}
+      {/* Header */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Manage Banners</h2>
         <button
-          // onClick={() => setIsBuilderOpen(true)}
           onClick={() => {
-            if (banners.length >= 1) {
-              toast.error("You can only add up to 1 banners");
+            if (banners.length >= MAX_BANNERS) {
+              Swal.fire(
+                "Limit reached",
+                `You can only add up to ${MAX_BANNERS} banners`,
+                "warning"
+              );
               return;
-            } else {
-              setIsBuilderOpen(true);
             }
+            setCurrentBanner(null);
+            setIsBuilderOpen(true);
           }}
           className="btn-primary w-max"
         >
@@ -142,10 +104,9 @@ export const BannerPage = () => {
       </div>
 
       {/* Banner Table */}
-      <table className="w-full mt-4 border-collapse">
+      <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-100">
-            <th style={styles.th}>Image</th>
             <th style={styles.th}>Title</th>
             <th style={styles.th}>Description</th>
             <th style={styles.th}>Actions</th>
@@ -154,28 +115,23 @@ export const BannerPage = () => {
         <tbody>
           {banners.map((banner) => (
             <tr key={banner._id} className="border-b">
-              <td style={styles.td}>
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${banner.desktopImage}`}
-                  alt="Banner"
-                  className="h-20 object-cover"
-                />
-              </td>
               <td style={styles.td}>{banner.title}</td>
               <td style={styles.td}>{banner.description}</td>
               <td style={styles.td}>
-                {/* <button
+                <button
                   onClick={() => {
                     setCurrentBanner(banner);
                     setIsBuilderOpen(true);
                   }}
                   className="btn-secondary mr-2"
+                  title="Edit"
                 >
                   <FaRegEdit />
-                </button> */}
+                </button>
                 <button
                   onClick={() => handleDeleteBanner(banner._id)}
                   className="icon-primary bg-red-600 hover:bg-red-600"
+                  title="Delete"
                 >
                   <Trash size={16} />
                 </button>
@@ -185,7 +141,7 @@ export const BannerPage = () => {
         </tbody>
       </table>
 
-      {/* Banner Builder Modal */}
+      {/* Inline Banner Builder */}
       {isBuilderOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg w-1/3 relative">
@@ -193,8 +149,6 @@ export const BannerPage = () => {
               onClick={() => {
                 setIsBuilderOpen(false);
                 setCurrentBanner(null);
-                setNewDesktopImagePreview(null); // Reset the desktop image preview
-                setNewMobileImagePreview(null); // Reset the mobile image preview
               }}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             >
@@ -203,13 +157,10 @@ export const BannerPage = () => {
             <h2 className="text-xl font-bold mb-4">
               {currentBanner ? "Edit Banner" : "Add Banner"}
             </h2>
-            {/* Simplified Form */}
+
             <div className="flex flex-col gap-4">
               <div>
-                <label
-                  htmlFor="title"
-                  className="flex items-center gap-2 text-lg font-medium"
-                >
+                <label htmlFor="title" className="flex items-center gap-2 text-lg font-medium">
                   <FaRegEdit /> Title
                 </label>
                 <input
@@ -221,10 +172,7 @@ export const BannerPage = () => {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="description"
-                  className="flex items-center gap-2 text-lg font-medium"
-                >
+                <label htmlFor="description" className="flex items-center gap-2 text-lg font-medium">
                   <FaRegFileAlt /> Description
                 </label>
                 <textarea
@@ -234,99 +182,14 @@ export const BannerPage = () => {
                   className="border rounded p-3 w-full"
                 />
               </div>
-              <div>
-                <label
-                  htmlFor="desktopImage"
-                  className="flex items-center gap-2 text-lg font-medium"
-                >
-                  <FaImage /> Desktop Banner Image
-                </label>
-                {/* Show current image if editing */}
-                {currentBanner && currentBanner.desktopImage && (
-                  <div className="mb-2">
-                    <p className="text-sm font-medium">
-                      Current Desktop Image:
-                    </p>
-                    <img
-                      src={`${process.env.REACT_APP_API_URL}/uploads/${currentBanner.desktopImage}`}
-                      alt="Current Desktop Banner"
-                      className="w-24 h-24 object-cover"
-                    />
-                  </div>
-                )}
-                {/* Show new desktop image preview if selected */}
-                {newDesktopImagePreview && (
-                  <div className="mb-2">
-                    <p className="text-sm font-medium">
-                      New Desktop Image Preview:
-                    </p>
-                    <img
-                      src={newDesktopImagePreview}
-                      alt="New Desktop Banner Preview"
-                      className="w-24 h-24 object-cover"
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  id="desktopImage"
-                  className="border rounded p-3 w-full"
-                  accept="image/*"
-                  onChange={handleDesktopImageChange}
-                />
-              </div>
-              <div>
-                <label
-                  htmlFor="mobileImage"
-                  className="flex items-center gap-2 text-lg font-medium"
-                >
-                  <FaImage /> Mobile Banner Image
-                </label>
-                {/* Show current mobile image if editing */}
-                {currentBanner && currentBanner.mobileImage && (
-                  <div className="mb-2">
-                    <p className="text-sm font-medium">Current Mobile Image:</p>
-                    <img
-                      src={`${process.env.REACT_APP_API_URL}/uploads/${currentBanner.mobileImage}`}
-                      alt="Current Mobile Banner"
-                      className="w-24 h-24 object-cover"
-                    />
-                  </div>
-                )}
-                {/* Show new mobile image preview if selected */}
-                {newMobileImagePreview && (
-                  <div className="mb-2">
-                    <p className="text-sm font-medium">
-                      New Mobile Image Preview:
-                    </p>
-                    <img
-                      src={newMobileImagePreview}
-                      alt="New Mobile Banner Preview"
-                      className="w-24 h-24 object-cover"
-                    />
-                  </div>
-                )}
-                <input
-                  type="file"
-                  id="mobileImage"
-                  className="border rounded p-3 w-full"
-                  accept="image/*"
-                  onChange={handleMobileImageChange}
-                />
-              </div>
               <div className="flex space-x-4 mt-4">
-                <button
-                  onClick={handleSaveBanner}
-                  className="btn-primary w-max"
-                >
+                <button onClick={handleSaveBanner} className="btn-primary w-max">
                   Save
                 </button>
                 <button
                   onClick={() => {
                     setIsBuilderOpen(false);
                     setCurrentBanner(null);
-                    setNewDesktopImagePreview(null); // Reset desktop image preview
-                    setNewMobileImagePreview(null); // Reset mobile image preview
                   }}
                   className="btn-secondary w-max"
                 >

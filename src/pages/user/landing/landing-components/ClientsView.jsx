@@ -26,9 +26,14 @@ const ClientCard = ({ client, index, onClick }) => {
     <motion.div
       ref={ref}
       key={client._id}
-      initial={{ opacity: 0, y: 30 }}
+      initial={{ opacity: 0, y: 50 }}
       animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ type: "spring", damping: 20, delay: index * 0.05 }}
+      transition={{
+        type: "spring",
+        stiffness: 80, // lower = softer spring
+        damping: 15, // lower = more bounce
+        mass: 0.8, // smaller = lighter, faster bounce
+      }}
       className="group bg-white rounded-xl overflow-hidden shadow-lg flex flex-col justify-between h-full cursor-pointer"
       onClick={() => onClick(client)}
       title={client.name}
@@ -274,7 +279,7 @@ export const ClientsView = () => {
 
               {/* Header */}
               <div className="px-8 py-3 bg-[#02153b] text-white flex flex-col gap-1 rounded-t-2xl">
-                <h2 className="text-xl font-bold">
+                <h2 className="text-xl font-semibold lg:font-bold">
                   A Proud Partnership with {selectedClient.name}
                 </h2>
                 {selectedClient.website && (
@@ -291,82 +296,162 @@ export const ClientsView = () => {
 
               {/* Content */}
               <div className="px-8 lg:px-10 py-6 max-h-[80vh] overflow-y-auto">
-  <div
-    className={`grid gap-5 justify-center ${
-      mediaItems.length === 1
-        ? "grid-cols-1 justify-items-center"
-        : mediaItems.length === 2
-        ? "grid-cols-1 md:grid-cols-2"
-        : "grid-cols-1 md:grid-cols-2 lg:grid-cols-3"
-    }`}
-  >
-    {/* Client Image */}
-    {selectedClient.clientImage && (
-      <div className="w-full flex justify-center">
-        <img
-          src={selectedClient.clientImage}
-          alt={selectedClient.name}
-          className="w-full h-auto object-cover rounded-lg shadow-lg"
-        />
-      </div>
-    )}
+                <div className="w-full">
+                  {mediaItems.length === 3 ? (
+                    // layout when all three exist
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      {/* Left column: Image + YouTube stacked */}
+                      <div className="flex flex-col gap-6">
+                        {/* Client Image */}
+                        {selectedClient.clientImage && (
+                          <div className="w-full flex justify-center">
+                            <img
+                              src={selectedClient.clientImage}
+                              alt={selectedClient.name}
+                              className="w-full max-h-[400px] object-cover rounded-lg shadow-lg"
+                            />
+                          </div>
+                        )}
 
-    {/* YouTube Video */}
-    {selectedClient.ytVideoUrl && (
-      <div className="w-full max-w-xl">
-        <div className="relative w-full aspect-video">
-          <iframe
-            src={getYouTubeEmbedUrl(selectedClient.ytVideoUrl)}
-            title="YouTube Video"
-            className="absolute top-0 left-0 w-full h-full rounded-lg"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          />
-        </div>
-        <p className="mt-2 text-sm text-gray-600 text-center">
-          If the YouTube video doesn’t appear,{" "}
-          <a
-            href={selectedClient.ytVideoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline text-blue-600 hover:text-blue-800"
-          >
-            open it in a new tab
-          </a>
-          .
-        </p>
-      </div>
-    )}
+                        {/* YouTube Video */}
+                        {selectedClient.ytVideoUrl && (
+                          <div className="w-full">
+                            <div className="relative w-full aspect-video">
+                              <iframe
+                                src={getYouTubeEmbedUrl(
+                                  selectedClient.ytVideoUrl
+                                )}
+                                title="YouTube Video"
+                                className="absolute top-0 left-0 w-full h-full rounded-lg"
+                                frameBorder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            </div>
+                            <p className="mt-2 text-sm text-gray-600 text-center">
+                              If the YouTube video doesn’t appear,{" "}
+                              <a
+                                href={selectedClient.ytVideoUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="underline text-blue-600 hover:text-blue-800"
+                              >
+                                open it in a new tab
+                              </a>
+                              .
+                            </p>
+                          </div>
+                        )}
+                      </div>
 
-    {/* Facebook Video */}
-    {selectedClient.fbVideoUrl && (
-      <div className="w-full max-w-xl">
-        <div ref={fbContainerRef} className="w-full aspect-video">
-          <div
-            className="fb-video w-full rounded-lg"
-            data-href={selectedClient.fbVideoUrl}
-            data-show-text="false"
-            style={{ border: "none", overflow: "hidden" }}
-          />
-        </div>
-        <p className="mt-2 text-sm text-gray-600 text-center">
-          If the Facebook video doesn’t appear,{" "}
-          <a
-            href={selectedClient.fbVideoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline text-blue-600 hover:text-blue-800"
-          >
-            open it in a new tab
-          </a>
-          .
-        </p>
-      </div>
-    )}
-  </div>
-</div>
+                      {/* Right column: Facebook video */}
+                      <div className="w-full">
+                        <div
+                          ref={fbContainerRef}
+                          className="w-full aspect-video"
+                        >
+                          <div
+                            className="fb-video w-full rounded-lg"
+                            data-href={selectedClient.fbVideoUrl}
+                            data-show-text="false"
+                            style={{ border: "none", overflow: "hidden" }}
+                          />
+                        </div>
+                        <p className="mt-2 text-sm text-gray-600 text-center">
+                          If the Facebook video doesn’t appear,{" "}
+                          <a
+                            href={selectedClient.fbVideoUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="underline text-blue-600 hover:text-blue-800"
+                          >
+                            open it in a new tab
+                          </a>
+                          .
+                        </p>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`grid gap-5 justify-center ${
+                        mediaItems.length === 1
+                          ? "grid-cols-1 justify-items-center"
+                          : "grid-cols-1 md:grid-cols-2"
+                      }`}
+                    >
+                      {/* Client Image */}
+                      {selectedClient.clientImage && (
+                        <div className="w-full flex justify-center">
+                          <img
+                            src={selectedClient.clientImage}
+                            alt={selectedClient.name}
+                            className="w-full max-h-[500px] object-contain rounded-lg shadow-lg"
+                          />
+                        </div>
+                      )}
 
+                      {/* YouTube Video */}
+                      {selectedClient.ytVideoUrl && (
+                        <div className="w-full max-w-xl">
+                          <div className="relative w-full aspect-video">
+                            <iframe
+                              src={getYouTubeEmbedUrl(
+                                selectedClient.ytVideoUrl
+                              )}
+                              title="YouTube Video"
+                              className="absolute top-0 left-0 w-full h-full rounded-lg"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            />
+                          </div>
+                          <p className="mt-2 text-sm text-gray-600 text-center">
+                            If the YouTube video doesn’t appear,{" "}
+                            <a
+                              href={selectedClient.ytVideoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline text-blue-600 hover:text-blue-800"
+                            >
+                              open it in a new tab
+                            </a>
+                            .
+                          </p>
+                        </div>
+                      )}
+
+                      {/* Facebook Video */}
+                      {selectedClient.fbVideoUrl && (
+                        <div className="w-full max-w-xl">
+                          <div
+                            ref={fbContainerRef}
+                            className="w-full aspect-video"
+                          >
+                            <div
+                              className="fb-video w-full rounded-lg"
+                              data-href={selectedClient.fbVideoUrl}
+                              data-show-text="false"
+                              style={{ border: "none", overflow: "hidden" }}
+                            />
+                          </div>
+                          <p className="mt-2 text-sm text-gray-600 text-center">
+                            If the Facebook video doesn’t appear,{" "}
+                            <a
+                              href={selectedClient.fbVideoUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="underline text-blue-600 hover:text-blue-800"
+                            >
+                              open it in a new tab
+                            </a>
+                            .
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
             </motion.div>
           </motion.div>
         )}
