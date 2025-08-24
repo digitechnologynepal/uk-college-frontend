@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/ukcolleges.png";
 import { Menu, X, Download, Phone } from "lucide-react";
+import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
 
 export const Navbar = ({ institutionProfile }) => {
   const location = useLocation();
@@ -30,9 +31,7 @@ export const Navbar = ({ institutionProfile }) => {
 
   const [sticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const brochureFileName = institutionProfile?.brochure?.split("/")?.pop();
-  const isMobile = window.innerWidth < 1024;
+  const [marketingOpen, setMarketingOpen] = useState(false);
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";
@@ -60,7 +59,7 @@ export const Navbar = ({ institutionProfile }) => {
 
       const fileNameRaw =
         institutionProfile?.brochure?.split("/")?.pop() || "brochure.pdf";
-      const fileName = fileNameRaw.replace(/^\d+_/, ""); // Remove leading digits + underscore
+      const fileName = fileNameRaw.replace(/^\d+_/, "");
 
       const link = document.createElement("a");
       link.href = url;
@@ -86,8 +85,9 @@ export const Navbar = ({ institutionProfile }) => {
             </Link>
           </div>
 
+          {/* Desktop Navigation */}
           <nav className="hidden lg:flex flex-1 justify-center items-center">
-            <ul className="flex">
+            <ul className="flex items-center gap-4">
               {[
                 { path: "/", label: "Home" },
                 { path: "/aboutus", label: "About Us" },
@@ -105,19 +105,51 @@ export const Navbar = ({ institutionProfile }) => {
                   </Link>
                 </li>
               ))}
+
+              {/* Marketing Dropdown */}
+              {institutionProfile?.brochure && (
+                <li className="relative">
+                  <button
+                    onClick={() => setMarketingOpen((prev) => !prev)}
+                    className="navbar-link flex items-center gap-1 focus:outline-none border-none"
+                  >
+                    Marketing
+                    <span className="ml-1">
+                      {marketingOpen ? (
+                        <BiSolidUpArrow size={12} />
+                      ) : (
+                        <BiSolidDownArrow size={12} />
+                      )}
+                    </span>
+                  </button>
+
+                  <div
+                    className={`absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 transform transition-all duration-200
+                    ${
+                      marketingOpen
+                        ? "translate-y-0 opacity-100"
+                        : "-translate-y-2 opacity-0"
+                    }
+                  `}
+                  >
+                    <ul className="flex flex-col">
+                      <li>
+                        <button
+                          onClick={handleDownload}
+                          className="w-full text-left px-4 py-2 hover:bg-[#e7efff] text-[#204081]"
+                        >
+                          Download Brochure
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+                </li>
+              )}
             </ul>
           </nav>
 
+          {/* Right Buttons */}
           <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
-            {institutionProfile?.brochure && (
-              <button
-                onClick={handleDownload}
-                className="px-4 py-2 flex items-center font-semibold transition-all duration-300 text-[#204081] hover:bg-[#e7efff] hover:rounded-full"
-              >
-                <Download size={20} className="mr-2" />
-                Brochure
-              </button>
-            )}
             <Link
               to="/contact"
               className="px-4 py-2 flex items-center font-semibold rounded-full shadow-md transition-all duration-300 bg-[#d91b1a] text-white hover:bg-[#b71715]"
@@ -137,7 +169,7 @@ export const Navbar = ({ institutionProfile }) => {
         </div>
       </header>
 
-      {/* Overlay */}
+      {/* Mobile Overlay */}
       <div
         className={`fixed inset-0 bg-black/50 z-40 transition-opacity duration-300 ${
           menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
@@ -145,7 +177,7 @@ export const Navbar = ({ institutionProfile }) => {
         onClick={() => setMenuOpen(false)}
       />
 
-      {/* Slide-in Drawer */}
+      {/* Mobile Drawer */}
       <div
         className={`fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-50 shadow-lg transform transition-transform duration-300 ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
@@ -162,7 +194,7 @@ export const Navbar = ({ institutionProfile }) => {
           </button>
         </div>
 
-        {/* Navigation Content */}
+        {/* Drawer Navigation */}
         <div className="flex-1 overflow-y-auto px-5 py-6">
           <div className="space-y-2 text-md font-medium">
             {[
@@ -187,18 +219,36 @@ export const Navbar = ({ institutionProfile }) => {
                 {label}
               </Link>
             ))}
-          </div>
 
-          {institutionProfile?.brochure && (
-            <div className="mt-2 px-4 py-2 rounded-md bg-gray-100 text-[#204081]">
-              <button
-                onClick={handleDownload}
-                className="mb-1 text-md font-medium"
-              >
-                Download Brochure
-              </button>
-            </div>
-          )}
+            {/* Mobile Marketing Dropdown */}
+            {institutionProfile?.brochure && (
+              <div className="mt-2">
+                <button
+                  className="w-full flex justify-between items-center px-4 py-2 rounded-md bg-gray-100 text-[#204081] font-medium"
+                  onClick={() => setMarketingOpen((prev) => !prev)}
+                >
+                  Marketing
+                  <span>
+                    {marketingOpen ? (
+                      <BiSolidUpArrow size={12} />
+                    ) : (
+                      <BiSolidDownArrow size={12} />
+                    )}
+                  </span>
+                </button>
+                {marketingOpen && (
+                  <div className="pl-4 mt-1">
+                    <button
+                      onClick={handleDownload}
+                      className="block w-full text-left px-4 py-2 hover:bg-[#e7efff] rounded"
+                    >
+                      Download Brochure
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </>
