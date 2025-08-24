@@ -117,7 +117,7 @@ export const RecentNewsSection = () => {
           <motion.div
             key={item._id}
             variants={cardVariants}
-            className="rounded-xl overflow-hidden shadow-lg bg-white group "
+            className="rounded-xl overflow-hidden shadow-lg bg-white group flex flex-col h-full"
           >
             {/* Image */}
             <div className="relative w-full h-[220px] overflow-hidden">
@@ -133,8 +133,12 @@ export const RecentNewsSection = () => {
             </div>
 
             {/* Content */}
-            <div className="p-6 flex flex-col gap-3">
-              <h3 className="text-lg font-bold text-[#204081]">{item.title}</h3>
+            <div className="p-6 flex flex-col gap-3 flex-1">
+              <h3 className="text-lg font-bold text-[#204081]">
+                {item.title.length > 50
+                  ? item.title.slice(0, 50) + "..."
+                  : item.title}
+              </h3>{" "}
               <div className="text-gray-600 text-sm leading-relaxed line-clamp-3 min-h-[55px]">
                 <ContentView
                   model={
@@ -144,8 +148,8 @@ export const RecentNewsSection = () => {
                   }
                 />
               </div>
-
-              <div>
+              {/* Button pushed to bottom */}
+              <div className="mt-auto">
                 <Link
                   to={`/news-description/${item._id}`}
                   className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-md"
