@@ -3,7 +3,7 @@ import {
   getCategoriesApi,
   addCategoryApi,
   updateCategoryApi,
-  softDeleteCategoryApi,
+  deleteCategoryApi,
 } from "../../apis/api";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
@@ -69,7 +69,7 @@ export const Category = () => {
 
     if (result.isConfirmed) {
       try {
-        const res = await softDeleteCategoryApi(activeTab, { id });
+        const res = await deleteCategoryApi(activeTab, { id });
         if (res?.data?.success) {
           Swal.fire({
             icon: "success",
