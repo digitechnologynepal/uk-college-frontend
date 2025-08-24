@@ -197,7 +197,6 @@ const ContactUs = () => {
                 )}
                 <iframe
                   src={data.locationForMap}
-                  loading="lazy"
                   title="Map"
                   aria-label="Institution Map"
                   className="w-full h-full border-0"
