@@ -88,7 +88,7 @@ export const RecentNewsSection = () => {
   };
 
   return (
-    <section className="pb-20 px-4 max-w-6xl mx-auto">
+    <section className="py-20 px-4 max-w-6xl mx-auto">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}

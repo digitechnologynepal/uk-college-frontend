@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCourseByIdApi } from "../../../../apis/api";
+import { getCourseByIdApi } from "../../../apis/api";
 
 const SkeletonCourseDetail = () => (
   <section className="text-[#262a2b] pt-[5%] max-w-7xl mx-auto px-6 py-20 animate-pulse">

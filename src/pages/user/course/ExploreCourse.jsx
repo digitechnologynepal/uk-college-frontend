@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { getCoursesApi } from "../../../../apis/api";
+import { getCoursesApi } from "../../../apis/api";
 import { useNavigate } from "react-router-dom";
 import Lottie from "lottie-react";
-import animationData from "../../../../assets/animations/no-data.json";
+import animationData from "../../../assets/animations/no-data.json";
 
 const SkeletonCard = () => (
   <div className="bg-white rounded-2xl shadow-lg border border-gray-200 animate-pulse">

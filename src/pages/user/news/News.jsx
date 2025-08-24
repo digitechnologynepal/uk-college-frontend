@@ -1,10 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { getAllNewsApi, getCategoriesApi } from "../../../../apis/api";
+import { getAllNewsApi, getCategoriesApi } from "../../../apis/api";
 import moment from "moment";
 import { Link } from "react-router-dom";
 import ContentView from "react-froala-wysiwyg/FroalaEditorView";
 import Lottie from "lottie-react";
-import animationData from "../../../../assets/animations/no-data.json";
+import animationData from "../../../assets/animations/no-data.json";
 import { ArrowRight, X, ChevronDown } from "lucide-react";
 
 const SkeletonNews = () => (

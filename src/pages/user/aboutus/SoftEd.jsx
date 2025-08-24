@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { getAllGroupsApi } from "../../../../apis/api";
-import { ErrorHandler } from "../../../../components/error/errorHandler";
+import { getAllGroupsApi } from "../../../apis/api";
+import { ErrorHandler } from "../../../components/error/errorHandler";
 
 const SkeletonGroup = () => {
   const items = Array(10).fill(0);

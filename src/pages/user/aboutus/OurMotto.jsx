@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getMottoApi } from "../../../../apis/api";
+import { getMottoApi } from "../../../apis/api";
 import { motion } from "framer-motion";
 import { TbTargetArrow } from "react-icons/tb";
 

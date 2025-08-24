@@ -2,12 +2,12 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import ContentView from "react-froala-wysiwyg/FroalaEditorView";
 import { useParams } from "react-router-dom";
-import { getSingleNewsApi } from "../../../../apis/api";
+import { getSingleNewsApi } from "../../../apis/api";
 import Swal from "sweetalert2";
-import { CalendarDays, Link } from "lucide-react";
+import { Link } from "react-router-dom";
+import { CalendarDays, LinkIcon } from "lucide-react";
 import {
   FacebookShareButton,
-  TwitterShareButton,
   LinkedinShareButton,
   WhatsappShareButton,
 } from "react-share";
@@ -124,7 +124,7 @@ export const NewsDescription = () => {
                 </p>
               </div>
             )}
-            <h1 className="text-3xl font-bold text-[#262a2b]">
+            <h1 className="text-xl lg:text-3xl font-bold text-[#262a2b]">
               {singleNews.title}
             </h1>
 
@@ -172,7 +172,7 @@ export const NewsDescription = () => {
                   title="Copy link"
                   className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-[#262a2b] hover:bg-gray-200 cursor-pointer"
                 >
-                  <Link size={18} />
+                  <LinkIcon size={18} />
                 </button>
               </div>
             </div>
@@ -206,7 +206,7 @@ export const NewsDescription = () => {
         </div>
 
         {/* Right: More News */}
-        {otherNews.length > 4 && (
+        {otherNews.length > 0 && (
           <aside className="space-y-6">
             <h2 className="text-lg font-semibold text-[#262a2b] border-b pb-2">
               More News
@@ -231,15 +231,6 @@ export const NewsDescription = () => {
                       <CalendarDays size={15} />{" "}
                       {moment(item.createdAt).format("MMM D, YYYY")}
                     </p>
-                    <div
-                      className="text-xs text-gray-600 line-clamp-2 mt-1"
-                      dangerouslySetInnerHTML={{
-                        __html:
-                          item.description.length > 100
-                            ? item.description.slice(0, 100) + "..."
-                            : item.description,
-                      }}
-                    ></div>
                     <span className="text-xs font-medium text-[#204081] hover:underline mt-1">
                       Read More →
                     </span>
