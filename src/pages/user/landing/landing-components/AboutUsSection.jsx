@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 
 const SkeletonAboutUsSection = () => (
-  <section className="relative w-full overflow-hidden py-32 bg-white">
+  <section className="relative w-full overflow-hidden py-32">
     <div className="max-w-6xl mx-auto px-4 relative z-10 animate-pulse">
       {/* Title Placeholder */}
       <div className="h-12 max-w-xl mx-auto rounded bg-gray-200 mb-20" />
@@ -15,7 +15,7 @@ const SkeletonAboutUsSection = () => (
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className={`rounded-lg shadow-lg bg-gray-200 h-[20rem] ${
+            className={`rounded-lg bg-gray-200 h-[20rem] ${
               i === 1 ? "md:translate-y-10" : ""
             }`}
           />
@@ -24,7 +24,7 @@ const SkeletonAboutUsSection = () => (
 
       {/* Button Placeholder */}
       <div className="mt-20 flex justify-center">
-        <div className="h-12 w-48 rounded-lg bg-gray-300" />
+        <div className="h-12 w-48 rounded-lg bg-gray-200" />
       </div>
     </div>
   </section>

@@ -7,10 +7,46 @@ import "swiper/css";
 import "swiper/css/pagination";
 import { motion } from "framer-motion";
 
+const SkeletonTestimonials = () => (
+  <section className="py-16 bg-gray-100">
+    <div className="max-w-6xl mx-auto px-4 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16 animate-pulse">
+      {/* Left Column - Title skeleton */}
+      <div className="lg:w-[50%] space-y-4">
+        <div className="h-10 w-64 bg-gray-300 rounded" />
+        <div className="h-4 w-80 bg-gray-200 rounded" />
+        <div className="h-4 w-72 bg-gray-200 rounded" />
+      </div>
+
+      {/* Right Column - Card skeleton */}
+      <div className="relative w-full lg:w-[50%] mt-8 lg:mt-0">
+        <div className="bg-white rounded-lg p-6 md:p-8 space-y-6">
+          {/* Quote skeleton */}
+          <div className="h-6 w-6 bg-gray-200 rounded mb-4" />
+          <div className="space-y-2">
+            <div className="h-4 w-full bg-gray-200 rounded" />
+            <div className="h-4 w-5/6 bg-gray-200 rounded" />
+            <div className="h-4 w-4/6 bg-gray-200 rounded" />
+          </div>
+
+          {/* User info skeleton */}
+          <div className="border-t border-gray-200 pt-4 flex items-center space-x-4">
+            <div className="w-12 h-12 rounded-full bg-gray-300" />
+            <div className="space-y-2">
+              <div className="h-4 w-32 bg-gray-200 rounded" />
+              <div className="h-3 w-24 bg-gray-200 rounded" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+);
+
 const COLORS = ["#204081", "#d91b1a", "#f56a79", "#627594", "#8c7c62"];
 
 export const ClientTestimonial = () => {
   const [testimonials, setTestimonials] = useState([]);
+  const [loading, setLoading] = useState(true);
   const swiperRef = useRef(null);
 
   useEffect(() => {
@@ -20,6 +56,8 @@ export const ClientTestimonial = () => {
         setTestimonials(res.data?.result || []);
       } catch (err) {
         console.error(err);
+      } finally {
+        setLoading(false); 
       }
     };
     fetchTestimonials();
@@ -27,6 +65,7 @@ export const ClientTestimonial = () => {
 
   const getRandomColor = (index) => COLORS[index % COLORS.length];
 
+  if (loading) return <SkeletonTestimonials />;
   if (testimonials.length === 0) return null;
 
   const leftVariant = {

@@ -2,7 +2,7 @@ import moment from "moment";
 import { useEffect, useState } from "react";
 import ContentView from "react-froala-wysiwyg/FroalaEditorView";
 import { useParams } from "react-router-dom";
-import { getSingleNewsApi } from "../../../apis/api";
+import { getSingleNewsApi, getNewsBySlugApi } from "../../../apis/api";
 import Swal from "sweetalert2";
 import { Link } from "react-router-dom";
 import { CalendarDays, LinkIcon } from "lucide-react";
@@ -56,7 +56,7 @@ const SkeletonNewsDescription = () => (
 );
 
 export const NewsDescription = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [singleNews, setSingleNews] = useState({});
   const [otherNews, setOtherNews] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
@@ -64,7 +64,7 @@ export const NewsDescription = () => {
 
   async function fetchSingleNews() {
     try {
-      const response = await getSingleNewsApi(id);
+      const response = await getNewsBySlugApi(slug);
       if (response?.data?.success) {
         setSingleNews(response?.data?.result?.foundNews);
         setOtherNews(response?.data?.result?.remainingNews);
@@ -102,7 +102,7 @@ export const NewsDescription = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchSingleNews();
-  }, [id]);
+  }, [slug]);
 
   if (initialLoading) {
     return <SkeletonNewsDescription />;
@@ -214,8 +214,8 @@ export const NewsDescription = () => {
             <div className="grid gap-3">
               {otherNews.map((item) => (
                 <Link
-                  to={`/news-description/${item._id}`}
-                  key={item._id}
+                  to={`/news-description/${item.slug}`}
+                  key={item.slug}
                   className="flex gap-4 rounded-lg drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
                 >
                   <img

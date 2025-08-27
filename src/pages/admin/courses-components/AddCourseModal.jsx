@@ -260,7 +260,7 @@ export const AddCourseModal = ({ open, onClose, setUpdated }) => {
                         as="textarea"
                         name={`moduleDescriptions.${mod}`}
                         className="border rounded w-full p-2"
-                        placeholder="Optional module description..."
+                        placeholder="Module description..."
                         rows={2}
                       />
                     </div>

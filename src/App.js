@@ -58,13 +58,13 @@ function App() {
             {/* <Route path="/" element={<UnderConstruction />} /> */}
             <Route path="/login" element={<Login />} />
             <Route path="/course" element={<ExploreCourse />} />
-            <Route path="/course/courseDetail/:id" element={<CourseDetail />} />
+            <Route path="/course/courseDetail/:slug" element={<CourseDetail />} />
             <Route path="/aboutus" element={<About />} />
             <Route path="/galleryview" element={<GalleryView />} />
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/news" element={<News />} />
             <Route path="/partners" element={<ClientsView />} />
-            <Route path="/news-description/:id" element={<NewsDescription />} />
+            <Route path="/news-description/:slug" element={<NewsDescription />} />
             <Route path="/" element={<Landing institutionProfile={institutionprofile} />} />
             <Route element={<AdminRoutes />}>
               <Route

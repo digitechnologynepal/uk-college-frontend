@@ -190,7 +190,7 @@ export const News = () => {
                   autoplay
                   className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
                 />
-                <p className="text-xl text-gray-500 font-medium text-center">
+                <p className="text-xl text-gray-500 font-semibold text-center">
                   No news matches your filter selection.
                 </p>
               </div>
@@ -199,7 +199,7 @@ export const News = () => {
               <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
                 {filteredNews.map((item) => (
                   <div
-                    key={item._id}
+                    key={item.slug}
                     className="rounded-lg overflow-hidden shadow-lg bg-white group transition-all duration-300 hover:shadow-xl flex flex-col h-full"
                   >
                     <div className="relative">
@@ -233,7 +233,7 @@ export const News = () => {
                       {/* This pushes the button to the bottom */}
                       <div className="mt-auto">
                         <Link
-                          to={`/news-description/${item._id}`}
+                          to={`/news-description/${item.slug}`}
                           className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-lg"
                         >
                           Read More <ArrowRight size={16} />

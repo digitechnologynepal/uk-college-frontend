@@ -1,6 +1,6 @@
 import { Link, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { getCourseByIdApi } from "../../../apis/api";
+import { getCourseByIdApi, getCourseBySlugApi } from "../../../apis/api";
 
 const SkeletonCourseDetail = () => (
   <section className="text-[#262a2b] pt-[5%] max-w-7xl mx-auto px-6 py-20 animate-pulse">
@@ -64,7 +64,8 @@ const SkeletonCourseDetail = () => (
 );
 
 const CourseDetail = () => {
-  const { id } = useParams();
+  const { slug } = useParams();
+
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [expandedModules, setExpandedModules] = useState({});
@@ -72,7 +73,9 @@ const CourseDetail = () => {
   useEffect(() => {
     const fetchCourse = async () => {
       try {
-        const res = await getCourseByIdApi(id);
+        // const res = await getCourseByIdApi(id);
+        const res = await getCourseBySlugApi(slug);
+
         if (res.data.success) {
           setCourse(res.data.result);
         }
@@ -83,7 +86,7 @@ const CourseDetail = () => {
       }
     };
     fetchCourse();
-  }, [id]);
+  }, [slug]);
 
   if (loading)
     return (

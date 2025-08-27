@@ -72,6 +72,7 @@ export const getAllNewsApi = () => Api.get('/api/admin/news/all');
 export const deleteNewsApi = (id) => Api.delete(`/api/admin/news/delete/${id}`, config);
 export const getSingleNewsApi = (id) => Api.get(`/api/admin/news/get/${id}`);
 export const updateNewsApi = (formData, id) => ApiWithFormData.put(`/api/admin/news/update/${id}`, formData, config);
+export const getNewsBySlugApi = (slug) => Api.get(`/api/admin/news/slug/${slug}`, config);
 
 // glimpse
 export const getGlimpseApi = (page, limit) => Api.get(`/api/admin/glimpses/get?page=${page}&limit=${limit}`);
@@ -97,6 +98,7 @@ export const getCoursesApi = () => Api.get('/api/admin/course', config);
 export const updateCourseApi = async (id, formData) => ApiWithFormData.put(`/api/admin/course/${id}`, formData, config);
 export const addCourseApi = async (formData) => ApiWithFormData.post('/api/admin/course/create', formData, config);
 export const getCourseByIdApi = (id) => Api.get(`/api/admin/course/${id}`, config);
+export const getCourseBySlugApi = (slug) => Api.get(`/api/admin/course/slug/${slug}`, config);
 
 // Appilcation Api
 export const getApplicationsApi = () => Api.get(`/api/application`, config);

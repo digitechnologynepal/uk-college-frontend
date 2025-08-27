@@ -9,7 +9,7 @@ const SkeletonAboutSection = () => (
   <section className="py-24 max-w-6xl mx-auto w-full animate-pulse">
     {/* Title */}
     <div className="mb-10">
-      <div className="h-12 w-1/3 rounded bg-gray-100 shadow-inner mx-auto" />
+      <div className="h-12 w-1/3 rounded bg-gray-100 mx-auto" />
     </div>
 
     {/* Image + Text Grid */}
@@ -30,7 +30,7 @@ const SkeletonAboutSection = () => (
         {[...Array(3)].map((_, idx) => (
           <div
             key={idx}
-            className="rounded-lg shadow-md bg-[#e7efff] w-full h-[180px] sm:h-[220px]"
+            className="rounded-lg bg-gray-200 w-full h-[180px] sm:h-[220px]"
           />
         ))}
       </div>
@@ -47,7 +47,7 @@ const SkeletonMottoSection = () => (
     {/* Cards grid */}
     <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
       {/* Mission card skeleton */}
-      <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+      <div className="bg-white rounded-lg p-8 ">
         <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gray-200" />
         <div className="h-6 w-1/2 bg-gray-200 rounded mx-auto mb-4" />
         <div className="space-y-3">
@@ -60,7 +60,7 @@ const SkeletonMottoSection = () => (
       </div>
 
       {/* Vision card skeleton */}
-      <div className="bg-white rounded-lg shadow-lg p-8 border border-gray-200">
+      <div className="bg-white rounded-lg p-8">
         <div className="w-16 h-16 mx-auto mb-5 rounded-full bg-gray-200" />
         <div className="h-6 w-1/2 bg-gray-200 rounded mx-auto mb-4" />
         <div className="space-y-2">
@@ -151,7 +151,7 @@ export const About = () => {
       .catch((err) => console.error("Error fetching certificate:", err));
   }, []);
 
-  if (loading) return <SkeletonAboutSection />;
+  if (loading || !data) return <SkeletonAboutSection />;
   if (error) return <p className="text-center text-red-500">{error}</p>;
 
   return (

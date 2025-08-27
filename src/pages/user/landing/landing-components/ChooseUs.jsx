@@ -9,7 +9,7 @@ const SkeletonView = () => {
         {/* Section Skeleton Header */}
         <div className="text-center mb-14 max-w-3xl mx-auto">
           <div className="h-8 w-60 bg-gray-200 rounded mx-auto mb-4" />
-          <div className="h-4 w-80 bg-gray-100 rounded mx-auto" />
+          <div className="h-4 w-80 bg-gray-200 rounded mx-auto" />
         </div>
 
         {/* Skeleton Items */}
@@ -29,9 +29,9 @@ const SkeletonView = () => {
               {/* Text skeleton */}
               <div className="w-full md:w-7/12 space-y-4">
                 <div className="h-6 w-48 bg-gray-200 rounded" />
-                <div className="h-4 w-full bg-gray-100 rounded" />
-                <div className="h-4 w-5/6 bg-gray-100 rounded" />
-                <div className="h-4 w-4/6 bg-gray-100 rounded" />
+                <div className="h-4 w-full bg-gray-200 rounded" />
+                <div className="h-4 w-5/6 bg-gray-200 rounded" />
+                <div className="h-4 w-4/6 bg-gray-200 rounded" />
               </div>
             </div>
           ))}
@@ -64,11 +64,7 @@ export const ChooseUs = () => {
     fetchData();
   }, []);
 
-  if (loading) {
-    <SkeletonView />;
-  }
-  if (error)
-    return <p className="text-center text-red-600 py-20">Error: {error}</p>;
+  if (loading || !data) return <SkeletonView />;
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -86,7 +82,9 @@ export const ChooseUs = () => {
   return (
     <section className="pb-20">
       <div className="max-w-6xl mx-auto px-4">
-        {/* Section Header */}
+        {/* Items List */}
+        <div className="space-y-10 lg:space-y-14">
+          {/* Section Header */}
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -101,11 +99,10 @@ export const ChooseUs = () => {
             {data?.mainTitle}
           </p>
         </motion.div>
-
-        {/* Items List */}
-        <div className="space-y-10 lg:space-y-14">
           {data?.items.map(({ _id, title, description, imageUrl }, i) => (
+            
             <React.Fragment key={_id}>
+              
               <motion.div
                 custom={i}
                 initial="hidden"

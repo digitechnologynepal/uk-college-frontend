@@ -4,43 +4,55 @@ import { FaSearch } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { ClientCard, SkeletonCard } from "../partners/ClientCard";
 import { X } from "lucide-react";
+import Lottie from "lottie-react";
+import animationData from "../../../assets/animations/no-data.json";
+
+const SkeletonClients = () => (
+  <div className="w-full">
+    {/* Heading */}
+    <div className="animate-pulse">
+      <div className="h-8 sm:h-10 md:h-12 w-64 sm:w-80 md:w-96 mx-auto bg-gray-200 rounded mb-4 mt-[1.78rem]" />
+      <div className="h-5 w-72 sm:w-80 md:w-96 mx-auto bg-gray-200 rounded" />
+    </div>
+
+    {/* Search */}
+    <div className="max-w-xl mx-auto my-7">
+      <div className="animate-pulse h-12 w-full rounded-full bg-gray-200" />
+    </div>
+
+    {/* Cards */}
+    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <SkeletonCard key={i} />
+      ))}
+    </div>
+  </div>
+);
 
 export const ClientsView = () => {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // default true
   const [selectedClient, setSelectedClient] = useState(null);
 
   const fbContainerRef = useRef(null);
 
   const getYouTubeEmbedUrl = (url) => {
     if (!url) return "";
-
     try {
       const parsedUrl = new URL(url);
       let videoId = "";
-
-      // Handle different YouTube URL formats
       if (parsedUrl.hostname === "youtu.be") {
-        videoId = parsedUrl.pathname.slice(1); // after slash
+        videoId = parsedUrl.pathname.slice(1);
       } else if (parsedUrl.hostname.includes("youtube.com")) {
         videoId = parsedUrl.searchParams.get("v");
       }
-
       if (!videoId) return "";
-
-      // Handle start time (t=470s)
       const start = parsedUrl.searchParams.get("t");
-      let startSeconds = 0;
-      if (start) {
-        if (start.endsWith("s")) {
-          startSeconds = parseInt(start.replace("s", ""), 10);
-        } else {
-          startSeconds = parseInt(start, 10);
-        }
-      }
-
+      const startSeconds = start
+        ? parseInt(start.replace("s", ""), 10) || 0
+        : 0;
       return `https://www.youtube.com/embed/${videoId}${
         startSeconds ? `?start=${startSeconds}` : ""
       }`;
@@ -56,8 +68,6 @@ export const ClientsView = () => {
     selectedClient?.ytVideoUrl && "youtube",
     selectedClient?.fbVideoUrl && "facebook",
   ].filter(Boolean);
-
-  const isSingleMedia = mediaItems.length === 1;
 
   // Load Facebook SDK once
   useEffect(() => {
@@ -107,24 +117,32 @@ export const ClientsView = () => {
 
   return (
     <section className="py-28 px-4">
-      <div className="max-w-7xl mx-auto text-center">
-        {isLoading ? (
-          <div className="animate-pulse">
-            <div className="h-8 mt-[1.78rem] sm:h-10 md:h-12 w-64 sm:w-80 md:w-96 mx-auto bg-gray-200 rounded mb-4" />
-            <div className="h-5 w-72 sm:w-80 md:w-96 mx-auto bg-gray-200 rounded" />
-          </div>
-        ) : (
-          <p className="text-2xl lg:text-4xl mt-3 font-bold text-[#262a2b]">
-            Trusted partners we proudly work with
+      {isLoading ? (
+        <SkeletonClients />
+      ) : clients.length === 0 ? (
+        <div className="flex flex-col items-center justify-center w-full">
+          <Lottie
+            animationData={animationData}
+            loop
+            autoplay
+            className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
+          />
+          <p className="text-gray-500 text-xl font-semibold text-center mt-6">
+            No data found.
+            <br /> Please check back soon!
           </p>
-        )}
-      </div>
+        </div>
+      ) : (
+        <>
+          {/* Heading */}
+          <div className="max-w-7xl mx-auto text-center">
+            <p className="text-2xl lg:text-4xl mt-3 font-bold text-[#262a2b]">
+              Trusted partners we proudly work with
+            </p>
+          </div>
 
-      <div className="max-w-xl mx-4 lg:mx-auto md:mx-auto my-7 relative">
-        {isLoading ? (
-          <div className="animate-pulse h-12 w-full rounded-full bg-gray-200" />
-        ) : (
-          <>
+          {/* Search */}
+          <div className="max-w-xl mx-4 lg:mx-auto md:mx-auto my-7 relative">
             <FaSearch className="absolute top-1/2 left-4 transform -translate-y-1/2 text-gray-400" />
             <input
               type="text"
@@ -133,40 +151,47 @@ export const ClientsView = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full pl-12 pr-4 py-3 font-semibold rounded-full border border-gray-200 focus:ring-1 focus:ring-[#204081] focus:outline-none shadow-sm transition-all duration-300"
             />
-          </>
-        )}
-      </div>
+          </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {isLoading ? (
-          Array.from({ length: 8 }).map((_, i) => <SkeletonCard key={i} />)
-        ) : filteredClients.length > 0 ? (
-          filteredClients.map((client, index) => (
-            <ClientCard
-              client={client}
-              index={index}
-              key={client._id}
-              onClick={(client) => {
-                // If client has media, open modal
-                if (
-                  client.clientImage ||
-                  client.ytVideoUrl ||
-                  client.fbVideoUrl
-                ) {
-                  setSelectedClient(client);
-                } else if (client.website) {
-                  window.open(client.website, "_blank");
-                }
-              }}
-            />
-          ))
-        ) : (
-          <p className="text-gray-500 text-xl font-semibold text-center mt-10 col-span-full">
-            No clients found.
-          </p>
-        )}
-      </div>
+          {/* Clients Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            {filteredClients.length > 0 ? (
+              filteredClients.map((client, index) => (
+                <ClientCard
+                  client={client}
+                  index={index}
+                  key={client._id}
+                  onClick={(client) => {
+                    if (
+                      client.clientImage ||
+                      client.ytVideoUrl ||
+                      client.fbVideoUrl
+                    ) {
+                      setSelectedClient(client);
+                    } else if (client.website) {
+                      window.open(client.website, "_blank");
+                    }
+                  }}
+                />
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center w-full col-span-full">
+                <Lottie
+                  animationData={animationData}
+                  loop
+                  autoplay
+                  className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
+                />
+                <p className="text-gray-500 text-xl font-semibold text-center mt-6">
+                  No partners match your search.
+                </p>
+              </div>
+            )}
+          </div>
+        </>
+      )}
 
+      {/* Modal */}
       <AnimatePresence>
         {selectedClient && (
           <motion.div
@@ -184,7 +209,6 @@ export const ClientsView = () => {
               className="relative w-full max-w-5xl bg-white rounded-2xl shadow-2xl overflow-hidden border"
               onClick={(e) => e.stopPropagation()}
             >
-              {/* Close Button */}
               <button
                 onClick={() => setSelectedClient(null)}
                 className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition shadow-md"
@@ -192,7 +216,6 @@ export const ClientsView = () => {
                 <X size={24} />
               </button>
 
-              {/* Header */}
               <div className="px-8 py-3 bg-[#02153b] text-white flex flex-col gap-1 rounded-t-2xl">
                 <h2 className="text-xl font-semibold lg:font-bold">
                   A Proud Partnership with {selectedClient.name}
@@ -209,15 +232,11 @@ export const ClientsView = () => {
                 )}
               </div>
 
-              {/* Content */}
               <div className="px-8 lg:px-10 py-6 max-h-[80vh] overflow-y-auto">
                 <div className="w-full">
                   {mediaItems.length === 3 ? (
-                    // layout when all three exist
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {/* Left column: Image + YouTube stacked */}
                       <div className="flex flex-col gap-6">
-                        {/* Client Image */}
                         {selectedClient.clientImage && (
                           <div className="w-full flex justify-center">
                             <img
@@ -227,8 +246,6 @@ export const ClientsView = () => {
                             />
                           </div>
                         )}
-
-                        {/* YouTube Video */}
                         {selectedClient.ytVideoUrl && (
                           <div className="w-full">
                             <div className="relative w-full aspect-video">
@@ -243,23 +260,9 @@ export const ClientsView = () => {
                                 allowFullScreen
                               />
                             </div>
-                            <p className="mt-2 text-sm text-gray-600 text-center">
-                              If the YouTube video doesn’t appear,{" "}
-                              <a
-                                href={selectedClient.ytVideoUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="underline text-blue-600 hover:text-blue-800"
-                              >
-                                open it in a new tab
-                              </a>
-                              .
-                            </p>
                           </div>
                         )}
                       </div>
-
-                      {/* Right column: Facebook video */}
                       <div className="w-full">
                         <div
                           ref={fbContainerRef}
@@ -269,21 +272,8 @@ export const ClientsView = () => {
                             className="fb-video w-full rounded-lg"
                             data-href={selectedClient.fbVideoUrl}
                             data-show-text="false"
-                            style={{ border: "none", overflow: "hidden" }}
                           />
                         </div>
-                        <p className="mt-2 text-sm text-gray-600 text-center">
-                          If the Facebook video doesn’t appear,{" "}
-                          <a
-                            href={selectedClient.fbVideoUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="underline text-blue-600 hover:text-blue-800"
-                          >
-                            open it in a new tab
-                          </a>
-                          .
-                        </p>
                       </div>
                     </div>
                   ) : (
@@ -294,7 +284,6 @@ export const ClientsView = () => {
                           : "grid-cols-1 md:grid-cols-2"
                       }`}
                     >
-                      {/* Client Image */}
                       {selectedClient.clientImage && (
                         <div className="w-full flex justify-center">
                           <img
@@ -304,8 +293,6 @@ export const ClientsView = () => {
                           />
                         </div>
                       )}
-
-                      {/* YouTube Video */}
                       {selectedClient.ytVideoUrl && (
                         <div className="w-full max-w-xl">
                           <div className="relative w-full aspect-video">
@@ -320,22 +307,8 @@ export const ClientsView = () => {
                               allowFullScreen
                             />
                           </div>
-                          <p className="mt-2 text-sm text-gray-600 text-center">
-                            If the YouTube video doesn’t appear,{" "}
-                            <a
-                              href={selectedClient.ytVideoUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="underline text-blue-600 hover:text-blue-800"
-                            >
-                              open it in a new tab
-                            </a>
-                            .
-                          </p>
                         </div>
                       )}
-
-                      {/* Facebook Video */}
                       {selectedClient.fbVideoUrl && (
                         <div className="w-full max-w-xl">
                           <div
@@ -346,21 +319,8 @@ export const ClientsView = () => {
                               className="fb-video w-full rounded-lg"
                               data-href={selectedClient.fbVideoUrl}
                               data-show-text="false"
-                              style={{ border: "none", overflow: "hidden" }}
                             />
                           </div>
-                          <p className="mt-2 text-sm text-gray-600 text-center">
-                            If the Facebook video doesn’t appear,{" "}
-                            <a
-                              href={selectedClient.fbVideoUrl}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="underline text-blue-600 hover:text-blue-800"
-                            >
-                              open it in a new tab
-                            </a>
-                            .
-                          </p>
                         </div>
                       )}
                     </div>
