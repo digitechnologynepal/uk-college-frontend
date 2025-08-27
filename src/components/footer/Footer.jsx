@@ -204,12 +204,12 @@ export const Footer = () => {
         {/* Accreditation */}
         <div>
           <h4 className="text-lg font-semibold mb-4 text-white uppercase">
-            Accreditation
+            Accredited By
           </h4>
           <div className="space-y-4">
             <img
               src={Accreditation2}
-              className="bg-white rounded-md p-2 h-14 object-contain"
+              className="bg-white rounded-lg p-2 h-14 object-contain"
               alt="accreditation"
             />
           </div>

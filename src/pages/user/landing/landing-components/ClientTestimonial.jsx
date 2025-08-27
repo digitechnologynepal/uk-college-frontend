@@ -31,18 +31,25 @@ export const ClientTestimonial = () => {
 
   const leftVariant = {
     hidden: { opacity: 0, x: -60 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
   };
 
   const rightVariant = {
     hidden: { opacity: 0, x: 60 },
-    visible: { opacity: 1, x: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    visible: {
+      opacity: 1,
+      x: 0,
+      transition: { duration: 0.8, ease: "easeOut" },
+    },
   };
 
   return (
     <section className="py-16 bg-[#e7efff]">
       <div className="max-w-6xl mx-auto px-4 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16">
-        
         {/* Left Column - Title */}
         <motion.div
           className="lg:w-[50%]"

@@ -22,7 +22,7 @@ function useCanHover() {
 const SkeletonGallery = () => (
   <div>
     <div className="flex items-center gap-3 mb-5">
-      <div className="bg-gray-200 rounded-md w-48 h-10" />
+      <div className="bg-gray-200 rounded-lg w-48 h-10" />
       <div className="bg-gray-200 rounded-full w-12 h-12" />
     </div>
 
@@ -183,12 +183,12 @@ export const GalleryView = () => {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="px-4 py-2 border rounded-md bg-white flex items-center gap-2 text-[#204081] hover:bg-gray-100"
+                  className="px-4 py-2 border rounded-lg bg-white flex items-center gap-2 text-[#204081] hover:bg-gray-100"
                 >
                   Filters <ChevronDown size={16} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50 p-3 flex flex-col gap-2">
+                  <div className="absolute left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 p-3 flex flex-col gap-2">
                     {categories.map((cat) => (
                       <label
                         key={cat.title}

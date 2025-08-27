@@ -111,7 +111,7 @@ export const ServiceDescription = () => {
               >
                 <div className="w-9 h-9 flex items-center justify-center mr-2">
                   <img
-                    className="w-[50px] rounded-md"
+                    className="w-[50px] rounded-lg"
                     src={`${process.env.REACT_APP_API_URL}/uploads/${service?.image}`}
                   />
                 </div>
@@ -151,7 +151,7 @@ export const ServiceDescription = () => {
                 >
                   <div className="w-6 h-6 flex items-center justify-center mr-2">
                     <img
-                      className="w-[50px] rounded-md"
+                      className="w-[50px] rounded-lg"
                       src={`${process.env.REACT_APP_API_URL}/uploads/${service?.image}`}
                       alt={service?.title}
                     />

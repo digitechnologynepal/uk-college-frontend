@@ -17,7 +17,7 @@ const SkeletonNews = () => (
       {Array.from({ length: 4 }).map((_, idx) => (
         <div
           key={idx}
-          className="rounded-xl overflow-hidden shadow-lg bg-white animate-pulse"
+          className="rounded-lg overflow-hidden shadow-lg bg-white animate-pulse"
         >
           <div className="w-full h-[200px] bg-gray-200" />
           <div className="p-6 flex flex-col gap-3">
@@ -132,13 +132,13 @@ export const News = () => {
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="px-4 py-2 border rounded-md bg-white flex items-center gap-5 text-[#204081] hover:bg-gray-100"
+                  className="px-4 py-2 border rounded-lg bg-white flex items-center gap-5 text-[#204081] hover:bg-gray-100"
                 >
                   Filters <ChevronDown size={16} />
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute left-20 lg:left-0 mt-2 w-48 bg-white border rounded-md shadow-lg z-50 p-3 flex flex-col gap-2">
+                  <div className="absolute left-20 lg:left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 p-3 flex flex-col gap-2">
                     {categories.map((cat) => (
                       <label
                         key={cat.title}
@@ -200,7 +200,7 @@ export const News = () => {
                 {filteredNews.map((item) => (
                   <div
                     key={item._id}
-                    className="rounded-xl overflow-hidden shadow-lg bg-white group transition-all duration-300 hover:shadow-xl flex flex-col h-full"
+                    className="rounded-lg overflow-hidden shadow-lg bg-white group transition-all duration-300 hover:shadow-xl flex flex-col h-full"
                   >
                     <div className="relative">
                       <img
@@ -234,7 +234,7 @@ export const News = () => {
                       <div className="mt-auto">
                         <Link
                           to={`/news-description/${item._id}`}
-                          className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-md"
+                          className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-lg"
                         >
                           Read More <ArrowRight size={16} />
                         </Link>

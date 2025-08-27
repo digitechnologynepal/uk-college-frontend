@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import Logo from "../../assets/images/ukcolleges.png";
-import { Menu, X, Download, Phone } from "lucide-react";
-import { BiSolidDownArrow, BiSolidUpArrow } from "react-icons/bi";
+import { Menu, X, Phone, ChevronDown, ChevronUp } from "lucide-react";
 
 export const Navbar = ({ institutionProfile }) => {
   const location = useLocation();
@@ -12,13 +11,10 @@ export const Navbar = ({ institutionProfile }) => {
     "/admin/aboutus",
     "/admin/banner",
     "/admin/motto",
-    "/admin/stats",
     "/admin/manage-gallery",
     "/admin/manage-courses",
-    "/admin/course-application",
     "/admin/queries",
     "/admin/whychooseus",
-    "/admin/service",
     "/admin/news",
     "/admin/manage-group",
     "/admin/manage-team-members",
@@ -87,7 +83,7 @@ export const Navbar = ({ institutionProfile }) => {
 
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex flex-1 justify-center items-center">
-            <ul className="flex items-center gap-4">
+            <ul className="flex items-center gap-4 justify-center">
               {[
                 { path: "/", label: "Home" },
                 { path: "/aboutus", label: "About Us" },
@@ -111,14 +107,14 @@ export const Navbar = ({ institutionProfile }) => {
                 <li className="relative">
                   <button
                     onClick={() => setMarketingOpen((prev) => !prev)}
-                    className="navbar-link flex items-center gap-1 focus:outline-none border-none"
+                    className="navbar-link flex items-center gap-1 border-none"
                   >
                     Marketing
                     <span className="ml-1">
                       {marketingOpen ? (
-                        <BiSolidUpArrow size={12} />
+                        <ChevronUp size={16} />
                       ) : (
-                        <BiSolidDownArrow size={12} />
+                        <ChevronDown size={16} />
                       )}
                     </span>
                   </button>
@@ -145,6 +141,8 @@ export const Navbar = ({ institutionProfile }) => {
                   </div>
                 </li>
               )}
+
+              {/* more items here in the future */}
             </ul>
           </nav>
 
@@ -152,7 +150,7 @@ export const Navbar = ({ institutionProfile }) => {
           <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
             <Link
               to="/contact"
-              className="px-4 py-2 flex items-center font-semibold rounded-full shadow-md transition-all duration-300 bg-[#d91b1a] text-white hover:bg-[#b71715]"
+              className="px-4 py-2 flex items-center font-semibold rounded-lg shadow-md transition-all duration-300 bg-[#d91b1a] text-white hover:bg-[#b71715]"
             >
               <Phone size={20} className="mr-2" />
               Contact Us
@@ -210,7 +208,7 @@ export const Navbar = ({ institutionProfile }) => {
                 key={to}
                 to={to}
                 onClick={() => setMenuOpen(false)}
-                className={`block px-4 py-2 rounded-md transition ${
+                className={`block px-4 py-2 rounded-lg transition ${
                   isActive(to)
                     ? "bg-[#e7efff] text-[#204081] font-semibold"
                     : "bg-gray-100 text-[#204081]"
@@ -224,28 +222,40 @@ export const Navbar = ({ institutionProfile }) => {
             {institutionProfile?.brochure && (
               <div className="mt-2">
                 <button
-                  className="w-full flex justify-between items-center px-4 py-2 rounded-md bg-gray-100 text-[#204081] font-medium"
+                  className="w-full flex justify-between items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium focus:outline-none"
                   onClick={() => setMarketingOpen((prev) => !prev)}
                 >
                   Marketing
                   <span>
                     {marketingOpen ? (
-                      <BiSolidUpArrow size={12} />
+                      <ChevronUp size={16} />
                     ) : (
-                      <BiSolidDownArrow size={12} />
+                      <ChevronDown size={16} />
                     )}
                   </span>
                 </button>
-                {marketingOpen && (
-                  <div className="pl-4 mt-1">
-                    <button
-                      onClick={handleDownload}
-                      className="block w-full text-left px-4 py-2 hover:bg-[#e7efff] rounded"
-                    >
-                      Download Brochure
-                    </button>
-                  </div>
-                )}
+
+                <div
+                  className={`px-3 mt-1 overflow-hidden transform transition-all duration-200
+                  ${
+                    marketingOpen
+                      ? "max-h-40 translate-y-0"
+                      : "max-h-0 -translate-y-2"
+                  }
+                `}
+                >
+                  <ul className="flex flex-col">
+                    <li>
+                      <button
+                        onClick={handleDownload}
+                        className="block w-full items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium"
+                      >
+                        Download Brochure
+                      </button>
+                    </li>
+                    {/* more items here in the future */}
+                  </ul>
+                </div>
               </div>
             )}
           </div>

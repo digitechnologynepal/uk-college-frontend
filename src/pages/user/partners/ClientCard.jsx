@@ -3,7 +3,7 @@ import { motion, useInView } from "framer-motion";
 import { FaGlobe, FaPhoneAlt, FaMapMarkerAlt } from "react-icons/fa";
 
 export const SkeletonCard = () => (
-  <div className="animate-pulse bg-gray-100 rounded-xl overflow-hidden shadow-lg flex flex-col h-full">
+  <div className="animate-pulse bg-gray-100 rounded-lg overflow-hidden shadow-lg flex flex-col h-full">
     <div className="bg-gray-200 h-60 sm:h-64 md:h-56 lg:h-52 xl:h-48" />
     <div className="flex flex-col flex-grow px-5 py-4 text-center">
       <div className="h-5 bg-gray-200 rounded w-3/4 mx-auto mb-4" />
@@ -33,7 +33,7 @@ export const ClientCard = ({ client, onClick }) => {
         damping: 15,
         mass: 0.8,
       }}
-      className="group bg-white rounded-xl overflow-hidden shadow-lg flex flex-col justify-between h-full cursor-pointer"
+      className="group bg-white rounded-lg overflow-hidden shadow-lg flex flex-col justify-between h-full cursor-pointer"
       onClick={() => onClick(client)}
       title={client.name}
     >
@@ -52,7 +52,7 @@ export const ClientCard = ({ client, onClick }) => {
           {client.name}
         </h3>
 
-        <div className="rounded-md bg-[#e7efff] p-2 flex flex-wrap justify-center items-center gap-2 text-gray-600">
+        <div className="rounded-lg bg-[#e7efff] p-2 flex flex-wrap justify-center items-center gap-2 text-gray-600">
           {client.website && (
             <a
               href={client.website}

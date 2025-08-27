@@ -39,7 +39,7 @@ const SkeletonContactUs = () => (
         </div>
 
         {/* Map Placeholder */}
-        <div className="rounded-md shadow-sm h-56 bg-gray-200" />
+        <div className="rounded-lg shadow-sm h-56 bg-gray-200" />
       </div>
 
       {/* Right Form Panel Skeleton */}
@@ -184,7 +184,7 @@ const ContactUs = () => {
             </div>
           </div>
 
-          <div className="mt-10 rounded-md shadow-sm h-50 sm:h-56 md:h-50 relative">
+          <div className="mt-10 rounded-lg shadow-sm h-50 sm:h-56 md:h-50 relative">
             {data?.locationForMap ? (
               <>
                 {isLoading && (
@@ -333,7 +333,7 @@ const FloatingInput = ({
         placeholder=" "
         maxLength={name === "mobileNumber" ? 10 : undefined}
         inputMode={name === "mobileNumber" ? "numeric" : undefined}
-        className="peer w-full rounded-md border border-gray-300 px-4 pt-5 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#d91b1a] focus:border-[#d91b1a]"
+        className="peer w-full rounded-lg border border-gray-300 px-4 pt-5 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#d91b1a] focus:border-[#d91b1a]"
       />
       <label
         htmlFor={name}
@@ -355,7 +355,7 @@ const FloatingTextarea = ({ label, name, value, onChange, required }) => (
       required={required}
       rows={5}
       placeholder=" "
-      className="peer w-full resize-none rounded-md border border-gray-300 px-4 pt-5 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#d91b1a] focus:border-[#d91b1a]"
+      className="peer w-full resize-none rounded-lg border border-gray-300 px-4 pt-5 pb-2 text-gray-900 placeholder-transparent focus:outline-none focus:ring-2 focus:ring-[#d91b1a] focus:border-[#d91b1a]"
     />
     <label
       htmlFor={name}

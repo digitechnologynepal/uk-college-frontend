@@ -16,7 +16,7 @@ const SkeletonTeam = () => {
       {Array.from({ length: 2 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse bg-white rounded-xl overflow-hidden shadow-lg h-max"
+          className="animate-pulse bg-white rounded-lg overflow-hidden shadow-lg h-max"
         >
           <div className="bg-gray-200 h-60 w-full" />
           <div className="p-4">
@@ -71,7 +71,7 @@ export const TeamMembers = () => {
         {teamMembers.map((member) => (
           <div
             key={member._id}
-            className="relative group bg-white rounded-xl overflow-hidden shadow-lg transition-all duration-500 transform-gpu hover:shadow-xl"
+            className="relative group bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-500 transform-gpu hover:shadow-xl"
           >
             {/* Image Section */}
             <div className="relative overflow-hidden">
@@ -93,7 +93,7 @@ export const TeamMembers = () => {
               </p>
 
               {/* Social Icons */}
-              <div className="rounded-md bg-[#e7efff] p-2 flex flex-wrap justify-center text-gray-600">
+              <div className="rounded-lg bg-[#e7efff] p-2 flex flex-wrap justify-center text-gray-600">
                 {member.facebook && (
                   <a
                     href={member.facebook}

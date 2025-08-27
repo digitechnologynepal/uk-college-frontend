@@ -15,7 +15,7 @@ const SkeletonAboutUsSection = () => (
         {[...Array(3)].map((_, i) => (
           <div
             key={i}
-            className={`rounded-xl shadow-lg bg-gray-200 h-[20rem] ${
+            className={`rounded-lg shadow-lg bg-gray-200 h-[20rem] ${
               i === 1 ? "md:translate-y-10" : ""
             }`}
           />
@@ -24,7 +24,7 @@ const SkeletonAboutUsSection = () => (
 
       {/* Button Placeholder */}
       <div className="mt-20 flex justify-center">
-        <div className="h-12 w-48 rounded-md bg-gray-300" />
+        <div className="h-12 w-48 rounded-lg bg-gray-300" />
       </div>
     </div>
   </section>
@@ -83,7 +83,7 @@ export const AboutUsSection = () => {
           viewport={{ once: true }}
           className="grid md:grid-cols-3 gap-3 lg:gap-6 items-start"
         >
-          <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
+          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[0]}`}
               alt="About 1"
@@ -91,7 +91,7 @@ export const AboutUsSection = () => {
               loading="lazy"
             />
           </div>
-          <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300 bg-white md:translate-y-10">
+          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white md:translate-y-10">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[1]}`}
               alt="About 2"
@@ -99,7 +99,7 @@ export const AboutUsSection = () => {
               loading="lazy"
             />
           </div>
-          <div className="relative group overflow-hidden rounded-xl shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
+          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[2]}`}
               alt="About 3"
@@ -112,7 +112,7 @@ export const AboutUsSection = () => {
         <div className="mt-10 lg:mt-20 text-center">
           <button
             onClick={handleReadMore}
-            className="inline-flex items-center gap-2 text-white bg-[#204081] hover:bg-[#4671c8] px-6 py-3 rounded-md shadow-lg transition"
+            className="inline-flex items-center gap-2 text-white bg-[#204081] hover:bg-[#4671c8] px-6 py-3 rounded-lg shadow-lg transition"
           >
             Read Full Story <FaArrowRight />
           </button>

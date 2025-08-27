@@ -40,8 +40,8 @@ const SkeletonNewsDescription = () => (
     <aside className="space-y-6">
       <div className="h-6 bg-gray-200 rounded w-1/2 mb-4" />
       {[...Array(3)].map((_, i) => (
-        <div key={i} className="flex gap-4 rounded-md border bg-white p-2">
-          <div className="w-24 h-16 bg-gray-200 rounded-md flex-shrink-0" />
+        <div key={i} className="flex gap-4 rounded-lg border bg-white p-2">
+          <div className="w-24 h-16 bg-gray-200 rounded-lg flex-shrink-0" />
           <div className="flex-1 flex flex-col justify-between gap-2 py-1">
             <div className="h-4 bg-gray-200 rounded w-3/4" />
             <div className="h-3 bg-gray-200 rounded w-1/4" />
@@ -188,7 +188,7 @@ export const NewsDescription = () => {
           </div>
 
           {/* Description */}
-          <div className="text-justify prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-md prose-img:shadow">
+          <div className="text-justify prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-lg prose-img:shadow">
             <ContentView model={singleNews.description} />
             {singleNews.tags && singleNews.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 mt-6">
@@ -216,7 +216,7 @@ export const NewsDescription = () => {
                 <Link
                   to={`/news-description/${item._id}`}
                   key={item._id}
-                  className="flex gap-4 rounded-md drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
+                  className="flex gap-4 rounded-lg drop-shadow-sm hover:shadow-md border transition bg-white overflow-hidden"
                 >
                   <img
                     src={`${process.env.REACT_APP_API_URL}/uploads/${item.image}`}

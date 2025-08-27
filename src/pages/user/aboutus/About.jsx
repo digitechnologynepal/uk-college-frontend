@@ -15,7 +15,7 @@ const SkeletonAboutSection = () => (
     {/* Image + Text Grid */}
     <div className="flex flex-col lg:flex-row items-start gap-8">
       {/* Left - heading + description placeholder */}
-      <div className="lg:w-2/3 p-8 mr-10 rounded-xl bg-gray-100 flex flex-col space-y-4">
+      <div className="lg:w-2/3 p-8 mr-10 rounded-lg bg-gray-100 flex flex-col space-y-4">
         <div className="h-6 w-2/3 rounded bg-gray-200" />
         <div className="space-y-3 mt-4">
           <div className="h-4 w-full rounded bg-gray-200" />
@@ -167,9 +167,9 @@ export const About = () => {
             </div>
 
             {/* Image + Text Grid */}
-            <div className="flex flex-col lg:flex-row items-start">
+            <div className="flex flex-col lg:flex-row lg:items-center">
               {/* Left - Description */}
-              <div className="py-8 lg:p-8 mr-0 lg:mr-10 rounded-xl lg:w-2/3 flex items-center">
+              <div className="py-8 mr-0 lg:mr-10 rounded-lg lg:w-2/3">
                 <div
                   className="text-base sm:text-lg lg:text-xl text-[#262a2b] leading-relaxed text-justify"
                   dangerouslySetInnerHTML={{ __html: data?.description || "" }}
@@ -264,7 +264,7 @@ export const About = () => {
         `}
               style={{ pointerEvents: "none" }}
             >
-              <span className="bg-[#02153b] text-white text-sm px-3 py-1 rounded-md shadow-lg whitespace-nowrap inline-block">
+              <span className="bg-[#02153b] text-white text-sm px-3 py-1 rounded-lg shadow-lg whitespace-nowrap inline-block">
                 View Sample Certificate <br />
                 of Authorization
               </span>

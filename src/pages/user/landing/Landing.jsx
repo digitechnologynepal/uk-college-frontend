@@ -73,17 +73,34 @@ export const Landing = ({ institutionProfile }) => {
                 {currentBanner?.description || ""}
               </p>
 
-              {/* Logos */}
               <div className="mt-6 md:mt-8 lg:mt-10 flex gap-4 sm:gap-6 items-center">
-                <img
-                  src={ncc}
-                  className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
-                />
-                {/* <div className="border-r-2 border-white h-6 sm:h-8 md:h-10 lg:h-14" />
-                <img
-                  src={ofqual}
-                  className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
-                /> */}
+                {/* NCC */}
+                <a
+                  href="https://www.nccedu.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={ncc}
+                    alt="NCC"
+                    className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
+                  />
+                </a>
+
+                <div className="border-r-2 border-white h-6 sm:h-8 md:h-10 lg:h-14" />
+
+                {/* Ofqual */}
+                <a
+                  href="https://www.gov.uk/ofqual"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <img
+                    src={ofqual}
+                    alt="Ofqual"
+                    className="h-6 sm:h-8 md:h-10 lg:h-14 object-contain"
+                  />
+                </a>
               </div>
             </div>
 

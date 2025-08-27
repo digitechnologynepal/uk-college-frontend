@@ -77,7 +77,7 @@ export const PopularCourses = () => {
                 whileHover="hover"
                 viewport={{ once: true }}
                 variants={cardVariants}
-                className="relative cursor-pointer rounded-xl overflow-hidden shadow-xl bg-white group"
+                className="relative cursor-pointer rounded-lg overflow-hidden shadow-xl bg-white group"
                 onClick={() => handleCourseClick(course._id)}
               >
                 {/* Course Image */}

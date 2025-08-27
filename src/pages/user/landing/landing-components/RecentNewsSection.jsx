@@ -22,7 +22,7 @@ const SkeletonRecentNews = () => (
       {[...Array(3)].map((_, idx) => (
         <div
           key={idx}
-          className="rounded-xl overflow-hidden shadow-lg bg-white"
+          className="rounded-lg overflow-hidden shadow-lg bg-white"
           aria-hidden="true"
         >
           {/* Image skeleton */}
@@ -117,7 +117,7 @@ export const RecentNewsSection = () => {
           <motion.div
             key={item._id}
             variants={cardVariants}
-            className="rounded-xl overflow-hidden shadow-lg bg-white group flex flex-col h-full"
+            className="rounded-lg overflow-hidden shadow-lg bg-white group flex flex-col h-full"
           >
             {/* Image */}
             <div className="relative w-full h-[220px] overflow-hidden">
@@ -152,7 +152,7 @@ export const RecentNewsSection = () => {
               <div className="mt-auto">
                 <Link
                   to={`/news-description/${item._id}`}
-                  className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-md"
+                  className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-lg"
                 >
                   Read More <ArrowRight size={16} />
                 </Link>

@@ -5,7 +5,7 @@ import { getCourseByIdApi } from "../../../apis/api";
 const SkeletonCourseDetail = () => (
   <section className="text-[#262a2b] pt-[5%] max-w-7xl mx-auto px-6 py-20 animate-pulse">
     {/* Hero Section Skeleton */}
-    <div className="relative h-[440px] bg-gray-200 rounded-md mb-16" />
+    <div className="relative h-[440px] bg-gray-200 rounded-lg mb-16" />
 
     {/* Main Content Grid Skeleton */}
     <div className="grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-16">
@@ -29,7 +29,7 @@ const SkeletonCourseDetail = () => (
             {[...Array(3)].map((_, idx) => (
               <div key={idx} className="relative group">
                 <span className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-gray-400 border-4 border-white shadow-md" />
-                <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-lg">
+                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-lg">
                   <div className="h-7 bg-gray-200 rounded w-3/4 mb-3" />
                   <div className="flex gap-4 mb-3">
                     <div className="h-5 bg-gray-200 rounded w-20" />
@@ -51,7 +51,7 @@ const SkeletonCourseDetail = () => (
           {[...Array(3)].map((_, i) => (
             <div
               key={i}
-              className="bg-gray-200 border border-gray-200 rounded-md p-4"
+              className="bg-gray-200 border border-gray-200 rounded-lg p-4"
             >
               <div className="h-5 bg-gray-200 rounded w-3/4 mb-2" />
               <div className="h-4 bg-gray-200 rounded w-full" />
@@ -151,7 +151,7 @@ const CourseDetail = () => {
                   {course.modules.map((mod, idx) => (
                     <div key={idx} className="relative group">
                       <span className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-[#204081] border-4 border-gray-50 group-hover:scale-110 transition-transform shadow-md" />
-                      <div className="bg-white border border-gray-200 rounded-xl p-5 shadow-lg transition">
+                      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-lg transition">
                         <h3 className="text-xl font-bold text-[#204081]">
                           {mod.name}
                         </h3>
@@ -191,7 +191,7 @@ const CourseDetail = () => {
                 {course.modules?.map((mod, i) => (
                   <div
                     key={i}
-                    className="bg-[#f1f6ff] border border-gray-200 rounded-md py-5 px-6 transition"
+                    className="bg-[#f1f6ff] border border-gray-200 rounded-lg py-5 px-6 transition"
                   >
                     <p className="font-bold text-lg text-[#204081]">
                       {mod.name}

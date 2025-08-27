@@ -9,7 +9,7 @@ const SkeletonCard = () => (
     <div className="h-[220px] w-full bg-gray-200 rounded-t-2xl" />
     <div className="p-6 space-y-3">
       <div className="h-5 w-3/4 bg-gray-200 rounded" />
-      <div className="h-10 w-1/2 bg-gray-200 rounded-md mt-4" />
+      <div className="h-10 w-1/2 bg-gray-200 rounded-lg mt-4" />
     </div>
   </div>
 );
@@ -99,7 +99,7 @@ const ExploreCourse = () => {
                         onClick={() =>
                           navigate(`/course/courseDetail/${course._id}`)
                         }
-                        className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-md"
+                        className="inline-flex items-center gap-2 text-sm font-semibold text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-lg"
                       >
                         View Details →
                       </button>
@@ -315,7 +315,7 @@ export default ExploreCourse;
 //               Course Type
 //             </label>
 //             <select
-//               className="w-full mt-1 p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#204081] focus:outline-none"
+//               className="w-full mt-1 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#204081] focus:outline-none"
 //               value={selectedType}
 //               onChange={(e) => {
 //                 setSelectedType(e.target.value);
@@ -338,7 +338,7 @@ export default ExploreCourse;
 //                 Sub Type
 //               </label>
 //               <select
-//                 className="w-full mt-1 p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#204081]"
+//                 className="w-full mt-1 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#204081]"
 //                 value={selectedSubType}
 //                 onChange={(e) => setSelectedSubType(e.target.value)}
 //               >
@@ -356,7 +356,7 @@ export default ExploreCourse;
 //           <div className="mb-4">
 //             <label className="text-md font-medium text-gray-700">Level</label>
 //             <select
-//               className="w-full mt-1 p-2 rounded-md border border-gray-300 focus:ring-2 focus:ring-[#204081]"
+//               className="w-full mt-1 p-2 rounded-lg border border-gray-300 focus:ring-2 focus:ring-[#204081]"
 //               value={selectedLevel}
 //               onChange={(e) => setSelectedLevel(e.target.value)}
 //             >
@@ -415,7 +415,7 @@ export default ExploreCourse;
 //           {currentCourses.length > 0 ? (
 //             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
 //               {currentCourses.map((course, i) => (
-//                 <div className="rounded-xl overflow-hidden shadow-lg bg-white cursor-pointer flex flex-col">
+//                 <div className="rounded-lg overflow-hidden shadow-lg bg-white cursor-pointer flex flex-col">
 //                   {/* Image + Badge */}
 //                   <div className="relative">
 //                     <img
@@ -441,7 +441,7 @@ export default ExploreCourse;
 //                         onClick={() =>
 //                           navigate(`/course/courseDetail/${course._id}`)
 //                         }
-//                         className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-md"
+//                         className="inline-flex items-center gap-2 text-sm text-white bg-[#204081] hover:bg-[#3c65b4] transition px-4 py-2 rounded-lg"
 //                       >
 //                         View Details →
 //                       </button>

@@ -12,6 +12,8 @@ import {
   Newspaper,
   BookUser,
   User,
+  Phone,
+  FileQuestion,
 } from "lucide-react";
 
 function AdminSidebar() {
@@ -30,8 +32,8 @@ function AdminSidebar() {
     { label: "news section", icon: <Newspaper className="size-4" />, link: "/admin/news" },
     { label: "manage clients", icon: <User className="size-4" />, link: "/admin/manage-clients" },
     { label: "manage categories", icon: <List className="size-4" />, link: "/admin/categories" },
-    { label: "why choose us section", icon: <File className="size-4" />, link: "/admin/whychooseus" },
-    { label: "queries section", icon: <File className="size-4" />, link: "/admin/queries" },
+    { label: "why choose us section", icon: <FileQuestion className="size-4" />, link: "/admin/whychooseus" },
+    { label: "contact us queries", icon: <Phone className="size-4" />, link: "/admin/queries" },
   ];
 
   return (

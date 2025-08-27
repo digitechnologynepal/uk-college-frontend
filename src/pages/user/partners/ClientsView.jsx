@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ClientCard, SkeletonCard } from "../partners/ClientCard";
 import { X } from "lucide-react";
 
-
 export const ClientsView = () => {
   const [clients, setClients] = useState([]);
   const [filteredClients, setFilteredClients] = useState([]);
