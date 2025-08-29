@@ -9,7 +9,7 @@ const SkeletonContactUs = () => (
   <div className="min-h-screen flex items-center justify-center px-4 py-28 pt-36">
     <section
       className="
-        bg-white rounded-lg shadow-lg max-w-6xl w-full max-h-max
+        bg-white rounded-lg shadow-md  max-w-6xl w-full max-h-max
         overflow-hidden 
         grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-20 p-10
         sm:grid-cols-1
@@ -149,9 +149,9 @@ const ContactUs = () => {
     <div className="min-h-screen flex items-center justify-center px-4 py-28 pt-36">
       <section
         className="
-          bg-white rounded-lg shadow-lg max-w-6xl w-full max-h-max
+          bg-white rounded-lg shadow-md  max-w-6xl w-full max-h-max
           overflow-hidden 
-          grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-20 p-10
+          grid grid-cols-1 lg:grid-cols-2 md:grid-cols-1 gap-10 lg:gap-20 p-10
           sm:grid-cols-1
         "
       >

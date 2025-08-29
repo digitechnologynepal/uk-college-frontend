@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { FaArrowRight } from "react-icons/fa";
 
 const SkeletonAboutUsSection = () => (
-  <section className="relative w-full overflow-hidden py-32">
+  <section className="relative w-full overflow-hidden py-10 lg:py-20">
     <div className="max-w-6xl mx-auto px-4 relative z-10 animate-pulse">
       {/* Title Placeholder */}
       <div className="h-12 max-w-xl mx-auto rounded bg-gray-200 mb-20" />
@@ -60,8 +60,8 @@ export const AboutUsSection = () => {
   }
 
   return (
-    <section className="relative w-full overflow-hidden pb-20">
-      <div className="max-w-6xl mx-auto px-4 relative z-10">
+    <section className="relative w-full overflow-hidden pb-10 lg:pb-20">
+      <div className="max-w-6xl mx-auto px-6 relative z-10">
         {/* Section Header */}
         <motion.div
           initial={{ opacity: 0, y: 60 }}
@@ -83,7 +83,7 @@ export const AboutUsSection = () => {
           viewport={{ once: true }}
           className="grid md:grid-cols-3 gap-3 lg:gap-6 items-start"
         >
-          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
+          <div className="relative group overflow-hidden rounded-lg shadow-md  hover:scale-105 transition-transform duration-300 bg-white">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[0]}`}
               alt="About 1"
@@ -91,7 +91,7 @@ export const AboutUsSection = () => {
               loading="lazy"
             />
           </div>
-          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white md:translate-y-10">
+          <div className="relative group overflow-hidden rounded-lg shadow-md  hover:scale-105 transition-transform duration-300 bg-white md:translate-y-10">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[1]}`}
               alt="About 2"
@@ -99,7 +99,7 @@ export const AboutUsSection = () => {
               loading="lazy"
             />
           </div>
-          <div className="relative group overflow-hidden rounded-lg shadow-lg hover:scale-105 transition-transform duration-300 bg-white">
+          <div className="relative group overflow-hidden rounded-lg shadow-md  hover:scale-105 transition-transform duration-300 bg-white">
             <img
               src={`${process.env.REACT_APP_API_URL}/uploads/${data.image[2]}`}
               alt="About 3"
@@ -112,7 +112,7 @@ export const AboutUsSection = () => {
         <div className="mt-10 lg:mt-20 text-center">
           <button
             onClick={handleReadMore}
-            className="inline-flex items-center gap-2 text-white bg-[#204081] hover:bg-[#4671c8] px-6 py-3 rounded-lg shadow-lg transition"
+            className="inline-flex items-center gap-2 text-white bg-[#204081] hover:bg-[#4671c8] px-6 py-3 rounded-lg shadow-md  transition"
           >
             Read Full Story <FaArrowRight />
           </button>

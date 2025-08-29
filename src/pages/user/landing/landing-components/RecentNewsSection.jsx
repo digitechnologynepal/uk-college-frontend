@@ -22,7 +22,7 @@ const SkeletonRecentNews = () => (
       {[...Array(3)].map((_, idx) => (
         <div
           key={idx}
-          className="rounded-lg overflow-hidden shadow-lg bg-white"
+          className="rounded-lg overflow-hidden shadow-md  bg-white"
           aria-hidden="true"
         >
           {/* Image skeleton */}
@@ -88,26 +88,26 @@ export const RecentNewsSection = () => {
   };
 
   return (
-    <section className="py-20 px-4 max-w-6xl mx-auto">
+    <section className="py-10 lg:py-20 px-6 max-w-6xl mx-auto">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
         viewport={{ once: true }}
-        className="text-center mb-12"
+        className="text-center mb-8 lg:mb-10"
       >
         <h2 className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
           Recent News
         </h2>
-        <p className="font-medium mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
+        <p className="font-medium mt-2 lg:mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
           Stay updated with our latest announcements and insights.
         </p>
       </motion.div>
 
       {/* Cards */}
       <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -117,7 +117,7 @@ export const RecentNewsSection = () => {
           <motion.div
             key={item._id}
             variants={cardVariants}
-            className="rounded-lg overflow-hidden shadow-lg bg-white group flex flex-col h-full"
+            className="rounded-lg overflow-hidden shadow-md  bg-white group flex flex-col h-full"
           >
             {/* Image */}
             <div className="relative w-full h-[220px] overflow-hidden">

@@ -26,7 +26,7 @@ const SkeletonHero = () => (
       </div>
 
       {/* Right Image Skeleton */}
-      <div className="absolute bottom-0 left-1/2 lg:left-auto lg:right-20 transform -translate-x-1/2 lg:translate-x-0 z-10 w-full lg:w-1/2 flex justify-center lg:justify-end">
+      <div className="absolute -bottom-10 lg:bottom-0 left-1/2 lg:left-auto lg:right-20 transform -translate-x-1/2 lg:translate-x-0 z-10 w-full lg:w-1/2 flex justify-center lg:justify-end">
         <div className="h-[40vh] sm:h-[50vh] md:h-[40vh] lg:h-[75vh] w-2/3 bg-gray-200 rounded-lg" />
       </div>
     </div>
@@ -74,8 +74,8 @@ export const Landing = ({ institutionProfile }) => {
         {loading || banners.length === 0 ? (
           <SkeletonHero />
         ) : (
-          <section className="relative top-20 mb-40 w-full text-white">
-            <div className="relative w-full min-h-[60vh] sm:min-h-[80vh] md:min-h-[70vh] lg:min-h-[90vh] flex flex-col lg:flex-row items-center px-6 md:px-12 lg:px-20">
+          <section className="relative top-20 mb-32 lg:mb-40 w-full text-white">
+            <div className="relative w-full min-h-[60vh] sm:min-h-[80vh] md:min-h-[70vh] lg:min-h-[90vh] flex flex-col lg:flex-row items-center px-6 md:px-[6vw] xl:px-[8vw]">
               {/* Gradient Background */}
               <div className="absolute inset-0 bg-custom-gradient" />
 
@@ -87,7 +87,7 @@ export const Landing = ({ institutionProfile }) => {
               </div>
 
               {/* Text Content */}
-              <div className="relative z-20 flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-1/2 mt-12 lg:mt-0">
+              <div className="overflow-hidden relative z-20 flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-1/2 mt-12 lg:mt-0">
                 <h1
                   key={currentIndex}
                   className="font-bold text-3xl sm:text-4xl md:text-5xl lg:text-6xl leading-tight opacity-0 animate-slide-in-right"

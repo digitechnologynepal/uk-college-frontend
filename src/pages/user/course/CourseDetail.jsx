@@ -29,7 +29,7 @@ const SkeletonCourseDetail = () => (
             {[...Array(3)].map((_, idx) => (
               <div key={idx} className="relative group">
                 <span className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-gray-400 border-4 border-white shadow-md" />
-                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-lg">
+                <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-md ">
                   <div className="h-7 bg-gray-200 rounded w-3/4 mb-3" />
                   <div className="flex gap-4 mb-3">
                     <div className="h-5 bg-gray-200 rounded w-20" />
@@ -45,7 +45,7 @@ const SkeletonCourseDetail = () => (
 
       {/* Right Column */}
       <aside className="h-fit lg:sticky lg:top-32">
-        <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 space-y-4">
+        <div className="bg-white border border-gray-200 rounded-2xl shadow-md  p-6 space-y-4">
           <div className="h-8 bg-gray-200 rounded w-40" />
 
           {[...Array(3)].map((_, i) => (
@@ -112,7 +112,7 @@ const CourseDetail = () => {
     <>
       {/* Main Content */}
       <main className="text-[#262a2b] bg-white pt-[22%] md:pt-[15%] lg:pt-[5%] flex items-center justify-center">
-        <div className="mx-[5vw] px-6 pb-20 pt-[8%] lg:pt-[3%] md:pt-[5%] grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-10">
+        <div className="px-6 md:px-[6vw] xl:px-[8vw] pb-20 pt-[8%] lg:pt-[3%] md:pt-[5%] grid grid-cols-1 lg:grid-cols-[2fr,1fr] gap-10">
           {/* Left Column (Content + Hero) */}
           <div className="space-y-10">
             {/* Title + Accent */}
@@ -139,7 +139,7 @@ const CourseDetail = () => {
                 Course Overview
               </h2>
               <div
-                className="text-[#262a2b] text-justify text-md lg:text-xl leading-relaxed"
+                className="text-[#262a2b] text-justify text-base lg:text-xl leading-relaxed"
                 dangerouslySetInnerHTML={{ __html: course.description }}
               />
             </section>
@@ -147,18 +147,18 @@ const CourseDetail = () => {
             {/* Modules Timeline */}
             {Array.isArray(course.modules) && course.modules.length > 0 && (
               <section className="max-w-3xl">
-                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#204081] mb-10 flex items-center gap-2">
+                <h2 className="text-xl md:text-2xl lg:text-3xl font-bold text-[#204081] mb-5 lg:mb-10 flex items-center gap-2">
                   Course Modules
                 </h2>
-                <div className="relative border-l-2 border-dashed border-[#204081] pl-6 space-y-10">
+                <div className="relative border-l-2 border-dashed border-[#204081] pl-6 space-y-6 lg:space-y-10">
                   {course.modules.map((mod, idx) => (
                     <div key={idx} className="relative group">
                       <span className="absolute -left-[11px] top-1 w-5 h-5 rounded-full bg-[#204081] border-4 border-gray-50 group-hover:scale-110 transition-transform shadow-md" />
-                      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-lg transition">
-                        <h3 className="text-xl font-bold text-[#204081]">
+                      <div className="bg-white border border-gray-200 rounded-lg p-5 shadow-md  transition">
+                        <h3 className="text-base lg:text-xl font-bold text-[#204081]">
                           {mod.name}
                         </h3>
-                        <div className="text-md lg:text-xl text-[#262a2b] mt-1 flex gap-4 flex-wrap">
+                        <div className="text-base lg:text-xl text-[#262a2b] mt-1 flex gap-4 flex-wrap">
                           <p>
                             <strong>Weeks:</strong> {mod.durationWeeks}
                           </p>
@@ -167,7 +167,7 @@ const CourseDetail = () => {
                           </p>
                         </div>
                         {mod.description && (
-                          <p className="text-md lg:text-xl text-[#262a2b] mt-2 text-justify">
+                          <p className="text-sm lg:text-xl text-[#262a2b] mt-2 text-justify">
                             {mod.description}
                           </p>
                         )}
@@ -181,14 +181,14 @@ const CourseDetail = () => {
 
           {/* Right Column (Sticky Summary) */}
           <aside className="h-fit lg:sticky lg:top-32">
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-lg p-6 space-y-2 max-w-full">
+            <div className="bg-white border border-gray-200 rounded-2xl shadow-md  p-6 space-y-2 max-w-full">
               <p className="text-xl font-bold text-[#204081] flex items-center">
                 Quick Summary
               </p>
 
               {/* Modules Overview */}
               <div className="space-y-4">
-                <h4 className="text-lg font-medium text-[#262a2b]">
+                <h4 className="text-base lg:text-lg font-medium text-[#262a2b]">
                   Modules Overview
                 </h4>
                 {course.modules?.map((mod, i) => (
@@ -199,7 +199,7 @@ const CourseDetail = () => {
                     <p className="font-bold text-lg text-[#204081]">
                       {mod.name}
                     </p>
-                    <p className="text-base font-medium text-[#262a2b] mt-1">
+                    <p className="text-sm lg:text-base font-medium text-[#262a2b] mt-1">
                       Learning Weeks: {mod.durationWeeks} weeks
                       <div className="mb-2" />
                       Learning Hours: {mod.durationHours} hours of study

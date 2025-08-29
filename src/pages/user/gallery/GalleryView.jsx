@@ -188,7 +188,7 @@ export const GalleryView = () => {
                   Filters <ChevronDown size={16} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 p-3 flex flex-col gap-2">
+                  <div className="absolute left-0 mt-2 w-48 bg-white border rounded-lg shadow-md  z-50 p-3 flex flex-col gap-2">
                     {categories.map((cat) => (
                       <label
                         key={cat.title}
@@ -302,7 +302,7 @@ export const GalleryView = () => {
                                 Click to expand
                               </span>
                             </div>
-                            <div className="absolute bottom-4 left-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            {/* <div className="absolute bottom-4 left-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                               <div className="flex items-center text-xs text-white ">
                                 <p className="font-bold">
                                   {item.fileType === "video"
@@ -326,7 +326,7 @@ export const GalleryView = () => {
                               <h3 className="text-white text-md md:text-xl font-semibold mb-1">
                                 {item.name}
                               </h3>
-                            </div>
+                            </div> */}
                           </>
                         )}
                       </div>
@@ -439,7 +439,7 @@ export const GalleryView = () => {
                     {selectedContent.tags.map((tag, idx) => (
                       <span
                         key={idx}
-                        className="text-white py-1 rounded font-bold"
+                        className="text-white rounded text-[10px] -my-1 lg:text-xs"
                       >
                         #{tag}
                       </span>

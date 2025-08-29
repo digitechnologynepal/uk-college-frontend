@@ -32,7 +32,7 @@ const OurMotto = () => {
             {[1, 2].map((i) => (
               <div
                 key={i}
-                className="rounded-2xl p-8 bg-white border border-gray-200 shadow-lg animate-pulse"
+                className="rounded-2xl p-8 bg-white border border-gray-200 shadow-md  animate-pulse"
               >
                 <div className="w-16 h-16 bg-gray-300 rounded-full mx-auto mb-4" />
                 <div className="h-4 w-3/4 bg-gray-300 mx-auto rounded mb-2" />
@@ -67,7 +67,7 @@ const OurMotto = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-white rounded-3xl shadow-lg p-8 border border-gray-200"
+            className="bg-white rounded-3xl shadow-md  p-8 border border-gray-200"
           >
             <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#204081]/10">
               <TbTargetArrow size={40} className="text-[#204081]" />
@@ -86,7 +86,7 @@ const OurMotto = () => {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6, ease: "easeOut" }}
-            className="bg-white rounded-3xl shadow-lg p-8 border border-gray-200"
+            className="bg-white rounded-3xl shadow-md  p-8 border border-gray-200"
           >
             <div className="w-16 h-16 mx-auto mb-5 flex items-center justify-center rounded-full bg-[#d91b1a]/10">
               <TbTargetArrow size={40} className="text-[#d91b1a]" />

@@ -5,7 +5,7 @@ import Lottie from "lottie-react";
 import animationData from "../../../assets/animations/no-data.json";
 
 const SkeletonCard = () => (
-  <div className="bg-white rounded-2xl shadow-lg border border-gray-200 animate-pulse">
+  <div className="bg-white rounded-2xl shadow-md  border border-gray-200 animate-pulse">
     <div className="h-[220px] w-full bg-gray-200 rounded-t-2xl" />
     <div className="p-6 space-y-3">
       <div className="h-5 w-3/4 bg-gray-200 rounded" />
@@ -62,7 +62,7 @@ const ExploreCourse = () => {
         <>
           {courses.length > 0 ? (
             <div>
-              <div className="mb-10 max-w-6xl">
+              <div className="mb-8 lg:mb-10 max-w-6xl">
                 <p className="text-left text-2xl lg:text-4xl font-bold mb-3 text-[#262a2b]">
                   Explore Our Courses
                 </p>
@@ -71,11 +71,11 @@ const ExploreCourse = () => {
                   courses.
                 </p>
               </div>
-              <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl">
+              <div className="grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl">
                 {courses.map((course) => (
                   <div
                     key={course.slug}
-                    className="bg-white rounded-2xl shadow-lg border border-gray-200 transition duration-300 flex flex-col overflow-hidden"
+                    className="bg-white rounded-2xl shadow-md  border border-gray-200 transition duration-300 flex flex-col overflow-hidden"
                   >
                     {/* Image */}
                     <div className="relative">

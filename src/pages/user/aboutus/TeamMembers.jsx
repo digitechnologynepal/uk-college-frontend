@@ -16,7 +16,7 @@ const SkeletonTeam = () => {
       {Array.from({ length: 2 }).map((_, i) => (
         <div
           key={i}
-          className="animate-pulse bg-white rounded-lg overflow-hidden shadow-lg h-max"
+          className="animate-pulse bg-white rounded-lg overflow-hidden shadow-md  h-max"
         >
           <div className="bg-gray-200 h-60 w-full" />
           <div className="p-4">
@@ -57,21 +57,21 @@ export const TeamMembers = () => {
   if (teamMembers.length === 0) return null;
 
   return (
-    <section className="pb-24 px-4">
-      <div className="max-w-7xl mx-auto text-center mb-14">
-        <p className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
+    <section className="pb-24">
+      <div className="max-w-7xl mx-auto text-center mb-3 lg:mb-5">
+        <h2 className="relative text-3xl sm:text-4xl font-bold lg:font-extrabold text-[#262a2b] mb-0 md:mb-3 lg:mb-5">
           Meet Our Team
-        </p>
-        <p className="font-medium mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
+        </h2>
+        <p className="font-medium mt-2 lg:mt-4 text-md lg:text-xl text-gray-600 max-w-3xl mx-auto">
           Talented minds behind our success
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-x-6 gap-y-10 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-3 lg:gap-y-7 max-w-7xl">
         {teamMembers.map((member) => (
           <div
             key={member._id}
-            className="relative group bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-500 transform-gpu hover:shadow-xl"
+            className="group bg-white rounded-lg overflow-hidden shadow-md  flex flex-col justify-between h-full cursor-pointer"
           >
             {/* Image Section */}
             <div className="relative overflow-hidden">
@@ -85,15 +85,15 @@ export const TeamMembers = () => {
 
             {/* Info Section */}
             <div className="px-5 py-4 text-center">
-              <h3 className="text-xl font-bold text-[#262a2b] mb-1">
+              <h3 className="text-base font-semibold text-[#262a2b] my-1">
                 {member.name}
               </h3>
-              <p className="text-[#262a2b] capitalize text-base mb-4">
+              <p className="text-[#262a2b] capitalize text-sm mb-4">
                 {member.role}
               </p>
 
               {/* Social Icons */}
-              <div className="rounded-lg bg-[#e7efff] p-2 flex flex-wrap justify-center text-gray-600">
+              <div className="rounded-lg bg-[#e7efff] p-1 lg:p-2 flex flex-wrap justify-center items-center text-gray-600">
                 {member.facebook && (
                   <a
                     href={member.facebook}

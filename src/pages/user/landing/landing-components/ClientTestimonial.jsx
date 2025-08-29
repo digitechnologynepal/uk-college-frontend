@@ -57,7 +57,7 @@ export const ClientTestimonial = () => {
       } catch (err) {
         console.error(err);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
     fetchTestimonials();
@@ -88,7 +88,7 @@ export const ClientTestimonial = () => {
 
   return (
     <section className="py-16 bg-[#e7efff]">
-      <div className="max-w-6xl mx-auto px-4 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16">
+      <div className="max-w-6xl mx-auto px-6 flex flex-col lg:flex-row items-start lg:items-center gap-2 lg:gap-16">
         {/* Left Column - Title */}
         <motion.div
           className="lg:w-[50%]"
@@ -109,8 +109,8 @@ export const ClientTestimonial = () => {
 
         {/* Right Column - Swiper */}
         <motion.div
-          className="relative w-full lg:w-[50%]"
-          variants={rightVariant}
+          className="relative w-full lg:w-[50%] overflow-hidden"
+          variants={leftVariant}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.4 }}
@@ -118,13 +118,13 @@ export const ClientTestimonial = () => {
           {/* Custom Arrows */}
           <button
             onClick={() => swiperRef.current?.slidePrev()}
-            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-[#204081] bg-white p-1 md:p-3 lg:p-3 rounded-full shadow-lg hover:bg-[#204081] hover:text-white transition duration-300"
+            className="absolute left-0 top-1/2 transform -translate-y-1/2 z-10 text-[#204081] bg-white p-1 md:p-3 lg:p-3 rounded-full shadow-md lg:shadow-lg hover:bg-[#204081] hover:text-white transition duration-300"
           >
             <FaArrowLeft size={16} />
           </button>
           <button
             onClick={() => swiperRef.current?.slideNext()}
-            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-[#204081] bg-white p-1 md:p-3 lg:p-3 rounded-full shadow-lg hover:bg-[#204081] hover:text-white transition duration-300"
+            className="absolute right-0 top-1/2 transform -translate-y-1/2 z-10 text-[#204081] bg-white p-1 md:p-3 lg:p-3 rounded-full shadow-md lg:shadow-lg hover:bg-[#204081] hover:text-white transition duration-300"
           >
             <FaArrowRight size={16} />
           </button>
@@ -142,7 +142,7 @@ export const ClientTestimonial = () => {
               const hasImage = !!t?.image;
               return (
                 <SwiperSlide key={i} className="px-2 py-4">
-                  <div className="justify-between h-max bg-white border border-gray-200 rounded-lg p-6 md:p-8 shadow-md flex flex-col space-y-6 hover:shadow-lg transition duration-300">
+                  <div className="justify-between h-max bg-white border border-gray-200 rounded-lg p-6 md:p-8 shadow-md flex flex-col space-y-6 hover:shadow-md lg:shadow-lg transition duration-300">
                     <div>
                       <FaQuoteLeft className="text-[#d91b1a]/50 w-8 h-8 mb-6" />
                       <p className="text-gray-700 text-xs lg:text-base text-justify">

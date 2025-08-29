@@ -73,7 +73,7 @@ export const Navbar = ({ institutionProfile }) => {
   return (
     <>
       {/* Navbar Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-lg">
+      <header className="fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white shadow-md ">
         <div className="max-w-screen-2xl mx-auto flex items-center justify-between py-2 px-4 lg:px-8">
           <div className="flex-shrink-0">
             <Link to="/">
@@ -120,7 +120,7 @@ export const Navbar = ({ institutionProfile }) => {
                   </button>
 
                   <div
-                    className={`absolute left-0 mt-2 w-48 bg-white border rounded shadow-lg z-50 transform transition-all duration-200
+                    className={`absolute left-0 mt-2 w-48 bg-white border rounded shadow-md lg:shadow-lg z-50 transform transition-all duration-200
                     ${
                       marketingOpen
                         ? "translate-y-0 opacity-100"
@@ -177,7 +177,7 @@ export const Navbar = ({ institutionProfile }) => {
 
       {/* Mobile Drawer */}
       <div
-        className={`fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-50 shadow-lg transform transition-transform duration-300 ${
+        className={`fixed top-0 left-0 w-[85%] max-w-sm h-full bg-white z-50 shadow-md  transform transition-transform duration-300 ${
           menuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >

@@ -62,20 +62,19 @@ export const Group = () => {
   };
 
   return (
-    <section className="pb-24 relative">
-      {/* Static parent image and intro */}
+    <section className="pb-10 lg:pb-20 relative">
       <div className="flex flex-col">
         <div className="flex justify-center">
           <img
             src={`${process.env.REACT_APP_API_URL}${group.mainImage}`}
             alt={group.mainTitle}
-            className={`w-[80%] lg:w-[30%] md:w-[60%] object-cover mb-6 ${
+            className={`w-[75%] lg:w-[30%] md:w-[60%] object-cover mb-6 ${
               group.mainWebsite ? "cursor-pointer" : ""
             }`}
             onClick={() => handleRedirect(group.mainWebsite)}
           />
         </div>
-        <p className="text-[16px] max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
+        <p className="text-sm lg:text-base max-w-6xl mx-auto sm:text-lg md:text-xl leading-relaxed text-justify text-[#262a2b] mb-10">
           {group.mainDescription}
         </p>
         {/* <p className="text-center text-3xl font-bold text-[#262a2b]">
@@ -88,7 +87,7 @@ export const Group = () => {
           {group.items.map((item, i) => (
             <div
               key={i}
-              className={`bg-white rounded-lg shadow-lg p-3 flex flex-col items-center hover:shadow-lg transition hover:shadow-red-500/60 ${
+              className={`bg-white rounded-lg shadow-md  p-3 flex flex-col items-center hover:shadow-md  transition hover:shadow-red-500/60 ${
                 item.website ? "cursor-pointer " : ""
               }`}
               onClick={() => handleRedirect(item.website)}

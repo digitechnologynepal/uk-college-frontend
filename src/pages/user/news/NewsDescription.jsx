@@ -138,7 +138,7 @@ export const NewsDescription = () => {
               </div>
 
               {/* Share Buttons */}
-              <div className="flex gap-2 items-center">
+              {/* <div className="flex gap-2 items-center">
                 <LinkedinShareButton
                   url={window.location.href}
                   title={singleNews.title}
@@ -174,7 +174,7 @@ export const NewsDescription = () => {
                 >
                   <LinkIcon size={18} />
                 </button>
-              </div>
+              </div> */}
             </div>
           </div>
 
@@ -191,11 +191,11 @@ export const NewsDescription = () => {
           <div className="text-justify prose max-w-none prose-p:text-gray-800 prose-headings:text-[#204081] prose-a:text-[#204081] prose-img:rounded-lg prose-img:shadow">
             <ContentView model={singleNews.description} />
             {singleNews.tags && singleNews.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-6">
+              <div className="flex flex-wrap gap-3 mt-6">
                 {singleNews.tags.map((tag, idx) => (
                   <span
                     key={idx}
-                    className="text-[#204081] px-2 py-1 rounded font-bold"
+                    className="text-[#204081] -my-1 rounded font-bold"
                   >
                     #{tag}
                   </span>

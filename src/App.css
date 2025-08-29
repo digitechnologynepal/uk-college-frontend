@@ -396,6 +396,20 @@ nav ul li .dropdown {
   }
 }
 
+/* Pagination container already has custom-pagination class */
+.custom-pagination .swiper-pagination-bullet {
+  background-color: #204081; 
+  opacity: 0.5;
+  width: 10px;
+  height: 10px;
+}
+
+.custom-pagination .swiper-pagination-bullet-active {
+  background-color: #204081; 
+  opacity: 1;
+}
+
+
 .animate-slide-in-right {
   animation: slideInRight 0.5s ease-in-out forwards;
 }

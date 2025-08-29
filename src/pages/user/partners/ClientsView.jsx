@@ -116,7 +116,7 @@ export const ClientsView = () => {
   }, [searchTerm, clients]);
 
   return (
-    <section className="py-28 px-4">
+    <section className="py-28 px-6 md:px-[6vw] xl:px-[8vw]">
       {isLoading ? (
         <SkeletonClients />
       ) : clients.length === 0 ? (
@@ -154,7 +154,7 @@ export const ClientsView = () => {
           </div>
 
           {/* Clients Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl">
             {filteredClients.length > 0 ? (
               filteredClients.map((client, index) => (
                 <ClientCard
@@ -217,7 +217,7 @@ export const ClientsView = () => {
               </button>
 
               <div className="px-8 py-3 bg-[#02153b] text-white flex flex-col gap-1 rounded-t-2xl">
-                <h2 className="text-xl font-semibold lg:font-bold">
+                <h2 className="text-base md:text-lg lg:text-xl font-semibold lg:font-bold">
                   A Proud Partnership with {selectedClient.name}
                 </h2>
                 {selectedClient.website && (
@@ -225,7 +225,7 @@ export const ClientsView = () => {
                     href={selectedClient.website}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold text-white underline underline-offset-2"
+                    className="text-sm font-normal lg:font-semibold text-white underline underline-offset-2"
                   >
                     Visit Website
                   </a>
@@ -242,7 +242,7 @@ export const ClientsView = () => {
                             <img
                               src={selectedClient.clientImage}
                               alt={selectedClient.name}
-                              className="w-full max-h-[400px] object-cover rounded-lg shadow-lg"
+                              className="w-full max-h-[400px] object-cover rounded-lg shadow-md "
                             />
                           </div>
                         )}
@@ -289,7 +289,7 @@ export const ClientsView = () => {
                           <img
                             src={selectedClient.clientImage}
                             alt={selectedClient.name}
-                            className="w-full max-h-[500px] object-contain rounded-lg shadow-lg"
+                            className="w-full max-h-[500px] object-contain rounded-lg shadow-md "
                           />
                         </div>
                       )}

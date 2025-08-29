@@ -17,7 +17,7 @@ const SkeletonNews = () => (
       {Array.from({ length: 4 }).map((_, idx) => (
         <div
           key={idx}
-          className="rounded-lg overflow-hidden shadow-lg bg-white animate-pulse"
+          className="rounded-lg overflow-hidden shadow-md  bg-white animate-pulse"
         >
           <div className="w-full h-[200px] bg-gray-200" />
           <div className="p-6 flex flex-col gap-3">
@@ -138,7 +138,7 @@ export const News = () => {
                 </button>
 
                 {dropdownOpen && (
-                  <div className="absolute left-20 lg:left-0 mt-2 w-48 bg-white border rounded-lg shadow-lg z-50 p-3 flex flex-col gap-2">
+                  <div className="absolute left-20 lg:left-0 mt-2 w-48 bg-white border rounded-lg shadow-md  z-50 p-3 flex flex-col gap-2">
                     {categories.map((cat) => (
                       <label
                         key={cat.title}
@@ -196,11 +196,11 @@ export const News = () => {
               </div>
             ) : (
               /* News Grid */
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3">
                 {filteredNews.map((item) => (
                   <div
                     key={item.slug}
-                    className="rounded-lg overflow-hidden shadow-lg bg-white group transition-all duration-300 hover:shadow-xl flex flex-col h-full"
+                    className="rounded-lg overflow-hidden shadow-md  bg-white group transition-all duration-300 hover:shadow-xl flex flex-col h-full"
                   >
                     <div className="relative">
                       <img
@@ -213,8 +213,8 @@ export const News = () => {
                       </div>
                     </div>
 
-                    <div className="p-6 flex flex-col gap-3 flex-1">
-                      <h3 className="text-lg font-bold text-[#204081]">
+                    <div className="p-3 lg:p-6 flex flex-col gap-3 flex-1">
+                      <h3 className="text-base lg:text-lg font-bold text-[#204081]">
                         {item.title.length > 50
                           ? item.title.slice(0, 50) + "..."
                           : item.title}{" "}

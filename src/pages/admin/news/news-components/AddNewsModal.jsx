@@ -60,7 +60,7 @@ export const AddNewsModal = ({ open, onClose, setUpdated }) => {
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg lg:w-[60%] md:w-[80%] w-[95%] h-[90vh] overflow-auto">
+      <div className="bg-white p-6 rounded-lg shadow-md  lg:w-[60%] md:w-[80%] w-[95%] h-[90vh] overflow-auto">
         <h2 className="text-xl font-bold mb-4">Add News</h2>
 
         <Formik
@@ -221,7 +221,7 @@ export const AddNewsModal = ({ open, onClose, setUpdated }) => {
                         }}
                         className="text-[#204081] font-bold"
                       >
-                        <X size={15}/>
+                        <X size={15} />
                       </button>
                     </div>
                   ))}
