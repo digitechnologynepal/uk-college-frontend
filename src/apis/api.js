@@ -39,11 +39,10 @@ export const addAboutUsApi = (data) => ApiWithFormData.post('/api/admin/aboutus/
 // get aboutUs content
 export const getAboutUsApi = () => Api.get('/api/admin/aboutus/get');
 
-// add or update instution profile Api
 export const addInstitutionProfileApi = (data) => ApiWithFormData.post('/api/admin/institutionprofile/add', data, config);
-
-// get instution profile
 export const getInstitutionProfileApi = () => Api.get('/api/admin/institutionprofile/get');
+export const deleteBrochureApi = () => Api.delete('/api/admin/institutionprofile/delete-brochure');
+export const deleteCertificateApi = () => Api.delete('/api/admin/institutionprofile/delete-certificate');
 
 // get awards content
 export const getAwardContentApi = () => Api.get('/api/admin/awards/get');

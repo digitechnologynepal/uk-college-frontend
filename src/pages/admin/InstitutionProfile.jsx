@@ -5,10 +5,13 @@ import { Button } from "../../components/Button";
 import { useEffect, useState } from "react";
 import {
   addInstitutionProfileApi,
+  deleteBrochureApi,
+  deleteCertificateApi,
   getInstitutionProfileApi,
 } from "../../apis/api";
 import toast from "react-hot-toast";
 import { ErrorHandler } from "../../components/error/errorHandler";
+import { Trash } from "lucide-react";
 
 export const InstitutionProfile = () => {
   const [email, setEmail] = useState("");
@@ -54,28 +57,66 @@ export const InstitutionProfile = () => {
   }, [updated]);
 
   function updateInstitutionProfile(values, brochure, certificate) {
-    const formData = new FormData();
-    for (const key in values) {
-      formData.append(key, values[key]);
-    }
+  const formData = new FormData();
+  for (const key in values) {
+    formData.append(key, values[key]);
+  }
 
-    if (brochure) {
-      formData.append("brochure", brochure);
-    }
-    if (certificate) {
-      formData.append("certificate", certificate);
-    }
-    addInstitutionProfileApi(formData)
+  if (brochure) {
+    formData.append("brochure", brochure);
+  }
+  if (certificate) {
+    formData.append("certificate", certificate);
+  }
+
+  addInstitutionProfileApi(formData)
+    .then((res) => {
+      if (res.data.success === true) {
+        toast.success(res.data.message);
+
+        // Update local file states immediately
+        if (brochure) {
+          setBrochureName(res.data.result?.brochure || brochure.name);
+          setBrochure(null);
+        }
+        if (certificate) {
+          setCertificateName(res.data.result?.certificate || certificate.name);
+          setCertificate(null);
+        }
+
+        // toggle to refresh other fields
+        setUpdated((prev) => !prev);
+      }
+    })
+    .catch((err) => {
+      ErrorHandler(err);
+    });
+}
+
+
+  const handleDeleteBrochure = () => {
+    deleteBrochureApi()
       .then((res) => {
-        if (res.data.success === true) {
-          toast.success(res.data.message);
+        if (res.data.success) {
+          toast.success("Brochure deleted successfully.");
+          setBrochureName("");
           setUpdated((prev) => !prev);
         }
       })
-      .catch((err) => {
-        ErrorHandler(err);
-      });
-  }
+      .catch((err) => ErrorHandler(err));
+  };
+
+  const handleDeleteCertificate = () => {
+    deleteCertificateApi()
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("Certificate deleted successfully.");
+          setCertificateName("");
+          setUpdated((prev) => !prev);
+        }
+      })
+      .catch((err) => ErrorHandler(err));
+  };
 
   return (
     <>
@@ -255,6 +296,7 @@ export const InstitutionProfile = () => {
                     </p>
                   )}
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <label htmlFor="brochure" className="block font-medium">
                     Upload Brochure (PDF only)
@@ -264,18 +306,26 @@ export const InstitutionProfile = () => {
                     id="brochure"
                     accept="application/pdf"
                     onChange={(e) => setBrochure(e.currentTarget.files[0])}
-                    className="appearance-none border rounded w-full p-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="appearance-none border rounded w-full p-3 text-neutral-700 focus:outline-none focus:shadow-outline"
                   />
                   {brochureName && !brochure && (
-                    <p className="mt-1 text-md text-blue-600 underline cursor-pointer">
+                    <div className="flex items-center gap-2 mt-1">
                       <a
                         href={`${process.env.REACT_APP_API_URL}/uploads/${brochureName}`}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-blue-600 underline"
                       >
                         View current brochure PDF
                       </a>
-                    </p>
+                      <button
+                        type="button"
+                        onClick={handleDeleteBrochure}
+                        className="p-1 text-white rounded-md bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
                   )}
                 </div>
                 <div className="flex flex-col gap-2">
@@ -287,18 +337,26 @@ export const InstitutionProfile = () => {
                     id="certificate"
                     accept="application/pdf"
                     onChange={(e) => setCertificate(e.currentTarget.files[0])}
-                    className="appearance-none border rounded w-full p-3 text-neutral-700 leading-tight focus:outline-none focus:shadow-outline"
+                    className="appearance-none border rounded w-full p-3 text-neutral-700 focus:outline-none focus:shadow-outline"
                   />
                   {certificateName && !certificate && (
-                    <p className="mt-1 text-md text-blue-600 underline cursor-pointer">
+                    <div className="flex items-center gap-2 mt-1">
                       <a
                         href={`${process.env.REACT_APP_API_URL}/uploads/${certificateName}`}
                         target="_blank"
                         rel="noopener noreferrer"
+                        className="text-blue-600 underline"
                       >
                         View current certificate PDF
                       </a>
-                    </p>
+                      <button
+                        type="button"
+                        onClick={handleDeleteCertificate}
+                        className="p-1 text-white rounded-md bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
