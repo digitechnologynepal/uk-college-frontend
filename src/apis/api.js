@@ -127,6 +127,8 @@ export const createGalleryContentApi = (formData) => ApiWithFormData.post("/api/
 export const getAllGalleryContentsApi = () => Api.get("/api/admin/galleryContent/get");
 export const updateGalleryContentApi = (id, formData) => ApiWithFormData.put(`/api/admin/galleryContent/update/${id}`, formData);
 export const deleteGalleryContentApi = (id) => Api.delete(`/api/admin/galleryContent/delete/${id}`);
+export const deleteAlbumApi = (albumTitle) => Api.delete(`/api/admin/galleryContent/album/${albumTitle}`);
+export const updateAlbumApi = (albumTitle, formData) => ApiWithFormData.put(`/api/admin/galleryContent/album/update/${albumTitle}`, formData);
 
 // Group (SoftEd Groups) 
 export const manageGroupApi = (formData) => ApiWithFormData.post("/api/admin/group", formData);
