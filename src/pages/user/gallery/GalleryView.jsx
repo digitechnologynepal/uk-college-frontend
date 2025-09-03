@@ -5,6 +5,7 @@ import { Dot, Maximize, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Lottie from "lottie-react";
 import animationData from "../../../assets/animations/no-data.json";
+import AlbumView from "./AlbumView";
 
 // Hook to detect hover capability
 function useCanHover() {
@@ -44,6 +45,8 @@ export const GalleryView = () => {
   const [galleryList, setGalleryList] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedCategories, setSelectedCategories] = useState([]);
+  const [showAlbums, setShowAlbums] = useState(false);
+
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef();
 
@@ -153,7 +156,6 @@ export const GalleryView = () => {
         {loading ? (
           <SkeletonGallery />
         ) : galleryList.length === 0 ? (
-          // No content at all
           <div className="flex flex-col items-center justify-center w-full p-6">
             <Lottie
               animationData={animationData}
@@ -168,7 +170,6 @@ export const GalleryView = () => {
             </p>
           </div>
         ) : (
-          // Content exists
           <div className="flex flex-col">
             {/* Heading */}
             <p className="text-left text-2xl lg:text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
@@ -179,20 +180,20 @@ export const GalleryView = () => {
             </p>
 
             {/* Filters */}
-            <div className="flex flex-wrap items-center gap-3 mb-6">
+            <div className="flex flex-wrap items-center gap-3">
               <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="px-4 py-2 border rounded-lg bg-white flex items-center gap-2 text-[#204081] hover:bg-gray-100"
+                  className="text-sm lg:text-lg px-4 py-2 min-w-36 w-max border rounded-lg bg-white flex justify-between items-center gap-2 text-[#204081] hover:bg-gray-100"
                 >
                   Filters <ChevronDown size={16} />
                 </button>
                 {dropdownOpen && (
-                  <div className="absolute left-0 mt-2 w-48 bg-white border rounded-lg shadow-md  z-50 p-3 flex flex-col gap-2">
+                  <div className="absolute left-0 mt-2 w-max bg-white border rounded-lg shadow-md z-50 p-3 flex flex-col gap-2">
                     {categories.map((cat) => (
                       <label
                         key={cat.title}
-                        className="flex items-center gap-2 text-[#204081]"
+                        className="text-sm lg:text-lg flex items-center gap-2 text-[#204081]"
                       >
                         <input
                           type="checkbox"
@@ -206,7 +207,7 @@ export const GalleryView = () => {
                     {selectedCategories.length > 0 && (
                       <button
                         onClick={clearAll}
-                        className="mt-2 px-2 py-1 text-sm text-white bg-[#204081] rounded hover:bg-[#3c65b4]"
+                        className="text-xs lg:text-sm mt-2 px-2 py-1 text-white bg-[#204081] rounded hover:bg-[#3c65b4]"
                       >
                         Clear All
                       </button>
@@ -219,7 +220,7 @@ export const GalleryView = () => {
                 {selectedCategories.map((cat) => (
                   <span
                     key={cat}
-                    className="flex items-center gap-1 bg-[#e7efff] text-[#204081] px-3 py-1 rounded-full text-sm"
+                    className="text-xs lg:text-sm flex items-center gap-1 bg-[#e7efff] text-[#204081] px-3 py-1 rounded-full"
                   >
                     {cat}
                     <button onClick={() => toggleCategory(cat)}>
@@ -230,8 +231,45 @@ export const GalleryView = () => {
               </div>
             </div>
 
-            {/* Show Lottie if filter returns empty */}
-            {filteredGallery.length === 0 ? (
+            {/* View Albums */}
+            <div className="my-5 w-max relative flex justify-around gap-4 border-b border-gray-300 text-sm lg:text-base">
+              <button
+                className={`px-4 py-2 font-semibold relative z-10 ${
+                  !showAlbums
+                    ? "text-[#204081] font-bold"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                onClick={() => setShowAlbums(false)}
+              >
+                All Content
+              </button>
+
+              <button
+                className={`px-4 py-2 font-semibold relative z-10 ${
+                  showAlbums
+                    ? "text-[#204081] font-bold"
+                    : "text-gray-600 hover:text-gray-800"
+                }`}
+                onClick={() => setShowAlbums(true)}
+              >
+                Albums
+              </button>
+
+              {/* Sliding underline */}
+              <span
+                className="absolute bottom-0 h-1 bg-[#204081] rounded-full transition-left duration-300"
+                style={{
+                  width: "50%", // 2 tabs → each is 50%
+                  left: showAlbums ? "50%" : "0%",
+                  transition: "left 0.3s ease",
+                }}
+              />
+            </div>
+
+            {/* Main content: either AlbumView or Gallery Grid */}
+            {showAlbums ? (
+              <AlbumView galleryItems={filteredGallery} />
+            ) : filteredGallery.length === 0 ? (
               <div className="flex flex-col items-center justify-center w-full">
                 <Lottie
                   animationData={animationData}
@@ -239,13 +277,12 @@ export const GalleryView = () => {
                   autoplay
                   className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
                 />
-                <p className="text-xl text-gray-500 font-medium text-center">
+                <p className="text-sm lg:text-xl text-gray-500 font-medium text-center">
                   No content matches your filter selection.
                 </p>
               </div>
             ) : (
               <>
-                {/* Gallery Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
                   {currentGallery.map((item, index) => {
                     const globalIndex = indexOfFirstItem + index;
@@ -258,7 +295,6 @@ export const GalleryView = () => {
                             canHover && isDesktop ? "group hover:shadow-xl" : ""
                           }`}
                       >
-                        {/* Image / Video */}
                         {item.fileType === "video" ? (
                           <div>
                             <video
@@ -293,48 +329,19 @@ export const GalleryView = () => {
                           />
                         )}
 
-                        {/* Hover overlay */}
                         {canHover && isDesktop && (
-                          <>
-                            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
-                              <Maximize className="text-white" />
-                              <span className="text-white ml-2 font-semibold text-md">
-                                Click to expand
-                              </span>
-                            </div>
-                            {/* <div className="absolute bottom-4 left-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                              <div className="flex items-center text-xs text-white ">
-                                <p className="font-bold">
-                                  {item.fileType === "video"
-                                    ? "Video"
-                                    : "Image"}
-                                </p>
-                                <Dot />
-                                <p>
-                                  {item.date
-                                    ? new Date(item.date).toLocaleDateString(
-                                        undefined,
-                                        {
-                                          year: "numeric",
-                                          month: "long",
-                                          day: "numeric",
-                                        }
-                                      )
-                                    : "No date provided"}
-                                </p>
-                              </div>
-                              <h3 className="text-white text-md md:text-xl font-semibold mb-1">
-                                {item.name}
-                              </h3>
-                            </div> */}
-                          </>
+                          <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex justify-center items-center">
+                            <Maximize className="text-white" />
+                            <span className="text-white ml-2 font-semibold text-md">
+                              Click to expand
+                            </span>
+                          </div>
                         )}
                       </div>
                     );
                   })}
                 </div>
 
-                {/* Pagination */}
                 {totalPages > 1 && (
                   <div className="flex justify-center items-center mt-8 gap-2 flex-wrap">
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(
@@ -406,14 +413,14 @@ export const GalleryView = () => {
               {selectedContent.fileType === "video" ? (
                 <video
                   src={`${process.env.REACT_APP_API_URL}/uploads/${selectedContent.file}`}
-                  className="w-full max-h-[80vh] object-contain bg-black"
+                  className="w-full max-h-[80vh] object-contain bg-[#030303]"
                   controls
                 />
               ) : (
                 <img
                   src={`${process.env.REACT_APP_API_URL}/uploads/${selectedContent.file}`}
                   alt={selectedContent.name}
-                  className="w-full max-h-[80vh] object-contain bg-black"
+                  className="w-full max-h-[80vh] object-contain bg-[#030303]"
                 />
               )}
 

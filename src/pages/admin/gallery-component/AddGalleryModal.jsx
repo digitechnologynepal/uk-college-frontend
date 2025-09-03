@@ -13,7 +13,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [previews, setPreviews] = useState([]);
 
-  // Fetch categories on modal open
+  // Fetch categories when modal opens
   useEffect(() => {
     if (!open) return;
 
@@ -38,11 +38,9 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
     fetchCategories();
   }, [open]);
 
-  // Cleanup previews on unmount
+  // Cleanup previews
   useEffect(() => {
-    return () => {
-      previews.forEach((url) => URL.revokeObjectURL(url));
-    };
+    return () => previews.forEach((url) => URL.revokeObjectURL(url));
   }, [previews]);
 
   if (!open) return null;
@@ -58,7 +56,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
   });
 
   return (
-    <Modal open={open} onClose={onClose} modalTitle="Add Gallery Content">
+    <Modal open={open} onClose={onClose} modalTitle="Add Album">
       <Formik
         enableReinitialize
         initialValues={{
@@ -84,7 +82,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
               if (isVideoFile(selectedFiles[i]) !== firstIsVideo) {
                 Swal.fire(
                   "Error",
-                  "All files must be either images or videos",
+                  "All files in an album must be either images or videos",
                   "error"
                 );
                 setSubmitting(false);
@@ -93,7 +91,13 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
             }
 
             const formData = new FormData();
-            selectedFiles.forEach((file) => formData.append("files", file));
+            selectedFiles.forEach((file) => {
+              const uniqueName = `${Date.now()}-${file.name}`;
+              const uniqueFile = new File([file], uniqueName, {
+                type: file.type,
+              });
+              formData.append("files", uniqueFile);
+            });
             formData.append("name", values.name);
             formData.append("categoryTitle", values.categoryTitle);
             formData.append("date", values.date || "");
@@ -101,7 +105,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
             const res = await createGalleryContentApi(formData);
             if (res?.data?.success) {
-              Swal.fire("Success!", "Content added successfully.", "success");
+              Swal.fire("Success!", "Album created successfully.", "success");
               resetForm();
               setSelectedFiles([]);
               setPreviews([]);
@@ -110,7 +114,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
             }
           } catch (err) {
             console.error(err);
-            Swal.fire("Error!", "Failed to add content.", "error");
+            Swal.fire("Error!", "Failed to add album.", "error");
           } finally {
             setSubmitting(false);
           }
@@ -139,7 +143,9 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
             <Form className="space-y-4 p-6">
               {/* Album Name */}
               <div>
-                <label className="block text-sm font-medium">Album Name</label>
+                <label className="block text-sm font-medium">
+                  Album Name *
+                </label>
                 <Field
                   name="name"
                   type="text"
@@ -154,7 +160,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium">Category</label>
+                <label className="block text-sm font-medium">Category *</label>
                 <Field
                   as="select"
                   name="categoryTitle"
@@ -166,14 +172,11 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                     </option>
                   ))}
                 </Field>
-                <p className="text-xs text-[#2d5dbc]">Default: "Others"</p>
               </div>
 
               {/* Date */}
               <div>
-                <label className="block text-sm font-medium">
-                  Date (optional)
-                </label>
+                <label className="block text-sm font-medium">Date</label>
                 <Field
                   name="date"
                   type="date"
@@ -183,7 +186,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
               {/* Tags */}
               <div>
-                <label className="block text-sm font-medium">Tags</label>
+                <label className="block text-sm font-medium">Tags *</label>
                 <div className="flex flex-wrap gap-2 mt-1">
                   {values.tags.map((tag, idx) => (
                     <div
@@ -225,7 +228,9 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
               {/* File Upload */}
               <div>
-                <label className="block text-sm font-medium">File(s)</label>
+                <label className="block text-sm font-medium">
+                  Album Files *
+                </label>
                 <input
                   type="file"
                   accept="image/*,video/*"
@@ -279,7 +284,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                   disabled={isSubmitting}
                   className="btn-primary"
                 >
-                  {isSubmitting ? "Uploading..." : "Add Content"}
+                  {isSubmitting ? "Uploading..." : "Create Album"}
                 </button>
                 <button
                   type="button"
