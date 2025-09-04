@@ -43,6 +43,7 @@ export const addInstitutionProfileApi = (data) => ApiWithFormData.post('/api/adm
 export const getInstitutionProfileApi = () => Api.get('/api/admin/institutionprofile/get');
 export const deleteBrochureApi = () => Api.delete('/api/admin/institutionprofile/delete-brochure');
 export const deleteCertificateApi = () => Api.delete('/api/admin/institutionprofile/delete-certificate');
+export const deleteInstitutionCertificateApi = () => Api.delete('/api/admin/institutionprofile/delete-institution-certificate');
 
 // get awards content
 export const getAwardContentApi = () => Api.get('/api/admin/awards/get');

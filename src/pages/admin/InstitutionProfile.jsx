@@ -7,6 +7,7 @@ import {
   addInstitutionProfileApi,
   deleteBrochureApi,
   deleteCertificateApi,
+  deleteInstitutionCertificateApi,
   getInstitutionProfileApi,
 } from "../../apis/api";
 import toast from "react-hot-toast";
@@ -26,6 +27,9 @@ export const InstitutionProfile = () => {
   const [brochureName, setBrochureName] = useState("");
   const [certificate, setCertificate] = useState(null);
   const [certificateName, setCertificateName] = useState("");
+  const [institutionCertificate, setInstitutionCertificate] = useState(null);
+  const [institutionCertificateName, setInstitutionCertificateName] =
+    useState("");
   const [updated, setUpdated] = useState(false);
 
   const institutionProfileSchema = Yup.object().shape({
@@ -52,47 +56,67 @@ export const InstitutionProfile = () => {
         setLocationForMap(res?.data?.result?.locationForMap);
         setBrochureName(res?.data?.result?.brochure || "");
         setCertificateName(res?.data?.result?.certificate || "");
+        setInstitutionCertificateName(
+          res?.data?.result?.institutionCertificate || ""
+        );
       }
     });
   }, [updated]);
 
-  function updateInstitutionProfile(values, brochure, certificate) {
-  const formData = new FormData();
-  for (const key in values) {
-    formData.append(key, values[key]);
-  }
+  function updateInstitutionProfile(
+    values,
+    brochure,
+    certificate,
+    institutionCertificate
+  ) {
+    const formData = new FormData();
+    for (const key in values) {
+      formData.append(key, values[key]);
+    }
 
-  if (brochure) {
-    formData.append("brochure", brochure);
-  }
-  if (certificate) {
-    formData.append("certificate", certificate);
-  }
+    if (brochure) {
+      formData.append("brochure", brochure);
+    }
+    if (certificate) {
+      formData.append("certificate", certificate);
+    }
+    if (institutionCertificate) {
+      formData.append("institutionCertificate", institutionCertificate);
+    }
 
-  addInstitutionProfileApi(formData)
-    .then((res) => {
-      if (res.data.success === true) {
-        toast.success(res.data.message);
+    addInstitutionProfileApi(formData)
+      .then((res) => {
+        if (res.data.success === true) {
+          toast.success(res.data.message);
 
-        // Update local file states immediately
-        if (brochure) {
-          setBrochureName(res.data.result?.brochure || brochure.name);
-          setBrochure(null);
+          // Update local file states immediately
+          if (brochure) {
+            setBrochureName(res.data.result?.brochure || brochure.name);
+            setBrochure(null);
+          }
+          if (certificate) {
+            setCertificateName(
+              res.data.result?.certificate || certificate.name
+            );
+            setCertificate(null);
+          }
+
+          if (institutionCertificate) {
+            setInstitutionCertificateName(
+              res.data.result?.institutionCertificate ||
+                institutionCertificate.name
+            );
+            setInstitutionCertificate(null);
+          }
+
+          // toggle to refresh other fields
+          setUpdated((prev) => !prev);
         }
-        if (certificate) {
-          setCertificateName(res.data.result?.certificate || certificate.name);
-          setCertificate(null);
-        }
-
-        // toggle to refresh other fields
-        setUpdated((prev) => !prev);
-      }
-    })
-    .catch((err) => {
-      ErrorHandler(err);
-    });
-}
-
+      })
+      .catch((err) => {
+        ErrorHandler(err);
+      });
+  }
 
   const handleDeleteBrochure = () => {
     deleteBrochureApi()
@@ -112,6 +136,18 @@ export const InstitutionProfile = () => {
         if (res.data.success) {
           toast.success("Certificate deleted successfully.");
           setCertificateName("");
+          setUpdated((prev) => !prev);
+        }
+      })
+      .catch((err) => ErrorHandler(err));
+  };
+
+  const handleDeleteInstitutionCertificate = () => {
+    deleteInstitutionCertificateApi()
+      .then((res) => {
+        if (res.data.success) {
+          toast.success("Institution certificate deleted successfully.");
+          setInstitutionCertificateName("");
           setUpdated((prev) => !prev);
         }
       })
@@ -139,7 +175,12 @@ export const InstitutionProfile = () => {
           }}
           validationSchema={institutionProfileSchema}
           onSubmit={(values) => {
-            updateInstitutionProfile(values, brochure, certificate);
+            updateInstitutionProfile(
+              values,
+              brochure,
+              certificate,
+              institutionCertificate
+            );
           }}
         >
           {(props) => (
@@ -352,6 +393,39 @@ export const InstitutionProfile = () => {
                       <button
                         type="button"
                         onClick={handleDeleteCertificate}
+                        className="p-1 text-white rounded-md bg-red-600 hover:bg-red-700"
+                      >
+                        <Trash size={16} />
+                      </button>
+                    </div>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  <label htmlFor="certificate" className="block font-medium">
+                    Upload Institution Certificate (PDF only)
+                  </label>
+                  <input
+                    type="file"
+                    id="institutionCertificate"
+                    accept="application/pdf"
+                    onChange={(e) =>
+                      setInstitutionCertificate(e.currentTarget.files[0])
+                    }
+                    className="appearance-none border rounded w-full p-3 text-neutral-700 focus:outline-none focus:shadow-outline"
+                  />
+                  {institutionCertificateName && !certificate && (
+                    <div className="flex items-center gap-2 mt-1">
+                      <a
+                        href={`${process.env.REACT_APP_API_URL}/uploads/${institutionCertificateName}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View current institution certificate PDF
+                      </a>
+                      <button
+                        type="button"
+                        onClick={handleDeleteInstitutionCertificate}
                         className="p-1 text-white rounded-md bg-red-600 hover:bg-red-700"
                       >
                         <Trash size={16} />

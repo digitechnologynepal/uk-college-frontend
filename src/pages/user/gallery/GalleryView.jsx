@@ -259,7 +259,7 @@ export const GalleryView = () => {
               <span
                 className="absolute bottom-0 h-1 bg-[#204081] rounded-full transition-left duration-300"
                 style={{
-                  width: "50%", // 2 tabs → each is 50%
+                  width: "50%",
                   left: showAlbums ? "50%" : "0%",
                   transition: "left 0.3s ease",
                 }}
@@ -383,7 +383,7 @@ export const GalleryView = () => {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.95, opacity: 0 }}
               transition={{ duration: 0.3 }}
-              className="relative max-w-4xl w-full mx-4 bg-white overflow-hidden rounded-lg"
+              className="relative max-w-6xl h-[80vh] w-full mx-4 bg-white overflow-hidden rounded-lg"
             >
               <button
                 onClick={() => setSelectedIndex(null)}

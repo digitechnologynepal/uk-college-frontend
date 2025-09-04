@@ -1,19 +1,30 @@
-import React, { useEffect, useState } from "react";
-import { Maximize, X } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useMemo, useEffect } from "react";
+import { X } from "lucide-react";
+import { useInView } from "react-intersection-observer";
 import Lottie from "lottie-react";
 import animationData from "../../../assets/animations/no-data.json";
 
+// Main AlbumView component
 const AlbumView = ({ galleryItems }) => {
-  const [albums, setAlbums] = useState([]);
-  const [selectedAlbum, setSelectedAlbum] = useState(null); // for album modal
-  const [selectedIndex, setSelectedIndex] = useState(null); // for item modal
+  const [selectedAlbum, setSelectedAlbum] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
 
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 1024);
   const canHover = window.matchMedia("(hover: hover)").matches;
 
-  // Group items by album
+  // Debounced resize
   useEffect(() => {
+    let timeout;
+    const resizeHandler = () => {
+      clearTimeout(timeout);
+      timeout = setTimeout(() => setIsDesktop(window.innerWidth >= 1024), 100);
+    };
+    window.addEventListener("resize", resizeHandler);
+    return () => window.removeEventListener("resize", resizeHandler);
+  }, []);
+
+  // Group gallery items into albums
+  const albums = useMemo(() => {
     const grouped = galleryItems
       .filter((item) => item.albumTitle)
       .reduce((acc, item) => {
@@ -22,24 +33,14 @@ const AlbumView = ({ galleryItems }) => {
         return acc;
       }, {});
 
-    // Filter out albums with only 1 item
-    const filteredAlbums = Object.entries(grouped)
-      .filter(([title, files]) => files.length > 1)
+    return Object.entries(grouped)
+      .filter(([_, files]) => files.length > 1)
       .map(([title, files]) => ({ title, files }));
-
-    setAlbums(filteredAlbums);
   }, [galleryItems]);
-
-  // Update desktop detection on resize
-  useEffect(() => {
-    const resizeHandler = () => setIsDesktop(window.innerWidth >= 1024);
-    window.addEventListener("resize", resizeHandler);
-    return () => window.removeEventListener("resize", resizeHandler);
-  }, []);
 
   const handleAlbumClick = (album) => {
     setSelectedAlbum(album);
-    setSelectedIndex(null); // reset item selection
+    setSelectedIndex(null);
   };
 
   const handleItemClick = (index) => {
@@ -51,7 +52,7 @@ const AlbumView = ({ galleryItems }) => {
       ? selectedAlbum.files[selectedIndex]
       : null;
 
-  // Keyboard navigation in item modal
+  // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (!selectedAlbum || selectedIndex === null) return;
@@ -70,9 +71,9 @@ const AlbumView = ({ galleryItems }) => {
 
   return (
     <>
-      {/* Albums Grid or Lottie when empty */}
+      {/* Albums Grid or No Data */}
       {albums.length === 0 ? (
-        <div className="flex flex-col items-center justify-center w-full mt-10">
+        <div className="flex flex-col items-center justify-center w-full">
           <Lottie
             animationData={animationData}
             loop
@@ -80,7 +81,7 @@ const AlbumView = ({ galleryItems }) => {
             className="w-full max-w-sm md:max-w-md lg:max-w-lg h-auto"
           />
           <p className="text-sm lg:text-xl text-gray-500 font-medium text-center">
-            No albums available.
+            No albums available at the moment.
             <br />
             New content is on the way — don't miss it!
           </p>
@@ -88,213 +89,238 @@ const AlbumView = ({ galleryItems }) => {
       ) : (
         <div className="mt-6 grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-1 lg:gap-3 sm:gap-1">
           {albums.map((album) => (
-            <div
+            <LazyAlbumCard
               key={album.title}
-              className={`relative cursor-pointer rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
-                canHover && isDesktop ? "group hover:shadow-xl" : ""
-              }`}
+              album={album}
+              canHover={canHover && isDesktop}
               onClick={() => handleAlbumClick(album)}
-            >
-              {/* Cover Image/Video */}
-              {album.files[0].fileType === "video" ? (
-                <div className="relative">
-                  <video
-                    src={`${process.env.REACT_APP_API_URL}/uploads/${album.files[0].file}`}
-                    className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
-                      canHover && isDesktop ? "lg:group-hover:scale-105" : ""
-                    }`}
-                    muted
-                    playsInline
-                  />
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <svg
-                      className="w-12 h-12 text-white bg-black bg-opacity-50 rounded-full p-2"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M8 5v14l11-7z" />
-                    </svg>
-                  </div>
-                </div>
-              ) : (
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${album.files[0].file}`}
-                  alt={album.title}
-                  className={`w-full h-40 lg:h-64 sm:h-40 object-cover transition-transform duration-300 ${
-                    canHover && isDesktop ? "lg:group-hover:scale-105" : ""
-                  }`}
-                />
-              )}
-
-              {/* Album title & count */}
-              <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm px-2 py-1 flex justify-between items-center">
-                <span>{album.title}</span>
-                <span>{album.files.length} items</span>
-              </div>
-            </div>
+            />
           ))}
         </div>
       )}
 
-      {/* Album Content Modal */}
-      <AnimatePresence>
-        {selectedAlbum && selectedIndex === null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center"
-            onClick={() => setSelectedAlbum(null)}
-          >
-            <motion.div
-              onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-4xl w-full mx-4 bg-[#030303] max-h-[80%] min-h-[60%] overflow-y-auto rounded-lg p-4"
-            >
-              <button
-                onClick={() => setSelectedAlbum(null)}
-                className="absolute top-2 right-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 z-20"
-              >
-                <X />
-              </button>
-
-              <h2 className="text-xl font-semibold mb-4 text-white">
-                {selectedAlbum.title}
-              </h2>
-
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
-                {selectedAlbum.files.map((item, idx) => (
-                  <div
-                    key={item._id}
-                    className="w-50 h-full relative cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl"
-                    onClick={() => handleItemClick(idx)}
-                  >
-                    {item.fileType === "video" ? (
-                      <div>
-                        <video
-                          src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
-                          className="h-max object-cover"
-                          muted
-                          playsInline
-                        />
-                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                          <svg
-                            className="w-12 h-12 text-white bg-black bg-opacity-50 rounded-full p-2"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                          >
-                            <path d="M8 5v14l11-7z" />
-                          </svg>
-                        </div>
-                      </div>
-                    ) : (
-                      <img
-                        src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
-                        alt={item.name}
-                        className="h-max object-cover"
-                      />
-                    )}
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Album Modal */}
+      {selectedAlbum && selectedIndex === null && (
+        <AlbumModal
+          album={selectedAlbum}
+          onClose={() => setSelectedAlbum(null)}
+          onItemClick={handleItemClick}
+        />
+      )}
 
       {/* Fullscreen Item Modal */}
-      <AnimatePresence>
-        {currentItem && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-[#030303] bg-opacity-80 z-50 flex items-center justify-center"
-            onClick={() => setSelectedIndex(null)}
-          >
-            <motion.div
-              onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.95, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.95, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="relative max-w-4xl w-full mx-4 bg-white overflow-hidden rounded-lg"
-            >
-              <button
-                onClick={() => setSelectedIndex(null)}
-                className="absolute top-2 right-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 z-20"
-              >
-                <X />
-              </button>
-
-              {selectedIndex > 0 && (
-                <button
-                  onClick={() => setSelectedIndex((prev) => prev - 1)}
-                  className="absolute left-2 top-1/2 transform -translate-y-1/2 z-20 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full"
-                >
-                  ◀
-                </button>
-              )}
-
-              {selectedIndex < selectedAlbum.files.length - 1 && (
-                <button
-                  onClick={() => setSelectedIndex((prev) => prev + 1)}
-                  className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full"
-                >
-                  ▶
-                </button>
-              )}
-
-              {currentItem.fileType === "video" ? (
-                <video
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${currentItem.file}`}
-                  className="w-full max-h-[80vh] object-contain bg-black"
-                  controls
-                />
-              ) : (
-                <img
-                  src={`${process.env.REACT_APP_API_URL}/uploads/${currentItem.file}`}
-                  alt={currentItem.name}
-                  className="w-full max-h-[80vh] object-contain bg-black"
-                />
-              )}
-
-              <div className="px-10 py-3 bg-gray-950">
-                <h2 className="text-sm lg:text-2xl md:text-lg font-semibold text-white mb-2">
-                  {selectedAlbum.title}
-                </h2>
-
-                {currentItem.date && (
-                  <p className="text-white text-sm mb-1">
-                    {new Date(currentItem.date).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </p>
-                )}
-
-                {currentItem.tags && currentItem.tags.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {currentItem.tags.map((tag, idx) => (
-                      <span
-                        key={idx}
-                        className="text-white rounded text-[10px] -my-1 lg:text-xs"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {currentItem && (
+        <ItemModal
+          currentItem={currentItem}
+          selectedAlbum={selectedAlbum}
+          selectedIndex={selectedIndex}
+          setSelectedIndex={setSelectedIndex}
+          onClose={() => setSelectedIndex(null)}
+        />
+      )}
     </>
+  );
+};
+
+// Lazy load album card component
+const LazyAlbumCard = ({ album, canHover, onClick }) => {
+  const { ref, inView } = useInView({ triggerOnce: true, rootMargin: "100px" });
+  const coverImage = album.files.find((file) => file.fileType === "image");
+
+  return (
+    <div
+      ref={ref}
+      className={`relative cursor-pointer rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
+        canHover ? "group hover:shadow-xl" : ""
+      }`}
+      onClick={onClick}
+    >
+      {inView ? (
+        coverImage ? (
+          <img
+            src={`${process.env.REACT_APP_API_URL}/uploads/${coverImage.file}`}
+            alt={album.title}
+            loading="lazy"
+            className="w-full h-40 lg:h-64 sm:h-40 object-cover"
+          />
+        ) : (
+          <div className="w-full h-40 lg:h-64 sm:h-40 bg-gray-800 flex items-center justify-center text-white">
+            Click to view album contents
+          </div>
+        )
+      ) : (
+        <div className="w-full h-40 lg:h-64 sm:h-40 bg-gray-200 animate-pulse" />
+      )}
+
+      <div className="absolute bottom-0 left-0 right-0 bg-black bg-opacity-50 text-white text-sm px-2 py-1 flex justify-between items-center">
+        <span>{album.title}</span>
+        <span>{album.files.length} items</span>
+      </div>
+    </div>
+  );
+};
+
+// Lazy load item in album
+const LazyItem = ({ item, onClick }) => {
+  const { ref, inView } = useInView({ triggerOnce: true, rootMargin: "100px" });
+
+  return (
+    <div
+      ref={ref}
+      className="relative cursor-pointer rounded-lg overflow-hidden shadow-md hover:shadow-xl aspect-square"
+      onClick={onClick}
+    >
+      {inView &&
+        (item.fileType === "video" ? (
+          <div className="w-full h-full relative">
+            <video
+              src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
+              className="w-full h-full object-cover"
+              muted
+              playsInline
+            />
+            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+              <svg
+                className="w-12 h-12 text-white bg-black bg-opacity-50 rounded-full p-2"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            </div>
+          </div>
+        ) : (
+          <img
+            src={`${process.env.REACT_APP_API_URL}/uploads/${item.file}`}
+            alt={item.name}
+            loading="lazy"
+            className="w-full h-full object-cover"
+          />
+        ))}
+    </div>
+  );
+};
+
+// Album modal showing album items
+const AlbumModal = ({ album, onClose, onItemClick }) => {
+  return (
+    <div
+      className="fixed inset-0 bg-black bg-opacity-80 z-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-w-6xl h-[80vh] w-full mx-4 bg-[#030303] max-h-[80%] lg:max-h-[85%] min-h-[60%] overflow-y-auto rounded-lg p-4"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 z-20"
+        >
+          <X />
+        </button>
+
+        <h2 className="text-xl font-semibold mb-4 text-white">{album.title}</h2>
+
+        <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 lg:gap-3">
+          {album.files.map((item, idx) => (
+            <LazyItem
+              key={item._id}
+              item={item}
+              onClick={() => onItemClick(idx)}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Fullscreen modal for single item
+const ItemModal = ({
+  currentItem,
+  selectedAlbum,
+  selectedIndex,
+  setSelectedIndex,
+  onClose,
+}) => {
+  return (
+    <div
+      className="fixed inset-0 bg-[#030303] bg-opacity-80 z-50 flex items-center justify-center"
+      onClick={onClose}
+    >
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="relative max-w-6xl h-[80vh] w-full mx-4 bg-white overflow-hidden rounded-lg"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-2 right-2 text-white bg-black bg-opacity-50 hover:bg-opacity-70 rounded-full p-2 z-20"
+        >
+          <X />
+        </button>
+
+        {selectedIndex > 0 && (
+          <button
+            onClick={() => setSelectedIndex((prev) => prev - 1)}
+            className="absolute left-2 top-1/2 transform -translate-y-1/2 z-20 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full"
+          >
+            ◀
+          </button>
+        )}
+
+        {selectedIndex < selectedAlbum.files.length - 1 && (
+          <button
+            onClick={() => setSelectedIndex((prev) => prev + 1)}
+            className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20 bg-black bg-opacity-50 hover:bg-opacity-70 text-white p-2 rounded-full"
+          >
+            ▶
+          </button>
+        )}
+
+        {currentItem.fileType === "video" ? (
+          <video
+            src={`${process.env.REACT_APP_API_URL}/uploads/${currentItem.file}`}
+            className="w-full max-h-[80vh] object-contain bg-black"
+            controls
+          />
+        ) : (
+          <img
+            src={`${process.env.REACT_APP_API_URL}/uploads/${currentItem.file}`}
+            alt={currentItem.name}
+            className="w-full max-h-[80vh] object-contain bg-black"
+          />
+        )}
+
+        <div className="px-10 py-3 bg-gray-950">
+          <h2 className="text-sm lg:text-2xl md:text-lg font-semibold text-white mb-2">
+            {selectedAlbum.title}
+          </h2>
+
+          {currentItem.date && (
+            <p className="text-white text-sm mb-1">
+              {new Date(currentItem.date).toLocaleDateString(undefined, {
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
+            </p>
+          )}
+
+          {currentItem.tags && currentItem.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-2">
+              {currentItem.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-white rounded text-[10px] -my-1 lg:text-xs"
+                >
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   );
 };
 
