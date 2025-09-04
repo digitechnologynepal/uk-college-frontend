@@ -48,7 +48,7 @@ const ExploreCourse = () => {
   }, []);
 
   return (
-    <section className="w-full pt-32 pb-20 px-4 md:px-[6vw] xl:px-[8vw]">
+    <section className="w-full pt-32 pb-20 px-6 md:px-[6vw] xl:px-[8vw]">
       {loading ? (
         <>
           <SkeletonHeading />

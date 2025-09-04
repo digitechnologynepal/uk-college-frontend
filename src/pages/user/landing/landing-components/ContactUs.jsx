@@ -146,7 +146,7 @@ const ContactUs = () => {
     return <SkeletonContactUs />;
   }
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-28 pt-36">
+    <div className="min-h-screen flex items-center justify-center px-6 py-28 pt-36">
       <section
         className="
           bg-white rounded-lg shadow-md  max-w-6xl w-full max-h-max
@@ -158,10 +158,10 @@ const ContactUs = () => {
         {/* Left Info Panel */}
         <div className="flex flex-col justify-between">
           <div>
-            <h1 className="text-3xl sm:text-4xl md:text-4xl font-bold text-[#204081] mb-6">
+            <h1 className="text-2xl lg:text-4xl  font-bold text-[#204081] mb-4 lg:mb-6">
               Let's Connect
             </h1>
-            <p className="text-gray-600 mb-8 leading-relaxed text-base sm:text-lg md:text-lg">
+            <p className="text-gray-600 mb-8 leading-relaxed text-sm lg:text-base">
               We'd love to hear from you. Whether you have a question or just
               want to say hi.
             </p>
@@ -213,7 +213,7 @@ const ContactUs = () => {
 
         {/* Right Form Panel */}
         <div className="flex flex-col justify-center">
-          <h2 className="text-2xl sm:text-3xl md:text-3xl font-semibold text-[#204081] mb-8">
+          <h2 className="text-2xl lg:text-4xl font-semibold text-[#204081] mb-8">
             Send us a message
           </h2>
 
@@ -228,8 +228,11 @@ const ContactUs = () => {
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6 max-h-max pr-2">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-6 max-h-max pr-0 lg:pr-2"
+          >
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <FloatingInput
                 label="First Name"
                 name="firstName"
@@ -246,7 +249,7 @@ const ContactUs = () => {
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 lg:gap-6">
               <FloatingInput
                 label="Email"
                 name="email"
@@ -296,8 +299,10 @@ const ContactInfoCard = ({ icon, label, value }) => (
       {icon}
     </div>
     <div>
-      <p className="text-[#204081] font-semibold">{label}</p>
-      <p className="text-gray-600">{value}</p>
+      <p className="text-[#204081] font-semibold text-base lg:text-lg">
+        {label}
+      </p>
+      <p className="text-gray-600 text-sm lg:text-base">{value}</p>
     </div>
   </div>
 );
