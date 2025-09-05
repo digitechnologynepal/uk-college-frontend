@@ -61,7 +61,7 @@ export const EditGalleryModal = ({
   if (!open) return null;
 
   const GallerySchema = Yup.object().shape({
-    name: Yup.string().required("Album name is required"),
+    name: Yup.string().required("Name is required"),
     categoryTitle: Yup.string().required("Category is required"),
     tags: Yup.array()
       .of(Yup.string().required())
@@ -88,7 +88,7 @@ export const EditGalleryModal = ({
   };
 
   return (
-    <Modal open={open} onClose={onClose} modalTitle="Edit Album">
+    <Modal open={open} onClose={onClose} modalTitle="Edit Content">
       <Formik
         enableReinitialize
         initialValues={{
@@ -118,12 +118,12 @@ export const EditGalleryModal = ({
 
             await updateAlbumApi(albumTitle, formData);
 
-            Swal.fire("Success!", "Album updated successfully.", "success");
+            Swal.fire("Success!", "Updated successfully.", "success");
             onUpdated();
             onClose();
           } catch (err) {
             console.error(err);
-            Swal.fire("Error!", "Failed to update album.", "error");
+            Swal.fire("Error!", "Failed to update.", "error");
           } finally {
             setSubmitting(false);
           }
@@ -148,10 +148,9 @@ export const EditGalleryModal = ({
 
           return (
             <Form className="space-y-4 p-6">
-              {/* Album Name */}
               <div>
                 <label className="block text-sm font-medium">
-                  Album Name *
+                  Name *
                 </label>
                 <Field
                   name="name"
@@ -311,7 +310,7 @@ export const EditGalleryModal = ({
                   className="btn-primary"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? "Updating..." : "Update Album"}
+                  {isSubmitting ? "Updating..." : "Update"}
                 </button>
               </div>
             </Form>

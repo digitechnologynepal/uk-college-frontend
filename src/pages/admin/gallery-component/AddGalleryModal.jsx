@@ -46,7 +46,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
   if (!open) return null;
 
   const GallerySchema = Yup.object().shape({
-    name: Yup.string().required("Album name is required"),
+    name: Yup.string().required("Name is required"),
     files: Yup.array().min(1, "At least one file is required"),
     categoryTitle: Yup.string(),
     date: Yup.string().nullable(),
@@ -56,7 +56,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
   });
 
   return (
-    <Modal open={open} onClose={onClose} modalTitle="Add Album">
+    <Modal open={open} onClose={onClose} modalTitle="Add Content">
       <Formik
         enableReinitialize
         initialValues={{
@@ -82,7 +82,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
               if (isVideoFile(selectedFiles[i]) !== firstIsVideo) {
                 Swal.fire(
                   "Error",
-                  "All files in an album must be either images or videos",
+                  "All files must be either images or videos",
                   "error"
                 );
                 setSubmitting(false);
@@ -105,7 +105,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
             const res = await createGalleryContentApi(formData);
             if (res?.data?.success) {
-              Swal.fire("Success!", "Album created successfully.", "success");
+              Swal.fire("Success!", "Created successfully.", "success");
               resetForm();
               setSelectedFiles([]);
               setPreviews([]);
@@ -114,7 +114,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
             }
           } catch (err) {
             console.error(err);
-            Swal.fire("Error!", "Failed to add album.", "error");
+            Swal.fire("Error!", "Failed to add.", "error");
           } finally {
             setSubmitting(false);
           }
@@ -141,10 +141,9 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
 
           return (
             <Form className="space-y-4 p-6">
-              {/* Album Name */}
               <div>
                 <label className="block text-sm font-medium">
-                  Album Name *
+                  Name *
                 </label>
                 <Field
                   name="name"
@@ -229,7 +228,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
               {/* File Upload */}
               <div>
                 <label className="block text-sm font-medium">
-                  Album Files *
+                  Content Files *
                 </label>
                 <input
                   type="file"
@@ -284,7 +283,7 @@ export const AddGalleryModal = ({ open, onClose, onUploaded }) => {
                   disabled={isSubmitting}
                   className="btn-primary"
                 >
-                  {isSubmitting ? "Uploading..." : "Create Album"}
+                  {isSubmitting ? "Uploading..." : "Create"}
                 </button>
                 <button
                   type="button"
