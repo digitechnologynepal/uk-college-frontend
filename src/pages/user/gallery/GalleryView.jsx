@@ -241,7 +241,7 @@ export const GalleryView = () => {
                 }`}
                 onClick={() => setShowAlbums(false)}
               >
-                All Content
+                All Media
               </button>
 
               <button
