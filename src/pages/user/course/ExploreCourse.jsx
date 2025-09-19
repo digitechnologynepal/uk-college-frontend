@@ -61,8 +61,8 @@ const ExploreCourse = () => {
       ) : (
         <>
           {courses.length > 0 ? (
-            <div>
-              <div className="mb-8 lg:mb-10 max-w-6xl">
+            <div className="max-w-7xl mx-auto">
+              <div className="mb-8 lg:mb-10 max-w-7xl">
                 <p className="text-left text-2xl lg:text-4xl font-bold mb-3 text-[#262a2b]">
                   Explore Our Courses
                 </p>
@@ -71,7 +71,7 @@ const ExploreCourse = () => {
                   courses.
                 </p>
               </div>
-              <div className="grid gap-4 lg:gap-6 sm:grid-cols-2 lg:grid-cols-3 max-w-6xl">
+              <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl">
                 {courses.map((course) => (
                   <div
                     key={course.slug}
@@ -88,9 +88,12 @@ const ExploreCourse = () => {
 
                     {/* Content */}
                     <div className="p-6 flex flex-col gap-3 flex-grow">
-                      <h2 className="text-xl font-bold text-[#204081] leading-snug">
-                        {course.title}
+                      <h2 className="text-lg lg:text-xl font-bold text-[#204081]">
+                        {course.title.length > 50
+                          ? course.title.slice(0, 50) + "…"
+                          : course.title}
                       </h2>
+
                       {/* Button */}
                       <div className="mt-auto">
                         <button

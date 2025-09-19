@@ -170,7 +170,7 @@ export const GalleryView = () => {
             </p>
           </div>
         ) : (
-          <div className="flex flex-col">
+          <div className="flex flex-col max-w-7xl mx-auto">
             {/* Heading */}
             <p className="text-left text-2xl lg:text-4xl font-bold mb-5 text-[#262a2b] flex items-center gap-3">
               Gallery

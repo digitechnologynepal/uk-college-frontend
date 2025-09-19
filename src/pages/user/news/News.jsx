@@ -96,7 +96,7 @@ export const News = () => {
       : news.filter((item) => selectedCategories.includes(item.categoryTitle));
 
   return (
-    <section className="w-full flex flex-col">
+    <section className="w-full flex flex-col ">
       <div className="pt-32 pb-20 px-4 md:px-[6vw] xl:px-[8vw]">
         {loading ? (
           <SkeletonNews />
@@ -116,7 +116,7 @@ export const News = () => {
             </p>
           </div>
         ) : (
-          <>
+          <div className="max-w-7xl mx-auto">
             {/* Heading */}
             <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-5 gap-3">
               <p className="text-left text-4xl font-bold text-[#262a2b] flex items-center gap-3">
@@ -196,7 +196,7 @@ export const News = () => {
               </div>
             ) : (
               /* News Grid */
-              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-4 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                 {filteredNews.map((item) => (
                   <div
                     key={item.slug}
@@ -244,7 +244,7 @@ export const News = () => {
                 ))}
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </section>

@@ -11,7 +11,6 @@ import { ClientTestimonial } from "./landing-components/ClientTestimonial";
 const SkeletonHero = () => (
   <section className="relative top-20 mb-40 w-full">
     <div className="relative w-full min-h-[60vh] sm:min-h-[80vh] md:min-h-[70vh] lg:min-h-[90vh] flex flex-col lg:flex-row items-center px-6 md:px-12 lg:px-20 animate-pulse">
-
       {/* Text Content Skeleton */}
       <div className="relative z-20 flex flex-col items-center lg:items-start text-center lg:text-left w-full lg:w-1/2 mt-12 lg:mt-0 space-y-4">
         <div className="h-10 sm:h-12 md:h-14 w-3/4 bg-gray-200 rounded" />
@@ -137,7 +136,7 @@ export const Landing = ({ institutionProfile }) => {
                 <img
                   src={model}
                   alt="Model"
-                  className="max-h-[40vh] sm:max-h-[50vh] md:max-h-[40vh] lg:max-h-[75vh] object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105"
+                  className="max-h-[40vh] sm:max-h-[50vh] md:max-h-[40vh] lg:max-h-[75vh] object-contain drop-shadow-2xl transition-transform duration-500 hover:scale-105 hover:-translate-y-4"
                 />
               </div>
             </div>

@@ -154,7 +154,7 @@ export const ClientsView = () => {
           </div>
 
           {/* Clients Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-7 max-w-7xl">
+          <div className="grid gap-4 grid-cols-2 md:grid-cols-3 xl:grid-cols-4 max-w-7xl mx-auto">
             {filteredClients.length > 0 ? (
               filteredClients.map((client, index) => (
                 <ClientCard
@@ -233,9 +233,9 @@ export const ClientsView = () => {
               </div>
 
               <div className="px-8 lg:px-10 py-6 max-h-[80vh] overflow-y-auto">
-                <div className="w-full">
+                <div className="max-w-7xl mx-auto">
                   {mediaItems.length === 3 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid gap-4 grid-cols-1 lg:grid-cols-3 xl:grid-cols-4 max-w-7xl">
                       <div className="flex flex-col gap-6">
                         {selectedClient.clientImage && (
                           <div className="w-full flex justify-center">
