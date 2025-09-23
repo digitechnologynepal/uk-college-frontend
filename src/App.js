@@ -32,6 +32,7 @@ import { ClientsView } from "./pages/user/partners/ClientsView";
 import ScrollToTop from "./components/ScrollToTop";
 import { Category } from "./pages/admin/Category";
 import { Testimonial } from "./pages/admin/Testimonial";
+import BecomeAPartner from "./pages/user/becomeapartner/BecomeAPartner";
 
 function App() {
   const [institutionprofile, setInstitutionProfile] = useState({});
@@ -64,6 +65,7 @@ function App() {
             <Route path="/contact" element={<ContactUs />} />
             <Route path="/news" element={<News />} />
             <Route path="/partners" element={<ClientsView />} />
+            <Route path="/partnercenter" element={<BecomeAPartner />} />
             <Route path="/news-description/:slug" element={<NewsDescription />} />
             <Route path="/" element={<Landing institutionProfile={institutionprofile} />} />
             <Route element={<AdminRoutes />}>

@@ -91,6 +91,7 @@ export const Navbar = ({ institutionProfile }) => {
                 { path: "/partners", label: "Our Partners" },
                 { path: "/galleryview", label: "Gallery" },
                 { path: "/news", label: "News & Events" },
+                { path: "/partnercenter", label: "Partner Center" },
               ].map(({ path, label }) => (
                 <li key={path}>
                   <Link
@@ -203,6 +204,7 @@ export const Navbar = ({ institutionProfile }) => {
               { to: "/galleryview", label: "Gallery" },
               { to: "/news", label: "News & Events" },
               { to: "/contact", label: "Contact" },
+              { to: "/partnercenter", label: "Become a Partner" },
             ].map(({ to, label }) => (
               <Link
                 key={to}
