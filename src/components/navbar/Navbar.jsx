@@ -28,6 +28,7 @@ export const Navbar = ({ institutionProfile }) => {
   const [sticky, setSticky] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [marketingOpen, setMarketingOpen] = useState(false);
+  const [partnersOpen, setPartnersOpen] = useState(false);
 
   const isActive = (path) => {
     if (path === "/") return location.pathname === "/";
@@ -84,31 +85,124 @@ export const Navbar = ({ institutionProfile }) => {
           {/* Desktop Navigation */}
           <nav className="hidden lg:flex flex-1 justify-center items-center">
             <ul className="flex items-center gap-4 justify-center">
-              {[
-                { path: "/", label: "Home" },
-                { path: "/aboutus", label: "About Us" },
-                { path: "/course", label: "Courses" },
-                { path: "/partners", label: "Our Partners" },
-                { path: "/galleryview", label: "Gallery" },
-                { path: "/news", label: "News & Events" },
-                { path: "/partnercenter", label: "Partner Center" },
-              ].map(({ path, label }) => (
-                <li key={path}>
-                  <Link
-                    to={path}
-                    className={`navbar-link ${isActive(path) ? "active" : ""}`}
-                  >
-                    {label}
-                  </Link>
-                </li>
-              ))}
+              {/* Home */}
+              <li>
+                <Link
+                  to="/"
+                  className={`navbar-link block w-full px-4 py-2 rounded-lg transition ${
+                    isActive("/")
+                      ? "bg-[#e7efff] text-[#204081] font-semibold"
+                      : "text-[#204081]"
+                  } hover:bg-[#e7efff]`}
+                >
+                  Home
+                </Link>
+              </li>
+
+              {/* About */}
+              <li>
+                <Link
+                  to="/aboutus"
+                  className={`navbar-link block w-full px-4 py-2 rounded-lg transition ${
+                    isActive("/aboutus")
+                      ? "bg-[#e7efff] text-[#204081] font-semibold"
+                      : "text-[#204081]"
+                  } hover:bg-[#e7efff]`}
+                >
+                  About Us
+                </Link>
+              </li>
+
+              {/* Courses */}
+              <li>
+                <Link
+                  to="/course"
+                  className={`navbar-link block w-full px-4 py-2 rounded-lg transition ${
+                    isActive("/course")
+                      ? "bg-[#e7efff] text-[#204081] font-semibold"
+                      : "text-[#204081]"
+                  } hover:bg-[#e7efff]`}
+                >
+                  Courses
+                </Link>
+              </li>
+
+              {/* Partners Dropdown */}
+              <li className="relative">
+                <button
+                  onClick={() => setPartnersOpen((prev) => !prev)}
+                  className="navbar-link flex items-center gap-1 border-none px-4 py-2 rounded-lg hover:bg-[#e7efff] text-[#204081]"
+                >
+                  Partners
+                  <span className="ml-1">
+                    {partnersOpen ? (
+                      <ChevronUp size={16} />
+                    ) : (
+                      <ChevronDown size={16} />
+                    )}
+                  </span>
+                </button>
+
+                <div
+                  className={`absolute left-0 mt-2 w-48 bg-white border rounded shadow-md lg:shadow-lg z-50 transform transition-all duration-200
+      ${partnersOpen ? "translate-y-0 opacity-100" : "-translate-y-2 opacity-0"}
+    `}
+                >
+                  <ul className="flex flex-col gap-0">
+                    <li>
+                      <Link
+                        to="/partners"
+                        className="block w-full px-4 py-2 hover:bg-[#e7efff] text-[#204081]"
+                      >
+                        Our Partners
+                      </Link>
+                    </li>
+                    <li>
+                      <Link
+                        to="/partnercenter"
+                        className="block w-full px-4 py-2 hover:bg-[#e7efff] text-[#204081]"
+                      >
+                        Become a Partner
+                      </Link>
+                    </li>
+                  </ul>
+                </div>
+              </li>
+
+              {/* News */}
+              <li>
+                <Link
+                  to="/news"
+                  className={`navbar-link block w-full px-4 py-2 rounded-lg transition ${
+                    isActive("/news")
+                      ? "bg-[#e7efff] text-[#204081] font-semibold"
+                      : "text-[#204081]"
+                  } hover:bg-[#e7efff]`}
+                >
+                  News & Events
+                </Link>
+              </li>
+
+              {/* Gallery */}
+              <li>
+                <Link
+                  to="/galleryview"
+                  className={`navbar-link block w-full px-4 py-2 rounded-lg transition ${
+                    isActive("/galleryview")
+                      ? "bg-[#e7efff] text-[#204081] font-semibold"
+                      : "text-[#204081]"
+                  } hover:bg-[#e7efff]`}
+                >
+                  Gallery
+                </Link>
+              </li>
 
               {/* Marketing Dropdown */}
               {institutionProfile?.brochure && (
                 <li className="relative">
                   <button
                     onClick={() => setMarketingOpen((prev) => !prev)}
-                    className="navbar-link flex items-center gap-1 border-none"
+                    className="navbar-link flex items-center gap-1 border-none px-4 py-2 rounded-lg hover:bg-[#e7efff] text-[#204081]"
                   >
                     Marketing
                     <span className="ml-1">
@@ -133,7 +227,7 @@ export const Navbar = ({ institutionProfile }) => {
                       <li>
                         <button
                           onClick={handleDownload}
-                          className="w-full text-left px-4 py-2 hover:bg-[#e7efff] text-[#204081]"
+                          className="block w-full text-left px-4 py-2 hover:bg-[#e7efff] text-[#204081]"
                         >
                           Download Brochure
                         </button>
@@ -142,8 +236,6 @@ export const Navbar = ({ institutionProfile }) => {
                   </div>
                 </li>
               )}
-
-              {/* more items here in the future */}
             </ul>
           </nav>
 
@@ -151,7 +243,7 @@ export const Navbar = ({ institutionProfile }) => {
           <div className="hidden lg:flex items-center justify-end gap-2 flex-shrink-0">
             <Link
               to="/contact"
-              className="px-4 py-2 flex items-center font-semibold rounded-lg shadow-md transition-all duration-300 bg-[#d91b1a] text-white hover:bg-[#b71715]"
+              className="px-4 py-2 flex items-center font-semibold rounded-lg hover:shadow-md transition-all duration-300 border-2 border-[#d91b1a] text-[#d91b1a] hover:bg-[#d91b1a] hover:text-white"
             >
               <Phone size={20} className="mr-2" />
               Contact Us
@@ -196,35 +288,120 @@ export const Navbar = ({ institutionProfile }) => {
         {/* Drawer Navigation */}
         <div className="flex-1 overflow-y-auto px-5 py-6">
           <div className="space-y-2 text-md font-medium">
-            {[
-              { to: "/", label: "Home" },
-              { to: "/aboutus", label: "About Us" },
-              { to: "/course", label: "Courses" },
-              { to: "/partners", label: "Our Partners" },
-              { to: "/galleryview", label: "Gallery" },
-              { to: "/news", label: "News & Events" },
-              { to: "/contact", label: "Contact" },
-              { to: "/partnercenter", label: "Become a Partner" },
-            ].map(({ to, label }) => (
-              <Link
-                key={to}
-                to={to}
-                onClick={() => setMenuOpen(false)}
-                className={`block px-4 py-2 rounded-lg transition ${
-                  isActive(to)
-                    ? "bg-[#e7efff] text-[#204081] font-semibold"
-                    : "bg-gray-100 text-[#204081]"
-                } hover:bg-[#e7efff]`}
-              >
-                {label}
-              </Link>
-            ))}
+            {/* Home */}
+            <Link
+              to="/"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              Home
+            </Link>
 
-            {/* Mobile Marketing Dropdown */}
+            {/* About Us */}
+            <Link
+              to="/aboutus"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/aboutus")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              About Us
+            </Link>
+
+            {/* Courses */}
+            <Link
+              to="/course"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/course")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              Courses
+            </Link>
+
+            {/* Partners Dropdown */}
+            <div className="mt-2">
+              <button
+                className="w-full flex justify-between items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium focus:outline-none hover:bg-[#e7efff]"
+                onClick={() => setPartnersOpen((prev) => !prev)}
+              >
+                Partners
+                <span>
+                  {partnersOpen ? (
+                    <ChevronUp size={16} />
+                  ) : (
+                    <ChevronDown size={16} />
+                  )}
+                </span>
+              </button>
+
+              <div
+                className={`px-3 mt-1 overflow-hidden transform transition-all duration-200
+      ${partnersOpen ? "max-h-40 translate-y-0" : "max-h-0 -translate-y-2"}
+    `}
+              >
+                <ul className="flex flex-col">
+                  <li>
+                    <Link
+                      to="/partners"
+                      onClick={() => setMenuOpen(false)}
+                      className="block w-full px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium hover:bg-[#e7efff]"
+                    >
+                      Our Partners
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
+                      to="/partnercenter"
+                      onClick={() => setMenuOpen(false)}
+                      className="block w-full px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium hover:bg-[#e7efff]"
+                    >
+                      Become a Partner
+                    </Link>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            {/* News */}
+            <Link
+              to="/news"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/news")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              News & Events
+            </Link>
+
+            {/* Gallery */}
+            <Link
+              to="/galleryview"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/galleryview")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              Gallery
+            </Link>
+
+            {/* Marketing Dropdown */}
             {institutionProfile?.brochure && (
               <div className="mt-2">
                 <button
-                  className="w-full flex justify-between items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium focus:outline-none"
+                  className="w-full flex justify-between items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium focus:outline-none hover:bg-[#e7efff]"
                   onClick={() => setMarketingOpen((prev) => !prev)}
                 >
                   Marketing
@@ -250,16 +427,28 @@ export const Navbar = ({ institutionProfile }) => {
                     <li>
                       <button
                         onClick={handleDownload}
-                        className="block w-full items-center px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium"
+                        className="block w-full px-4 py-2 rounded-lg bg-gray-100 text-[#204081] font-medium hover:bg-[#e7efff] text-left"
                       >
                         Download Brochure
                       </button>
                     </li>
-                    {/* more items here in the future */}
                   </ul>
                 </div>
               </div>
             )}
+
+            {/* Contact */}
+            <Link
+              to="/contact"
+              onClick={() => setMenuOpen(false)}
+              className={`block w-full px-4 py-2 rounded-lg transition ${
+                isActive("/contact")
+                  ? "bg-[#e7efff] text-[#204081] font-semibold"
+                  : "bg-gray-100 text-[#204081]"
+              } hover:bg-[#e7efff]`}
+            >
+              Contact
+            </Link>
           </div>
         </div>
       </div>

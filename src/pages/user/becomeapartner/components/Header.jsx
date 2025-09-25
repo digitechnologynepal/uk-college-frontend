@@ -20,7 +20,7 @@ export default function Header() {
             recognized British standards of education.
           </p>
         </div>
-        <div className="w-screen h-full lg:px-0 px-6">
+        <div className="w-screen flex items-center justify-center h-full lg:px-0 px-6">
           <img src={banner} className="object-cover h-[30vh] md:h-full" />
         </div>
       </div>
